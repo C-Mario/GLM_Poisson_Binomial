@@ -1,0 +1,112 @@
+---
+title: "Fisher Scoring Algorithm"
+format: html
+---
+
+```{r}
+rm(list = ls())
+```
+
+```{r}
+library(dplyr)
+library(readxl)
+```
+
+## Regresión Poisson
+
+- Sean $Y_1, Y_2, \cdots, Y_n$ variables aleatorias independientes con distribución *Poisson*, tales que
+
+$$Y_i \sim Poisson(\mu_i) \quad i=1,2,\cdots,n.$$
+Sabemos que en la distribución *Poisson*, el parámetro canónico está dado por $\theta_i = log(\mu_i)$. Además el predictor lineal está dado por
+
+$$\eta_i = \beta_0 + \beta_1X_1 + \beta_2X_2 + \cdots + \beta_pX_p,$$
+y la relación entre el predictor $\eta_i$ y la media $\mu_i$ está dada por 
+$$\eta_i = \ln(\mu_i) \Rightarrow \mu_i = \exp(\eta_i)$$.
+
+La función de log-verosimilitud es como sigue
+
+$$
+\begin{align*}
+\mathcal{l}(\beta) &= \sum_{i=1}^n \left[y_i\ln(\mu_i) - \mu_i - \ln(y_i!)\right]\\
+&= \sum_{i=1}^n \left[y_i x_i^t \beta - \exp(x_i^t \beta) - \ln(y_i\!)\right]
+\end{align*}
+$$
+La **función score** (vector de primeras derivadas) está dado por
+
+$$\frac{\partial \mathcal{l}(\beta)}{\partial \beta} = \sum_{i=1}^n (y_i - \mu_i)x_i.$$
+La **Matriz de Información de Fisher** es como sigue
+
+$$\mathcal{J}(\beta) = Inf = X^tWX$$
+donde
+
+$$W = diag\left(\frac{\left(\frac{\partial \mu_i}{\partial \eta_i}\right)^2}{Var(y_i)}\right)$$
+$$\frac{\partial \mu_i}{\partial \eta_i} = \mu_i, \quad \quad \quad \frac{\partial \eta_i}{\partial \mu_i} = \frac{1}{\mu_i}$$
+Como en la distribución *Poisson*, $Var(Y_i) = \mu_i$, se tiene que
+
+$$w_{ii} = \mu_i$$
+y $\widetilde{y} = \eta_i + (y_i - \mu_i)\frac{1}{\mu_i}$
+
+De esta forma, el **Algoritmo de Fisher-Scoring** queda determinado por los siguientes pasos
+
+1) Iniciar el algoritmo con un valor inicial para $\beta$
+
+2) obtener $\beta^{(k+1)}$ a partir de $\beta^{(k)}$ usando la siguiente expresión
+
+$$\beta^{(k+1)} = \left(X^tW^{(k)}X\right)^{-1}X^tW^{(k)}\widetilde{y}$$
+
+3) repetir **(2)** hasta satisfacer un criterio de convergencia.
+
+A continuación se presenta el algoritmo para encontrar una aproximación de $\beta$ usando datos reales.
+
+Datos de jugadores de baloncesto.
+
+```{r}
+players <- read_excel("players_202223.xlsx") %>% 
+  select(AGE,MIN,GP,FGM,FGA,FG3M,FG3A,FTM,FTA,PTS)
+players %>% View()
+```
+
+```{r}
+x1 <- as.matrix(players %>% select(-last_col()))
+X <- model.matrix(~x1)
+Y <- players$PTS
+```
+
+```{r}
+set.seed(1040)
+
+# Creación de la función
+fisher_scoring_poisson <- function(y, X, beta_init, tol = 1e-4, max_iter = 100) {
+  beta <- beta_init
+  for (iter in 1:max_iter) {
+    eta <- X %*% beta
+    mu <- exp(eta)
+    
+    W <- diag(as.vector(mu))
+    
+    z <- eta + (y - mu) / mu
+    beta_new <- solve(t(X) %*% W %*% X) %*% (t
+                                             
+                                             (X) %*% W %*% z)
+    
+    if (max(abs(beta_new - beta)) < tol) {
+      message("Convergió en iteración ", iter)
+      return(as.vector(beta_new))
+    }
+    
+    beta <- beta_new
+  }
+  warning("No convergió")
+  return(as.vector(beta))
+}
+```
+
+```{r}
+# # Ejecutamos
+# fisher_scoring_poisson(y = Y,X = X,beta_init = rep(0.01, ncol(X)),
+#                        max_iter = 100)
+# beta_est <- fisher_scoring_poisson(y = y, X = X, beta_init = c(0, 0),
+#                                    max_iter = 500)
+# beta_est
+```
+
