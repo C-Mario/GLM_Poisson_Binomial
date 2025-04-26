@@ -1,5 +1,5 @@
 ---
-title: "Fisher Scoring Algorithm aj"
+title: "Fisher Scoring Algorithm ajustado"
 format: html
 ---
 
