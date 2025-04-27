@@ -1,6 +1,7 @@
 ---
-title: "Fishe3r Scoringdd Algorithm ajustado2"
+title: "Algoritmo de Fisher Scoring"
 format: html
+page-layout: full
 ---
 
 ```{r}
@@ -8,7 +9,8 @@ rm(list = ls())
 ```
 
 ```{r}
-install.packages("GGally", repos = "http://cran.r-project.org")
+#| output: false
+# install.packages("GGally", repos = "http://cran.r-project.org")
 library(GGally)
 library(ggplot2)
 library(dplyr)
@@ -65,51 +67,51 @@ Datos de jugadores de baloncesto de la temporada 2022-2023, los cuales incluyen 
 
 ```{r}
 players <- read_excel("players_202223.xlsx") %>% 
-  select(AGE,MIN,GP,FGM,FGA,FG3M,FG3A,FTM,FTA,PTS)
-players %>% View()
+  select(AGE, MIN, GP, FGM, FGA, FG3M, FG3A, FTM, FTA, PTS)
 ```
+
 ```{r}
+#| message: false
+#| out-width: 100%
+
 players %>%
   ggpairs(
     upper = list(continuous = wrap("cor", size = 3)),
     diag = list(continuous = wrap("barDiag", colour = "burlywood")),
-    lower = list(continuous = wrap("points", alpha = 0.5, shape = 23, 
-                                   fill = "lightblue"))
-  )
+    lower = list(continuous = wrap("points", alpha = 0.5, shape = 20, 
+                                   fill = "lightblue")),
+    axisLabels = "none")
 ```
-En la matriz de dispersión realizada se uso el coeficiente de correlación de Pearson, el cuál nos muestra que la mayoría de las variables tienen una alta correlación lineal con la que será la variable respuesta, puntos realizados en la temporada (PTS). 
 
-Se puede evidenciar que entre las variables tambien se presentan algunas correlaciones casi perfectas, como se presentan entre las variables FGM y FGA, FG3M y FG3A, y FTM y FTA, lo cual tiene sentido ya que los pares de variables mencionadas deberían relacionadas entre sí, ya que a nivel general una variable es el número de intentos totales de tiros, mientras que la otra es cuántos de esos tiros lograron ser encestados.
+En la matriz de dispersión realizada se usó el coeficiente de correlación de Pearson, el cuál nos muestra que la mayoría de las variables tienen una alta correlación lineal con la variable respuesta, puntos realizados en la temporada (PTS). 
+
+Se puede evidenciar que entre las variables tambien se presentan algunas correlaciones casi perfectas, como se presentan entre las variables FGM y FGA, FG3M y FG3A, y FTM y FTA, lo cual tiene sentido ya que los pares de variables mencionadas deberían estar relacionadas entre sí, ya que a nivel general una variable es el número de intentos totales de tiros, mientras que la otra es cuántos de esos tiros lograron ser encestados.
 
 Por otro lado se logra ver una baja correlación lineal entre la variable AGE y el resto de variables, incluyendo la variable respuesta PTS, además de esto en los gráficos de dispersión no se puede evidenciar ningún tipo de correlación entre las variables mencionadas, puesto que los datos son bastante dispersos.
-
-
 
 ```{r}
 x1 <- as.matrix(players %>% select(-last_col()))
 X <- model.matrix(~x1)
-Y <- players$PTS
+y <- players$PTS
 ```
 
 ```{r}
 set.seed(1040)
 
 # Creación de la función
-fisher_scoring_poisson <- function(y, X, beta_init, tol = 1e-4, max_iter = 100) {
+fisher_scoring_poisson <- function(y, X, beta_init, tol = 1e-4, max_iter = 100){
   beta <- beta_init
-  for (iter in 1:max_iter) {
+  for (iter in 1:max_iter){
     eta <- X %*% beta
     mu <- exp(eta)
     
     W <- diag(as.vector(mu))
     
     z <- eta + (y - mu) / mu
-    beta_new <- solve(t(X) %*% W %*% X) %*% (t
-                                             
-                                             (X) %*% W %*% z)
+    beta_new <- solve(t(X) %*% W %*% X) %*% (t(X) %*% W %*% z)
     
     if (max(abs(beta_new - beta)) < tol) {
-      message("Convergió en iteración ", iter)
+      message("Convergió en la iteración ", iter)
       return(as.vector(beta_new))
     }
     
@@ -122,8 +124,10 @@ fisher_scoring_poisson <- function(y, X, beta_init, tol = 1e-4, max_iter = 100) 
 
 ```{r}
 ## Ejecutamos
-beta_est <- fisher_scoring_poisson(y = Y,X = X,beta_init = rep(0.01, ncol(X)),
-                      max_iter = 100)
+beta_est <- fisher_scoring_poisson(y = y, X = X, 
+                                   beta_init = rep(0.01, ncol(X)),
+                                   max_iter = 100)
 beta_est
 ```
 
+## Regresión Binomial
