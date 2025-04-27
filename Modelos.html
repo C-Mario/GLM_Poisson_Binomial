@@ -140,30 +140,42 @@ window.Quarto = {
 <ul>
 <li>Sean <span class="math inline">\(Y_1, Y_2, \cdots, Y_n\)</span> variables aleatorias independientes con distribución <em>Poisson</em>, tales que</li>
 </ul>
-<p><span class="math display">\[Y_i \sim Poisson(\mu_i) \quad i=1,2,\cdots,n.\]</span> Sabemos que en la distribución <em>Poisson</em>, el parámetro canónico está dado por <span class="math inline">\(\theta_i = log(\mu_i)\)</span>. Además el predictor lineal está dado por</p>
-<p><span class="math display">\[\eta_i = \beta_0 + \beta_1X_1 + \beta_2X_2 + \cdots + \beta_pX_p,\]</span> y la relación entre el predictor <span class="math inline">\(\eta_i\)</span> y la media <span class="math inline">\(\mu_i\)</span> está dada por <span class="math display">\[\eta_i = \ln(\mu_i) \Rightarrow \mu_i = \exp(\eta_i)\]</span>.</p>
+<p><span class="math display">\[Y_i \sim Poisson(\mu_i) \quad i=1,2,\cdots,n.\]</span> Sabemos que en la distribución <em>Poisson</em>, el parámetro canónico está dado por <span class="math inline">\(\theta_i = \ln(\mu_i)\)</span>.</p>
+<p>En el contexto de un modelo de regresión, el predictor lineal <span class="math inline">\(\eta_i\)</span> está dado por</p>
+<p><span class="math display">\[\eta_i = \beta_0 + \beta_1X_1 + \beta_2X_2 + \cdots + \beta_pX_p,\]</span> y la relación entre el predictor <span class="math inline">\(\eta_i\)</span> y la media <span class="math inline">\(\mu_i\)</span> está dada por</p>
+<p><span class="math display">\[\eta_i = \ln(\mu_i) \Rightarrow \mu_i = \exp(\eta_i).\]</span></p>
 <p>La función de log-verosimilitud es como sigue</p>
 <p><span class="math display">\[
 \begin{align*}
 \mathcal{l}(\beta) &amp;= \sum_{i=1}^n \left[y_i\ln(\mu_i) - \mu_i - \ln(y_i!)\right]\\
-&amp;= \sum_{i=1}^n \left[y_i x_i^t \beta - \exp(x_i^t \beta) - \ln(y_i\!)\right]
+&amp;= \sum_{i=1}^n \left[y_i x_i^t \beta - \exp(x_i^t \beta) - \ln(y_i!)\right]
 \end{align*}
-\]</span> La <strong>función score</strong> (vector de primeras derivadas) está dado por</p>
+\]</span></p>
+<p>La <strong>función score</strong> (vector de primeras derivadas) está dado por</p>
 <p><span class="math display">\[\frac{\partial \mathcal{l}(\beta)}{\partial \beta} = \sum_{i=1}^n (y_i - \mu_i)x_i.\]</span> La <strong>Matriz de Información de Fisher</strong> es como sigue</p>
 <p><span class="math display">\[\mathcal{J}(\beta) = Inf = X^tWX\]</span> donde</p>
 <p><span class="math display">\[W = diag\left(\frac{\left(\frac{\partial \mu_i}{\partial \eta_i}\right)^2}{Var(y_i)}\right)\]</span> <span class="math display">\[\frac{\partial \mu_i}{\partial \eta_i} = \mu_i, \quad \quad \quad \frac{\partial \eta_i}{\partial \mu_i} = \frac{1}{\mu_i}\]</span> Como en la distribución <em>Poisson</em>, <span class="math inline">\(Var(Y_i) = \mu_i\)</span>, se tiene que</p>
-<p><span class="math display">\[w_{ii} = \mu_i\]</span> y <span class="math inline">\(\widetilde{y} = \eta_i + (y_i - \mu_i)\frac{1}{\mu_i}\)</span></p>
-<p>De esta forma, el <strong>Algoritmo de Fisher-Scoring</strong> queda determinado por los siguientes pasos</p>
+<p><span class="math display">\[w_{ii} = \frac{\mu_i^2}{\mu_i} =\mu_i\]</span> y la variable ajustada <span class="math inline">\(\widetilde{y}\)</span> está dada por <span class="math display">\[\widetilde{y} = \eta_i + (y_i - \mu_i)\frac{\partial \eta_i}{\partial \mu_i} = \eta_i + (y_i - \mu_i)\frac{1}{\mu_i}\]</span></p>
+<p>De esta forma, el <strong>Algoritmo de Fisher-Scoring</strong> queda determinado por los siguientes pasos:</p>
 <ol type="1">
-<li><p>Iniciar el algoritmo con un valor inicial para <span class="math inline">\(\beta\)</span></p></li>
-<li><p>obtener <span class="math inline">\(\beta^{(k+1)}\)</span> a partir de <span class="math inline">\(\beta^{(k)}\)</span> usando la siguiente expresión</p></li>
+<li>Iniciar el algoritmo con un valor inicial para <span class="math inline">\(\beta\)</span>. Se usará una estimación inicial de <span class="math inline">\(\beta_0^{(0)}\)</span> usando la media global de <span class="math inline">\(y\)</span>.</li>
+</ol>
+<p><span class="math display">\[
+\beta_0^{(0)} = \log\left(\frac{1}{n}\sum_{i=1}^n y_i\right), \quad
+\beta_1^{(0)} = 0, \quad \cdots, \quad
+\beta_p^{(0)} = 0.
+\]</span></p>
+<ol start="2" type="1">
+<li>obtener <span class="math inline">\(\beta^{(k+1)}\)</span> a partir de <span class="math inline">\(\beta^{(k)}\)</span> usando la siguiente expresión</li>
 </ol>
 <p><span class="math display">\[\beta^{(k+1)} = \left(X^tW^{(k)}X\right)^{-1}X^tW^{(k)}\widetilde{y}\]</span></p>
 <ol start="3" type="1">
-<li>repetir <strong>(2)</strong> hasta satisfacer un criterio de convergencia.</li>
+<li>repetir <strong>(2)</strong> hasta satisfacer un criterio de convergencia. El criterio de convergencia que se usará en este caso es el siguiente</li>
 </ol>
+<p><span class="math display">\[\|\beta^{(k+1)} - \beta^{(k)}\| &lt; \epsilon, \quad \quad \epsilon=0.0000001\]</span></p>
 <p>A continuación se presenta el algoritmo para encontrar una aproximación de <span class="math inline">\(\beta\)</span> usando datos reales.</p>
-<p>Datos de jugadores de baloncesto de la temporada 2022-2023, los cuales incluyen la edad del jugador(AGE), tiempo en minutos jugado en la temporada (MIN), juegos participados(GP), tiros de campo hechos (FGM), tiros de campo intentados (FGA), tiros de campo hechos de 3 puntos (FG3M), tiros de campo intentados de 3 puntos (FGA), puntos realizados en la temporada (PTS).</p>
+
+<p>Datos de jugadores de baloncesto de la temporada 2022-2023, los cuales incluyen la edad del jugador (AGE), tiempo en minutos jugado en la temporada (MIN), juegos participados (GP), tiros de campo hechos (FGM), tiros de campo intentados (FGA), tiros de campo hechos de 3 puntos (FG3M), tiros de campo intentados de 3 puntos (FGA) y puntos realizados en la temporada (PTS).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>players <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"players_202223.xlsx"</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(AGE, MIN, GP, FGM, FGA, FG3M, FG3A, FTM, FTA, PTS)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -196,7 +208,7 @@ window.Quarto = {
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1040</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Creación de la función</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>fisher_scoring_poisson <span class="ot">&lt;-</span> <span class="cf">function</span>(y, X, beta_init, <span class="at">tol =</span> <span class="fl">1e-4</span>, <span class="at">max_iter =</span> <span class="dv">100</span>){</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>fisher_scoring_poisson <span class="ot">&lt;-</span> <span class="cf">function</span>(y, X, beta_init, <span class="at">tol =</span> <span class="fl">1e-7</span>, <span class="at">max_iter =</span> <span class="dv">100</span>){</span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">&lt;-</span> beta_init</span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>max_iter){</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    eta <span class="ot">&lt;-</span> X <span class="sc">%*%</span> beta</span>
@@ -221,118 +233,38 @@ window.Quarto = {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Ejecutamos</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>beta_est <span class="ot">&lt;-</span> <span class="fu">fisher_scoring_poisson</span>(<span class="at">y =</span> y, <span class="at">X =</span> X, </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">beta_init =</span> <span class="fu">rep</span>(<span class="fl">0.01</span>, <span class="fu">ncol</span>(X)),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">beta_init =</span> <span class="fu">c</span>(<span class="fu">log</span>(<span class="fu">mean</span>(y)), <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X)<span class="sc">-</span><span class="dv">1</span>)),</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">max_iter =</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Convergió en la iteración 66</code></pre>
+<pre><code>Convergió en la iteración 7</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>beta_est</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(beta_est) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(X)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>beta_est</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1]  4.1116424116  0.0076175147  0.0000747274  0.0181945865  0.0019076539
- [6]  0.0002784068  0.0036404818 -0.0011454886  0.0001737093  0.0002852445</code></pre>
+<pre><code>  (Intercept)         x1AGE         x1MIN          x1GP         x1FGM 
+ 4.1116424116  0.0076175147  0.0000747274  0.0181945865  0.0019076539 
+        x1FGA        x1FG3M        x1FG3A         x1FTM         x1FTA 
+ 0.0002784068  0.0036404818 -0.0011454886  0.0001737093  0.0002852445 </code></pre>
+</div>
+
+</div>
+<p>Estimación de los parámetros usando la función <code>glm</code> del paquete <code>stats</code></p>
+<div class="cell">
+
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>modelo_poisson <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> X <span class="sc">-</span> <span class="dv">1</span>, <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>modelo_poisson<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> X(Intercept)        Xx1AGE        Xx1MIN         Xx1GP        Xx1FGM 
+ 4.1116424116  0.0076175147  0.0000747274  0.0181945865  0.0019076539 
+       Xx1FGA       Xx1FG3M       Xx1FG3A        Xx1FTM        Xx1FTA 
+ 0.0002784068  0.0036404818 -0.0011454886  0.0001737093  0.0002852445 </code></pre>
+
 </div>
 </div>
 </section>
 <section id="regresión-binomial" class="level2">
 <h2 class="anchored" data-anchor-id="regresión-binomial">Regresión Binomial</h2>
-<ul>
-<li><p>Sean <span class="math inline">\(Y_1, Y_2, \cdots, Y_n\)</span> variables aleatorias independientes con distribución <em>Binomial</em>, tales que</p>
-<p><span class="math display">\[Y_i \sim Binomial(n_i, p_i) \quad i=1,2,\cdots,n.\]</span> donde <span class="math inline">\(n_i\)</span> es el número de ensayos (conocido) para la observación <span class="math inline">\(i\)</span>, y <span class="math inline">\(p_i\)</span> es la probabilidad de éxito. La variable <span class="math inline">\(Y_i\)</span> representa el número de éxitos en los <span class="math inline">\(n_i\)</span> ensayos.</p></li>
-<li><p>La media de <span class="math inline">\(Y_i\)</span> es <span class="math inline">\(\mu_i = E[Y_i] = n_i p_i\)</span>.</p></li>
-<li><p>La función de enlace canónica (y más común) para la probabilidad <span class="math inline">\(p_i\)</span> es la <strong>logit</strong>:</p>
-<p><span class="math display">\[\eta_i = logit(p_i) = \ln\left(\frac{p_i}{1-p_i}\right)\]</span> donde <span class="math inline">\(\eta_i\)</span> es el predictor lineal: <span class="math display">\[\eta_i = \beta_0 + \beta_1X_{i1} + \beta_2X_{i2} + \cdots + \beta_pX_{ip} = x_i^T \beta\]</span></p></li>
-<li><p>La relación inversa, que expresa la probabilidad <span class="math inline">\(p_i\)</span> en función del predictor lineal, es la <strong>función logística</strong>: <span class="math display">\[p_i = \frac{e^{\eta_i}}{1+e^{\eta_i}}\]</span> Y por lo tanto, la media <span class="math inline">\(\mu_i\)</span> se relaciona con <span class="math inline">\(\eta_i\)</span> a través de: <span class="math display">\[\mu_i = n_i p_i = n_i \frac{e^{\eta_i}}{1+e^{\eta_i}}\]</span></p></li>
-<li><p>La función de log-verosimilitud (ignorando términos constantes como <span class="math inline">\(\ln\binom{n_i}{y_i}\)</span>) es: <span class="math display">\[
-\begin{align*}
-\mathcal{l}(\beta) &amp;= \sum_{i=1}^n \left[y_i\ln(p_i) + (n_i - y_i)\ln(1-p_i)\right]\\
-&amp;= \sum_{i=1}^n \left[y_i \eta_i - n_i \ln(1+e^{\eta_i})\right] \\
-&amp;= \sum_{i=1}^n \left[y_i (x_i^T \beta) - n_i \ln(1+\exp(x_i^T \beta))\right]
-\end{align*}
-\]</span></p></li>
-<li><p>La <strong>función score</strong> (vector de primeras derivadas) se puede derivar y resulta ser: <span class="math display">\[\frac{\partial \mathcal{l}(\beta)}{\partial \beta} = \sum_{i=1}^n (y_i - n_i p_i)x_i = \sum_{i=1}^n (y_i - \mu_i)x_i = X^t(y - \mu)\]</span></p></li>
-<li><p>La <strong>Matriz de Información de Fisher</strong> es <span class="math inline">\(I(\beta) = X^tWX\)</span>, donde <span class="math inline">\(W\)</span> es una matriz diagonal. Para calcular los elementos <span class="math inline">\(w_{ii}\)</span> de <span class="math inline">\(W\)</span>, necesitamos la varianza <span class="math inline">\(Var(Y_i)\)</span> y la derivada <span class="math inline">\(d\mu_i / d\eta_i\)</span>: <span class="math display">\[Var(Y_i) = n_i p_i (1-p_i)\]</span> <span class="math display">\[\frac{\partial \mu_i}{\partial \eta_i} = \frac{\partial (n_i p_i)}{\partial \eta_i} = n_i \frac{\partial p_i}{\partial \eta_i} = n_i \frac{e^{\eta_i}}{(1+e^{\eta_i})^2} = n_i p_i (1-p_i)\]</span> Entonces, los pesos son: <span class="math display">\[w_{ii} = \frac{\left(\frac{\partial \mu_i}{\partial \eta_i}\right)^2}{Var(y_i)} = \frac{(n_i p_i (1-p_i))^2}{n_i p_i (1-p_i)} = n_i p_i (1-p_i)\]</span></p></li>
-<li><p>Nuestro <span class="math inline">\(\widetilde{y}\)</span> para el algoritmo Fisher Scoring es: <span class="math display">\[\widetilde{y} = \eta_i + (y_i - \mu_i)\frac{\partial \eta_i}{\partial \mu_i}\]</span> Dado que <span class="math inline">\(\frac{\partial \eta_i}{\partial \mu_i} = \left(\frac{\partial \mu_i}{\partial \eta_i}\right)^{-1} = \frac{1}{n_i p_i (1-p_i)}\)</span>, tenemos: <span class="math display">\[\widetilde{y} = \eta_i + \frac{y_i - \mu_i}{n_i p_i (1-p_i)}\]</span></p></li>
-<li><p>El <strong>Algoritmo de Fisher-Scoring</strong> para la regresión binomial (logit) es:</p>
-<ol type="1">
-<li>Iniciar con un valor <span class="math inline">\(\beta^{(0)}\)</span>.</li>
-<li>Obtener <span class="math inline">\(\beta^{(k+1)}\)</span> a partir de <span class="math inline">\(\beta^{(k)}\)</span> usando:
-<ol type="a">
-<li>Calcular <span class="math inline">\(\eta^{(k)} = X \beta^{(k)}\)</span>.</li>
-<li>Calcular <span class="math inline">\(p^{(k)}_i = 1 / (1 + \exp(-\eta^{(k)}_i))\)</span>.</li>
-<li>Calcular <span class="math inline">\(\mu^{(k)}_i = n_i p^{(k)}_i\)</span>.</li>
-<li>Calcular pesos <span class="math inline">\(w^{(k)}_{ii} = n_i p^{(k)}_i (1-p^{(k)}_i)\)</span>. Formar <span class="math inline">\(W^{(k)}\)</span>.</li>
-<li>Calcular <span class="math inline">\(\widetilde{y}^{(k)}_i = \eta^{(k)}_i + (y_i - \mu^{(k)}_i) / w^{(k)}_{ii}\)</span>. Formar <span class="math inline">\(\widetilde{y}^{(k)}\)</span>.</li>
-<li>Actualizar <span class="math inline">\(\beta^{(k+1)} = \left(X^tW^{(k)}X\right)^{-1}X^tW^{(k)}\widetilde{y}^{(k)}\)</span>.</li>
-</ol></li>
-<li>Repetir el paso (2) hasta la convergencia.</li>
-</ol></li>
-</ul>
-<p>A continuación, adaptaremos el algoritmo para un caso binomial usando datos generados por simulación.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Población binomial</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Parámetros</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1040</span>)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulación de datos</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>xbin <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">10</span>)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>X2 <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> xbin)  <span class="co"># Incluye intercepto automáticamente</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>eta <span class="ot">&lt;-</span> X2 <span class="sc">%*%</span> beta</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dataset simulado</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>pi <span class="ot">&lt;-</span> <span class="fu">exp</span>(eta)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(eta))</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>yb <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  yb[i] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>,<span class="at">size =</span> <span class="dv">1</span>,<span class="at">prob =</span> pi[i])</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>data_bin <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">y =</span> yb, <span class="at">x =</span> xbin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creación de la función</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>fisher_scoring_binomial <span class="ot">&lt;-</span> <span class="cf">function</span>(y, X, beta_init, <span class="at">tol =</span> <span class="fl">1e-5</span>, <span class="at">max_iter =</span> <span class="dv">100</span>) {</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">&lt;-</span> beta_init</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>max_iter) {</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    eta <span class="ot">&lt;-</span> X <span class="sc">%*%</span> beta</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    eta <span class="ot">&lt;-</span> <span class="fu">pmin</span>(eta, <span class="dv">700</span>)</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    eta <span class="ot">&lt;-</span> <span class="fu">pmax</span>(eta, <span class="sc">-</span><span class="dv">700</span>)</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    pi <span class="ot">&lt;-</span> <span class="fu">exp</span>(eta) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(eta))</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    W <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="fu">as.vector</span>(pi <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi)))</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    z <span class="ot">&lt;-</span> eta <span class="sc">+</span> (y <span class="sc">-</span> pi) <span class="sc">/</span> (pi <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi))</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    beta_new <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> W <span class="sc">%*%</span> X) <span class="sc">%*%</span> (<span class="fu">t</span>(X) <span class="sc">%*%</span> W <span class="sc">%*%</span> z)</span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    }, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">"Fallo al invertir la matriz. ¿X tiene multicolinealidad?"</span>)</span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">max</span>(<span class="fu">abs</span>(beta_new <span class="sc">-</span> beta), <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">&lt;</span> tol) {</span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">message</span>(<span class="st">"Convergió en iteración "</span>, iter)</span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">as.vector</span>(beta_new))</span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>    beta <span class="ot">&lt;-</span> beta_new</span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"No convergió"</span>)</span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">as.vector</span>(beta))</span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>beta_binomial <span class="ot">&lt;-</span> <span class="fu">fisher_scoring_binomial</span>(<span class="at">y =</span> yb, <span class="at">X =</span> X2, </span>
-<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">beta_init =</span> <span class="fu">rep</span>(<span class="fl">0.01</span>, <span class="fu">ncol</span>(X2)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Convergió en iteración 7</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>beta_binomial</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.6978429 0.4927746</code></pre>
-</div>
-</div>
 </section>
 
 </main>
