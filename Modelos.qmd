@@ -298,5 +298,5 @@ beta_binomial <- fisher_scoring_binomial(y = yb, X = X2,
                                          beta_init = rep(0.01, ncol(X2)))
 
 beta_binomial
-
+```
 
