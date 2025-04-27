@@ -22,20 +22,24 @@ library(readxl)
 - Sean $Y_1, Y_2, \cdots, Y_n$ variables aleatorias independientes con distribución *Poisson*, tales que
 
 $$Y_i \sim Poisson(\mu_i) \quad i=1,2,\cdots,n.$$
-Sabemos que en la distribución *Poisson*, el parámetro canónico está dado por $\theta_i = log(\mu_i)$. Además el predictor lineal está dado por
+Sabemos que en la distribución *Poisson*, el parámetro canónico está dado por $\theta_i = \ln(\mu_i)$.
+
+En el contexto de un modelo de regresión, el predictor lineal $\eta_i$ está dado por
 
 $$\eta_i = \beta_0 + \beta_1X_1 + \beta_2X_2 + \cdots + \beta_pX_p,$$
 y la relación entre el predictor $\eta_i$ y la media $\mu_i$ está dada por 
-$$\eta_i = \ln(\mu_i) \Rightarrow \mu_i = \exp(\eta_i)$$.
+
+$$\eta_i = \ln(\mu_i) \Rightarrow \mu_i = \exp(\eta_i).$$
 
 La función de log-verosimilitud es como sigue
 
 $$
 \begin{align*}
 \mathcal{l}(\beta) &= \sum_{i=1}^n \left[y_i\ln(\mu_i) - \mu_i - \ln(y_i!)\right]\\
-&= \sum_{i=1}^n \left[y_i x_i^t \beta - \exp(x_i^t \beta) - \ln(y_i\!)\right]
+&= \sum_{i=1}^n \left[y_i x_i^t \beta - \exp(x_i^t \beta) - \ln(y_i!)\right]
 \end{align*}
 $$
+
 La **función score** (vector de primeras derivadas) está dado por
 
 $$\frac{\partial \mathcal{l}(\beta)}{\partial \beta} = \sum_{i=1}^n (y_i - \mu_i)x_i.$$
@@ -48,22 +52,30 @@ $$W = diag\left(\frac{\left(\frac{\partial \mu_i}{\partial \eta_i}\right)^2}{Var
 $$\frac{\partial \mu_i}{\partial \eta_i} = \mu_i, \quad \quad \quad \frac{\partial \eta_i}{\partial \mu_i} = \frac{1}{\mu_i}$$
 Como en la distribución *Poisson*, $Var(Y_i) = \mu_i$, se tiene que
 
-$$w_{ii} = \mu_i$$
-y $\widetilde{y} = \eta_i + (y_i - \mu_i)\frac{1}{\mu_i}$
+$$w_{ii} = \frac{\mu_i^2}{\mu_i} =\mu_i$$
+y la variable ajustada $\widetilde{y}$ está dada por $$\widetilde{y} = \eta_i + (y_i - \mu_i)\frac{\partial \eta_i}{\partial \mu_i} = \eta_i + (y_i - \mu_i)\frac{1}{\mu_i}$$
 
-De esta forma, el **Algoritmo de Fisher-Scoring** queda determinado por los siguientes pasos
+De esta forma, el **Algoritmo de Fisher-Scoring** queda determinado por los siguientes pasos:
 
-1) Iniciar el algoritmo con un valor inicial para $\beta$
+1) Iniciar el algoritmo con un valor inicial para $\beta$. Se usará una estimación inicial de $\beta_0^{(0)}$ usando la media global de $y$.
+
+$$
+\beta_0^{(0)} = \log\left(\frac{1}{n}\sum_{i=1}^n y_i\right), \quad
+\beta_1^{(0)} = 0, \quad \cdots, \quad
+\beta_p^{(0)} = 0.
+$$
 
 2) obtener $\beta^{(k+1)}$ a partir de $\beta^{(k)}$ usando la siguiente expresión
 
 $$\beta^{(k+1)} = \left(X^tW^{(k)}X\right)^{-1}X^tW^{(k)}\widetilde{y}$$
 
-3) repetir **(2)** hasta satisfacer un criterio de convergencia.
+3) repetir **(2)** hasta satisfacer un criterio de convergencia. El criterio de convergencia que se usará en este caso es el siguiente
+
+$$\|\beta^{(k+1)} - \beta^{(k)}\| < \epsilon, \quad \quad \epsilon=0.0000001$$
 
 A continuación se presenta el algoritmo para encontrar una aproximación de $\beta$ usando datos reales.
 
-Datos de jugadores de baloncesto de la temporada 2022-2023, los cuales incluyen la edad del jugador(AGE), tiempo en minutos jugado en la temporada (MIN), juegos participados(GP), tiros de campo hechos (FGM), tiros de campo intentados (FGA), tiros de campo hechos de 3 puntos (FG3M), tiros de campo intentados de 3 puntos (FGA), puntos realizados en la temporada (PTS).
+Datos de jugadores de baloncesto de la temporada 2022-2023, los cuales incluyen la edad del jugador (AGE), tiempo en minutos jugado en la temporada (MIN), juegos participados (GP), tiros de campo hechos (FGM), tiros de campo intentados (FGA), tiros de campo hechos de 3 puntos (FG3M), tiros de campo intentados de 3 puntos (FGA) y puntos realizados en la temporada (PTS).
 
 ```{r}
 players <- read_excel("players_202223.xlsx") %>% 
@@ -99,7 +111,7 @@ y <- players$PTS
 set.seed(1040)
 
 # Creación de la función
-fisher_scoring_poisson <- function(y, X, beta_init, tol = 1e-4, max_iter = 100){
+fisher_scoring_poisson <- function(y, X, beta_init, tol = 1e-7, max_iter = 100){
   beta <- beta_init
   for (iter in 1:max_iter){
     eta <- X %*% beta
@@ -125,9 +137,18 @@ fisher_scoring_poisson <- function(y, X, beta_init, tol = 1e-4, max_iter = 100){
 ```{r}
 ## Ejecutamos
 beta_est <- fisher_scoring_poisson(y = y, X = X, 
-                                   beta_init = rep(0.01, ncol(X)),
+                                   beta_init = c(log(mean(y)), rep(0, ncol(X)-1)),
                                    max_iter = 100)
+names(beta_est) <- colnames(X)
 beta_est
+```
+
+Estimación de los parámetros usando la función `glm` del paquete `stats`
+
+```{r}
+modelo_poisson <- glm(y ~ X - 1, family = poisson(link = "log"))
+
+modelo_poisson$coefficients
 ```
 
 ## Regresión Binomial
