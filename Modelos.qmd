@@ -75,12 +75,34 @@ $$\|\beta^{(k+1)} - \beta^{(k)}\| < \epsilon, \quad \quad \epsilon=0.0000001$$
 
 A continuación se presenta el algoritmo para encontrar una aproximación de $\beta$ usando datos reales.
 
+
 Datos de jugadores de baloncesto de la temporada 2022-2023, los cuales incluyen la edad del jugador (AGE), tiempo en minutos jugado en la temporada (MIN), juegos participados (GP), tiros de campo hechos (FGM), tiros de campo intentados (FGA), tiros de campo hechos de 3 puntos (FG3M), tiros de campo intentados de 3 puntos (FGA) y puntos realizados en la temporada (PTS).
+
 
 ```{r}
 players <- read_excel("players_202223.xlsx") %>% 
   select(AGE, MIN, GP, FGM, FGA, FG3M, FG3A, FTM, FTA, PTS)
+
 ```
+
+```{r}
+#| message: false
+#| out-width: 100%
+
+players %>%
+  ggpairs(
+    upper = list(continuous = wrap("cor", size = 3)),
+    diag = list(continuous = wrap("barDiag", colour = "burlywood")),
+    lower = list(continuous = wrap("points", alpha = 0.5, shape = 20, 
+                                   fill = "lightblue")),
+    axisLabels = "none")
+```
+
+En la matriz de dispersión realizada se usó el coeficiente de correlación de Pearson, el cuál nos muestra que la mayoría de las variables tienen una alta correlación lineal con la variable respuesta, puntos realizados en la temporada (PTS). 
+
+Se puede evidenciar que entre las variables tambien se presentan algunas correlaciones casi perfectas, como se presentan entre las variables FGM y FGA, FG3M y FG3A, y FTM y FTA, lo cual tiene sentido ya que los pares de variables mencionadas deberían estar relacionadas entre sí, ya que a nivel general una variable es el número de intentos totales de tiros, mientras que la otra es cuántos de esos tiros lograron ser encestados.
+
+Por otro lado se logra ver una baja correlación lineal entre la variable AGE y el resto de variables, incluyendo la variable respuesta PTS, además de esto en los gráficos de dispersión no se puede evidenciar ningún tipo de correlación entre las variables mencionadas, puesto que los datos son bastante dispersos.
 
 ```{r}
 #| message: false
@@ -111,7 +133,9 @@ y <- players$PTS
 set.seed(1040)
 
 # Creación de la función
+
 fisher_scoring_poisson <- function(y, X, beta_init, tol = 1e-7, max_iter = 100){
+
   beta <- beta_init
   for (iter in 1:max_iter){
     eta <- X %*% beta
@@ -137,6 +161,7 @@ fisher_scoring_poisson <- function(y, X, beta_init, tol = 1e-7, max_iter = 100){
 ```{r}
 ## Ejecutamos
 beta_est <- fisher_scoring_poisson(y = y, X = X, 
+
                                    beta_init = c(log(mean(y)), rep(0, ncol(X)-1)),
                                    max_iter = 100)
 names(beta_est) <- colnames(X)
@@ -149,6 +174,129 @@ Estimación de los parámetros usando la función `glm` del paquete `stats`
 modelo_poisson <- glm(y ~ X - 1, family = poisson(link = "log"))
 
 modelo_poisson$coefficients
+
 ```
 
 ## Regresión Binomial
+
+-   Sean $Y_1, Y_2, \cdots, Y_n$ variables aleatorias independientes con distribución *Binomial*, tales que
+
+    $$Y_i \sim Binomial(n_i, p_i) \quad i=1,2,\cdots,n.$$
+    donde $n_i$ es el número de ensayos (conocido) para la observación $i$, y $p_i$ es la probabilidad de éxito. La variable $Y_i$ representa el número de éxitos en los $n_i$ ensayos.
+
+-   La media de $Y_i$ es $\mu_i = E[Y_i] = n_i p_i$.
+
+-   La función de enlace canónica (y más común) para la probabilidad $p_i$ es la **logit**:
+
+    $$\eta_i = logit(p_i) = \ln\left(\frac{p_i}{1-p_i}\right)$$
+    donde $\eta_i$ es el predictor lineal:
+    $$\eta_i = \beta_0 + \beta_1X_{i1} + \beta_2X_{i2} + \cdots + \beta_pX_{ip} = x_i^T \beta$$
+
+-   La relación inversa, que expresa la probabilidad $p_i$ en función del predictor lineal, es la **función logística**:
+    $$p_i = \frac{e^{\eta_i}}{1+e^{\eta_i}}$$
+    Y por lo tanto, la media $\mu_i$ se relaciona con $\eta_i$ a través de:
+    $$\mu_i = n_i p_i = n_i \frac{e^{\eta_i}}{1+e^{\eta_i}}$$
+
+-   La función de log-verosimilitud (ignorando términos constantes como $\ln\binom{n_i}{y_i}$) es:
+    $$
+    \begin{align*}
+    \mathcal{l}(\beta) &= \sum_{i=1}^n \left[y_i\ln(p_i) + (n_i - y_i)\ln(1-p_i)\right]\\
+    &= \sum_{i=1}^n \left[y_i \eta_i - n_i \ln(1+e^{\eta_i})\right] \\
+    &= \sum_{i=1}^n \left[y_i (x_i^T \beta) - n_i \ln(1+\exp(x_i^T \beta))\right]
+    \end{align*}
+    $$
+
+-   La **función score** (vector de primeras derivadas) se puede derivar y resulta ser:
+    $$\frac{\partial \mathcal{l}(\beta)}{\partial \beta} = \sum_{i=1}^n (y_i - n_i p_i)x_i = \sum_{i=1}^n (y_i - \mu_i)x_i = X^t(y - \mu)$$
+
+-   La **Matriz de Información de Fisher** es $I(\beta) = X^tWX$, donde $W$ es una matriz diagonal. Para calcular los elementos $w_{ii}$ de $W$, necesitamos la varianza $Var(Y_i)$ y la derivada $d\mu_i / d\eta_i$:
+    $$Var(Y_i) = n_i p_i (1-p_i)$$
+    $$\frac{\partial \mu_i}{\partial \eta_i} = \frac{\partial (n_i p_i)}{\partial \eta_i} = n_i \frac{\partial p_i}{\partial \eta_i} = n_i \frac{e^{\eta_i}}{(1+e^{\eta_i})^2} = n_i p_i (1-p_i)$$
+    Entonces, los pesos son:
+    $$w_{ii} = \frac{\left(\frac{\partial \mu_i}{\partial \eta_i}\right)^2}{Var(y_i)} = \frac{(n_i p_i (1-p_i))^2}{n_i p_i (1-p_i)} = n_i p_i (1-p_i)$$
+
+-   Nuestro $\widetilde{y}$ para el algoritmo Fisher Scoring es:
+    $$\widetilde{y} = \eta_i + (y_i - \mu_i)\frac{\partial \eta_i}{\partial \mu_i}$$
+    Dado que $\frac{\partial \eta_i}{\partial \mu_i} = \left(\frac{\partial \mu_i}{\partial \eta_i}\right)^{-1} = \frac{1}{n_i p_i (1-p_i)}$, tenemos:
+    $$\widetilde{y} = \eta_i + \frac{y_i - \mu_i}{n_i p_i (1-p_i)}$$
+
+-   El **Algoritmo de Fisher-Scoring** para la regresión binomial (logit) es:
+    1.  Iniciar con un valor $\beta^{(0)}$.
+    2.  Obtener $\beta^{(k+1)}$ a partir de $\beta^{(k)}$ usando:
+        a.  Calcular $\eta^{(k)} = X \beta^{(k)}$.
+        b.  Calcular $p^{(k)}_i = 1 / (1 + \exp(-\eta^{(k)}_i))$.
+        c.  Calcular $\mu^{(k)}_i = n_i p^{(k)}_i$.
+        d.  Calcular pesos $w^{(k)}_{ii} = n_i p^{(k)}_i (1-p^{(k)}_i)$. Formar $W^{(k)}$.
+        e.  Calcular $\widetilde{y}^{(k)}_i = \eta^{(k)}_i + (y_i - \mu^{(k)}_i) / w^{(k)}_{ii}$. Formar $\widetilde{y}^{(k)}$.
+        f.  Actualizar $\beta^{(k+1)} = \left(X^tW^{(k)}X\right)^{-1}X^tW^{(k)}\widetilde{y}^{(k)}$.
+    3.  Repetir el paso (2) hasta la convergencia.
+
+A continuación, adaptaremos el algoritmo para un caso binomial usando datos generados por simulación.
+
+```{r}
+## Población binomial
+# Parámetros
+set.seed(1040)
+n <- 100
+beta <- c(1, 0.5)
+```
+
+
+```{r}
+# Simulación de datos
+xbin <- runif(n, min = 0, max = 10)
+X2 <- model.matrix(~ xbin)  # Incluye intercepto automáticamente
+eta <- X2 %*% beta
+```
+
+
+```{r}
+# Dataset simulado
+pi <- exp(eta)/(1+exp(eta))
+yb <- c()
+for (i in 1:n) {
+  yb[i] <- rbinom(1,size = 1,prob = pi[i])
+}
+
+data_bin <- tibble(y = yb, x = xbin)
+```
+
+
+```{r}
+# Creación de la función
+fisher_scoring_binomial <- function(y, X, beta_init, tol = 1e-5, max_iter = 100) {
+  beta <- beta_init
+  for (iter in 1:max_iter) {
+    eta <- X %*% beta
+    eta <- pmin(eta, 700)
+    eta <- pmax(eta, -700)
+    
+    pi <- exp(eta) / (1 + exp(eta))
+    
+    W <- diag(as.vector(pi * (1 - pi)))
+    
+    z <- eta + (y - pi) / (pi * (1 - pi))
+    
+    beta_new <- tryCatch({
+      solve(t(X) %*% W %*% X) %*% (t(X) %*% W %*% z)
+    }, error = function(e) {
+      stop("Fallo al invertir la matriz. ¿X tiene multicolinealidad?")
+    })
+    
+    if (max(abs(beta_new - beta), na.rm = TRUE) < tol) {
+      message("Convergió en iteración ", iter)
+      return(as.vector(beta_new))
+    }
+    
+    beta <- beta_new
+  }
+  warning("No convergió")
+  return(as.vector(beta))
+}
+
+beta_binomial <- fisher_scoring_binomial(y = yb, X = X2, 
+                                         beta_init = rep(0.01, ncol(X2)))
+
+beta_binomial
+
+
