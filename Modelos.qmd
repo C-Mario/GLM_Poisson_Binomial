@@ -1,5 +1,5 @@
 ---
-title: "Fishe3r Scoringdd Algorithm ajustado2"
+title: "Fisher Scoring Algorithm"
 format: html
 ---
 
@@ -127,3 +127,30 @@ beta_est <- fisher_scoring_poisson(y = Y,X = X,beta_init = rep(0.01, ncol(X)),
 beta_est
 ```
 
+```{r}
+## Con pquete de R
+modelo_poisson <- glm(PTS ~ ., family = poisson(link = "log"), data = players)
+summary(modelo_poisson)
+```
+::: {=latex}
+En la siguiente tabla podemos ver los resultados de ambas funciones:
+\begin{longtable}{|c|c|}
+
+\caption{Comparación} \label{tabla:poisson-comparación} \\ 
+\hline
+\textbf{fisher_scoring_poisson} & \textbf{glm}  \\
+\hline
+$\hat{\beta_{0}}= 4.111$ &  $\hat{\beta_{0}}= 4.112$ \\
+\hline
+$\hat{\beta_{1}}= 0.007617$ & $\hat{\beta_{1}}= 0.007618$ \\
+$\hat{\beta_{2}}= 0.00007472$ & $\hat{\beta_{2}}= 0.00007473$\\
+$\hat{\beta_{3}}= 0.01819$ & $\hat{\beta_{3}}= 0.01819$\\
+$\hat{\beta_{4}}= 0.001907$ & $\hat{\beta_{4}}= 0.001908$\\
+$\hat{\beta_{5}}= 0.0002784$ & $\hat{\beta_{5}}= 0.0002784$\\
+$\hat{\beta_{6}}= 0.003640$ & $\hat{\beta_{6}}= 0.003640$\\
+$\hat{\beta_{7}}= -0.001145$ & $\hat{\beta_{7}}= -0.001145$\\
+$\hat{\beta_{8}}= 0.0001737$ & $\hat{\beta_{8}}= 0.0001737$\\
+$\hat{\beta_{9}}= 0.0002852$ & $\hat{\beta_{9}}= 0.0002852$\\
+\hline
+\end{longtable}
+:::

@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="quarto-0.9.80">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Fishe3r Scoringdd Algorithm ajustado2</title>
+  <title>Fisher Scoring Algorithm</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -97,7 +97,7 @@
 <main class="content" id="quarto-document-content">
 <header id="title-block-header" class="quarto-title-block default">
 
-<div class="quarto-title"><h1 class="title display-7">Fishe3r Scoringdd Algorithm ajustado2</h1></div></header>
+<div class="quarto-title"><h1 class="title display-7">Fisher Scoring Algorithm</h1></div></header>
 <div class="cell">
 <div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -111,7 +111,7 @@
 <pre><code>package 'GGally' successfully unpacked and MD5 sums checked
 
 The downloaded binary packages are in
-    C:\Users\DELL\AppData\Local\Temp\Rtmp0CDIzn\downloaded_packages</code></pre>
+    C:\Users\DELL\AppData\Local\Temp\RtmpSA8B88\downloaded_packages</code></pre>
 </div>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GGally)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-stderr">
@@ -198,7 +198,9 @@ Adjuntando el paquete: 'dplyr'</code></pre>
 <p><img src="Modelos_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>En la matriz de dispersión realizada se uso el coeficiente de correlación de Pearson, el cuál nos muestra que la mayoría de las variables tienen una alta correlación con la que será la variable respuesta, puntos realizados en la temporada (PTS).</p>
+<p>En la matriz de dispersión realizada se uso el coeficiente de correlación de Pearson, el cuál nos muestra que la mayoría de las variables tienen una alta correlación lineal con la que será la variable respuesta, puntos realizados en la temporada (PTS).</p>
+<p>Se puede evidenciar que entre las variables tambien se presentan algunas correlaciones casi perfectas, como se presentan entre las variables FGM y FGA, FG3M y FG3A, y FTM y FTA, lo cual tiene sentido ya que los pares de variables mencionadas deberían relacionadas entre sí, ya que a nivel general una variable es el número de intentos totales de tiros, mientras que la otra es cuántos de esos tiros lograron ser encestados.</p>
+<p>Por otro lado se logra ver una baja correlación lineal entre la variable AGE y el resto de variables, incluyendo la variable respuesta PTS, además de esto en los gráficos de dispersión no se puede evidenciar ningún tipo de correlación entre las variables mencionadas, puesto que los datos son bastante dispersos.</p>
 <div class="cell">
 <div class="sourceCode" id="cb16"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(players <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="fu">last_col</span>()))</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span>x1)</span>
@@ -244,6 +246,42 @@ Adjuntando el paquete: 'dplyr'</code></pre>
 <pre><code> [1]  4.1116424116  0.0076175147  0.0000747274  0.0181945865  0.0019076539
  [6]  0.0002784068  0.0036404818 -0.0011454886  0.0001737093  0.0002852445</code></pre>
 </div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb22"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Con pquete de R</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>modelo_poisson <span class="ot">&lt;-</span> <span class="fu">glm</span>(PTS <span class="sc">~</span> ., <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>), <span class="at">data =</span> players)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_poisson)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = PTS ~ ., family = poisson(link = "log"), data = players)
+
+Coefficients:
+              Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)  4.112e+00  1.573e-02 261.348  &lt; 2e-16 ***
+AGE          7.618e-03  4.750e-04  16.039  &lt; 2e-16 ***
+MIN          7.473e-05  8.854e-06   8.440  &lt; 2e-16 ***
+GP           1.819e-02  2.316e-04  78.567  &lt; 2e-16 ***
+FGM          1.908e-03  7.836e-05  24.344  &lt; 2e-16 ***
+FGA          2.784e-04  4.481e-05   6.212 5.22e-10 ***
+FG3M         3.640e-03  2.317e-04  15.710  &lt; 2e-16 ***
+FG3A        -1.145e-03  1.008e-04 -11.364  &lt; 2e-16 ***
+FTM          1.737e-04  9.717e-05   1.788 0.073821 .  
+FTA          2.852e-04  8.409e-05   3.392 0.000693 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 251144  on 538  degrees of freedom
+Residual deviance:  23314  on 529  degrees of freedom
+AIC: 27278
+
+Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+</div>
+<div class="{=latex}">
+En la siguiente tabla podemos ver los resultados de ambas funciones:
 </div>
 </section>
 </main>
