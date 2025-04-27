@@ -8,6 +8,9 @@ rm(list = ls())
 ```
 
 ```{r}
+install.packages("GGally", repos = "http://cran.r-project.org")
+library(GGally)
+library(ggplot2)
 library(dplyr)
 library(readxl)
 ```
@@ -58,13 +61,24 @@ $$\beta^{(k+1)} = \left(X^tW^{(k)}X\right)^{-1}X^tW^{(k)}\widetilde{y}$$
 
 A continuación se presenta el algoritmo para encontrar una aproximación de $\beta$ usando datos reales.
 
-Datos de jugadores de baloncesto.
+Datos de jugadores de baloncesto de la temporada 2022-2023, los cuales incluyen la edad del jugador(AGE), tiempo en minutos jugado en la temporada (MIN), juegos participados(GP), tiros de campo hechos (FGM), tiros de campo intentados (FGA), tiros de campo hechos de 3 puntos (FG3M), tiros de campo intentados de 3 puntos (FGA), puntos realizados en la temporada (PTS).
 
 ```{r}
 players <- read_excel("players_202223.xlsx") %>% 
   select(AGE,MIN,GP,FGM,FGA,FG3M,FG3A,FTM,FTA,PTS)
 players %>% View()
 ```
+```{r}
+players %>%
+  ggpairs(
+    upper = list(continuous = wrap("cor", size = 3)),
+    diag = list(continuous = wrap("barDiag", colour = "burlywood")),
+    lower = list(continuous = wrap("points", alpha = 0.5, shape = 23, 
+                                   fill = "lightblue"))
+  )
+```
+En la matriz de dispersión realizada se uso el coeficiente de correlación de Pearson, el cuál nos muestra que la mayoría de las variables tienen una alta correlación con la que será la variable respuesta, puntos realizados en la temporada (PTS).
+
 
 ```{r}
 x1 <- as.matrix(players %>% select(-last_col()))
