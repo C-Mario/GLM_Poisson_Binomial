@@ -147,6 +147,7 @@
 </ol>
 <p><span class="math display">\[\|\beta^{(k+1)} - \beta^{(k)}\| &lt; \epsilon, \quad \quad \epsilon=0.0000001\]</span></p>
 <p>A continuación se presenta el algoritmo para encontrar una aproximación de <span class="math inline">\(\beta\)</span> usando datos reales.</p>
+
 <p>Datos de jugadores de baloncesto de la temporada 2022-2023, los cuales incluyen la edad del jugador (AGE), tiempo en minutos jugado en la temporada (MIN), juegos participados (GP), tiros de campo hechos (FGM), tiros de campo intentados (FGA), tiros de campo hechos de 3 puntos (FG3M), tiros de campo intentados de 3 puntos (FGA) y puntos realizados en la temporada (PTS).</p>
 <div class="cell">
 <div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>players <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"players_202223.xlsx"</span>) <span class="sc">%&gt;%</span> </span>
@@ -214,6 +215,7 @@
         x1FGA        x1FG3M        x1FG3A         x1FTM         x1FTA 
  0.0002784068  0.0036404818 -0.0011454886  0.0001737093  0.0002852445 </code></pre>
 </div>
+
 </div>
 <p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD ::: {.cell}</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Con pquete de R</span></span>
@@ -300,14 +302,23 @@ Number of Fisher Scoring iterations: 5</code></pre>
 </table>
 <p>Estimación de los parámetros usando la función <code>glm</code> del paquete <code>stats</code></p>
 <div class="cell">
+<<<<<<< HEAD
 <div class="sourceCode" id="cb13"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>modelo_poisson <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> X <span class="sc">-</span> <span class="dv">1</span>, <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>))</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>modelo_poisson<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-stdout">
+=======
+
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>modelo_poisson <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> X <span class="sc">-</span> <span class="dv">1</span>, <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>modelo_poisson<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+>>>>>>> ff120f0dc18f1583ae87376ecf6366d55b434b56
 <pre><code> X(Intercept)        Xx1AGE        Xx1MIN         Xx1GP        Xx1FGM 
  4.1116424116  0.0076175147  0.0000747274  0.0181945865  0.0019076539 
        Xx1FGA       Xx1FG3M       Xx1FG3A        Xx1FTM        Xx1FTA 
  0.0002784068  0.0036404818 -0.0011454886  0.0001737093  0.0002852445 </code></pre>
+
 </div>
 </div>
 </section>
