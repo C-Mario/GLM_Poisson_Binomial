@@ -86,9 +86,6 @@ players <- read_excel("players_202223.xlsx") %>%
 ```
 
 ```{r}
-#| message: false
-#| out-width: 100%
-
 players %>%
   ggpairs(
     upper = list(continuous = wrap("cor", size = 3)),
@@ -104,24 +101,6 @@ Se puede evidenciar que entre las variables tambien se presentan algunas correla
 
 Por otro lado se logra ver una baja correlación lineal entre la variable AGE y el resto de variables, incluyendo la variable respuesta PTS, además de esto en los gráficos de dispersión no se puede evidenciar ningún tipo de correlación entre las variables mencionadas, puesto que los datos son bastante dispersos.
 
-```{r}
-#| message: false
-#| out-width: 100%
-
-players %>%
-  ggpairs(
-    upper = list(continuous = wrap("cor", size = 3)),
-    diag = list(continuous = wrap("barDiag", colour = "burlywood")),
-    lower = list(continuous = wrap("points", alpha = 0.5, shape = 20, 
-                                   fill = "lightblue")),
-    axisLabels = "none")
-```
-
-En la matriz de dispersión realizada se usó el coeficiente de correlación de Pearson, el cuál nos muestra que la mayoría de las variables tienen una alta correlación lineal con la variable respuesta, puntos realizados en la temporada (PTS). 
-
-Se puede evidenciar que entre las variables tambien se presentan algunas correlaciones casi perfectas, como se presentan entre las variables FGM y FGA, FG3M y FG3A, y FTM y FTA, lo cual tiene sentido ya que los pares de variables mencionadas deberían estar relacionadas entre sí, ya que a nivel general una variable es el número de intentos totales de tiros, mientras que la otra es cuántos de esos tiros lograron ser encestados.
-
-Por otro lado se logra ver una baja correlación lineal entre la variable AGE y el resto de variables, incluyendo la variable respuesta PTS, además de esto en los gráficos de dispersión no se puede evidenciar ningún tipo de correlación entre las variables mencionadas, puesto que los datos son bastante dispersos.
 
 ```{r}
 x1 <- as.matrix(players %>% select(-last_col()))
@@ -176,9 +155,23 @@ modelo_poisson <- glm(y ~ X - 1, family = poisson(link = "log"))
 modelo_poisson$coefficients
 
 ```
+En la siguiente tabla se puede ver la comparación con ambos métodos:
+
+| fisher_scoring_poisson | glm              |
+|:----------------------:|:----------------:|
+| $\hat{\beta_0} = 4.111$ | $\hat{\beta_0} = 4.112$ |
+| $\hat{\beta_1} = 0.007617$ | $\hat{\beta_1} = 0.007618$ |
+| $\hat{\beta_2} = 0.00007472$ | $\hat{\beta_2} = 0.00007473$ |
+| $\hat{\beta_3} = 0.01819$ | $\hat{\beta_3} = 0.01819$ |
+| $\hat{\beta_4} = 0.001907$ | $\hat{\beta_4} = 0.001908$ |
+| $\hat{\beta_5} = 0.0002784$ | $\hat{\beta_5} = 0.0002784$ |
+| $\hat{\beta_6} = 0.003640$ | $\hat{\beta_6} = 0.003640$ |
+| $\hat{\beta_7} = -0.001145$ | $\hat{\beta_7} = -0.001145$ |
+| $\hat{\beta_8} = 0.0001737$ | $\hat{\beta_8} = 0.0001737$ |
+| $\hat{\beta_9} = 0.0002852$ | $\hat{\beta_9} = 0.0002852$ |
+
 
 ## Regresión Binomial
-
 -   Sean $Y_1, Y_2, \cdots, Y_n$ variables aleatorias independientes con distribución *Binomial*, tales que
 
     $$Y_i \sim Binomial(n_i, p_i) \quad i=1,2,\cdots,n.$$
@@ -300,3 +293,4 @@ beta_binomial <- fisher_scoring_binomial(y = yb, X = X2,
 beta_binomial
 
 
+>>>>>>> ff120f0dc18f1583ae87376ecf6366d55b434b56
