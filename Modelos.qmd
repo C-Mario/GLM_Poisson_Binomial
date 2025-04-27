@@ -1,5 +1,5 @@
 ---
-title: "Fishe3r Scoring Algorithm ajustado2"
+title: "Fishe3r Scoringdd Algorithm ajustado2"
 format: html
 ---
 
