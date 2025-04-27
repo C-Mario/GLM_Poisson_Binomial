@@ -1,6 +1,7 @@
 ---
-title: "Fisher Scoring Algorithm"
+title: "Algoritmo de Fisher Scoring"
 format: html
+page-layout: full
 ---
 
 ```{r}
@@ -8,7 +9,8 @@ rm(list = ls())
 ```
 
 ```{r}
-install.packages("GGally", repos = "http://cran.r-project.org")
+#| output: false
+# install.packages("GGally", repos = "http://cran.r-project.org")
 library(GGally)
 library(ggplot2)
 library(dplyr)
@@ -20,20 +22,24 @@ library(readxl)
 - Sean $Y_1, Y_2, \cdots, Y_n$ variables aleatorias independientes con distribución *Poisson*, tales que
 
 $$Y_i \sim Poisson(\mu_i) \quad i=1,2,\cdots,n.$$
-Sabemos que en la distribución *Poisson*, el parámetro canónico está dado por $\theta_i = log(\mu_i)$. Además el predictor lineal está dado por
+Sabemos que en la distribución *Poisson*, el parámetro canónico está dado por $\theta_i = \ln(\mu_i)$.
+
+En el contexto de un modelo de regresión, el predictor lineal $\eta_i$ está dado por
 
 $$\eta_i = \beta_0 + \beta_1X_1 + \beta_2X_2 + \cdots + \beta_pX_p,$$
 y la relación entre el predictor $\eta_i$ y la media $\mu_i$ está dada por 
-$$\eta_i = \ln(\mu_i) \Rightarrow \mu_i = \exp(\eta_i)$$.
+
+$$\eta_i = \ln(\mu_i) \Rightarrow \mu_i = \exp(\eta_i).$$
 
 La función de log-verosimilitud es como sigue
 
 $$
 \begin{align*}
 \mathcal{l}(\beta) &= \sum_{i=1}^n \left[y_i\ln(\mu_i) - \mu_i - \ln(y_i!)\right]\\
-&= \sum_{i=1}^n \left[y_i x_i^t \beta - \exp(x_i^t \beta) - \ln(y_i\!)\right]
+&= \sum_{i=1}^n \left[y_i x_i^t \beta - \exp(x_i^t \beta) - \ln(y_i!)\right]
 \end{align*}
 $$
+
 La **función score** (vector de primeras derivadas) está dado por
 
 $$\frac{\partial \mathcal{l}(\beta)}{\partial \beta} = \sum_{i=1}^n (y_i - \mu_i)x_i.$$
@@ -46,70 +52,78 @@ $$W = diag\left(\frac{\left(\frac{\partial \mu_i}{\partial \eta_i}\right)^2}{Var
 $$\frac{\partial \mu_i}{\partial \eta_i} = \mu_i, \quad \quad \quad \frac{\partial \eta_i}{\partial \mu_i} = \frac{1}{\mu_i}$$
 Como en la distribución *Poisson*, $Var(Y_i) = \mu_i$, se tiene que
 
-$$w_{ii} = \mu_i$$
-y $\widetilde{y} = \eta_i + (y_i - \mu_i)\frac{1}{\mu_i}$
+$$w_{ii} = \frac{\mu_i^2}{\mu_i} =\mu_i$$
+y la variable ajustada $\widetilde{y}$ está dada por $$\widetilde{y} = \eta_i + (y_i - \mu_i)\frac{\partial \eta_i}{\partial \mu_i} = \eta_i + (y_i - \mu_i)\frac{1}{\mu_i}$$
 
-De esta forma, el **Algoritmo de Fisher-Scoring** queda determinado por los siguientes pasos
+De esta forma, el **Algoritmo de Fisher-Scoring** queda determinado por los siguientes pasos:
 
-1) Iniciar el algoritmo con un valor inicial para $\beta$
+1) Iniciar el algoritmo con un valor inicial para $\beta$. Se usará una estimación inicial de $\beta_0^{(0)}$ usando la media global de $y$.
+
+$$
+\beta_0^{(0)} = \log\left(\frac{1}{n}\sum_{i=1}^n y_i\right), \quad
+\beta_1^{(0)} = 0, \quad \cdots, \quad
+\beta_p^{(0)} = 0.
+$$
 
 2) obtener $\beta^{(k+1)}$ a partir de $\beta^{(k)}$ usando la siguiente expresión
 
 $$\beta^{(k+1)} = \left(X^tW^{(k)}X\right)^{-1}X^tW^{(k)}\widetilde{y}$$
 
-3) repetir **(2)** hasta satisfacer un criterio de convergencia.
+3) repetir **(2)** hasta satisfacer un criterio de convergencia. El criterio de convergencia que se usará en este caso es el siguiente
+
+$$\|\beta^{(k+1)} - \beta^{(k)}\| < \epsilon, \quad \quad \epsilon=0.0000001$$
 
 A continuación se presenta el algoritmo para encontrar una aproximación de $\beta$ usando datos reales.
 
-Datos de jugadores de baloncesto de la temporada 2022-2023, los cuales incluyen la edad del jugador(AGE), tiempo en minutos jugado en la temporada (MIN), juegos participados(GP), tiros de campo hechos (FGM), tiros de campo intentados (FGA), tiros de campo hechos de 3 puntos (FG3M), tiros de campo intentados de 3 puntos (FGA), puntos realizados en la temporada (PTS).
+Datos de jugadores de baloncesto de la temporada 2022-2023, los cuales incluyen la edad del jugador (AGE), tiempo en minutos jugado en la temporada (MIN), juegos participados (GP), tiros de campo hechos (FGM), tiros de campo intentados (FGA), tiros de campo hechos de 3 puntos (FG3M), tiros de campo intentados de 3 puntos (FGA) y puntos realizados en la temporada (PTS).
 
 ```{r}
 players <- read_excel("players_202223.xlsx") %>% 
-  select(AGE,MIN,GP,FGM,FGA,FG3M,FG3A,FTM,FTA,PTS)
-players %>% View()
+  select(AGE, MIN, GP, FGM, FGA, FG3M, FG3A, FTM, FTA, PTS)
 ```
+
 ```{r}
+#| message: false
+#| out-width: 100%
+
 players %>%
   ggpairs(
     upper = list(continuous = wrap("cor", size = 3)),
     diag = list(continuous = wrap("barDiag", colour = "burlywood")),
-    lower = list(continuous = wrap("points", alpha = 0.5, shape = 23, 
-                                   fill = "lightblue"))
-  )
+    lower = list(continuous = wrap("points", alpha = 0.5, shape = 20, 
+                                   fill = "lightblue")),
+    axisLabels = "none")
 ```
-En la matriz de dispersión realizada se uso el coeficiente de correlación de Pearson, el cuál nos muestra que la mayoría de las variables tienen una alta correlación lineal con la que será la variable respuesta, puntos realizados en la temporada (PTS). 
 
-Se puede evidenciar que entre las variables tambien se presentan algunas correlaciones casi perfectas, como se presentan entre las variables FGM y FGA, FG3M y FG3A, y FTM y FTA, lo cual tiene sentido ya que los pares de variables mencionadas deberían relacionadas entre sí, ya que a nivel general una variable es el número de intentos totales de tiros, mientras que la otra es cuántos de esos tiros lograron ser encestados.
+En la matriz de dispersión realizada se usó el coeficiente de correlación de Pearson, el cuál nos muestra que la mayoría de las variables tienen una alta correlación lineal con la variable respuesta, puntos realizados en la temporada (PTS). 
+
+Se puede evidenciar que entre las variables tambien se presentan algunas correlaciones casi perfectas, como se presentan entre las variables FGM y FGA, FG3M y FG3A, y FTM y FTA, lo cual tiene sentido ya que los pares de variables mencionadas deberían estar relacionadas entre sí, ya que a nivel general una variable es el número de intentos totales de tiros, mientras que la otra es cuántos de esos tiros lograron ser encestados.
 
 Por otro lado se logra ver una baja correlación lineal entre la variable AGE y el resto de variables, incluyendo la variable respuesta PTS, además de esto en los gráficos de dispersión no se puede evidenciar ningún tipo de correlación entre las variables mencionadas, puesto que los datos son bastante dispersos.
-
-
 
 ```{r}
 x1 <- as.matrix(players %>% select(-last_col()))
 X <- model.matrix(~x1)
-Y <- players$PTS
+y <- players$PTS
 ```
 
 ```{r}
 set.seed(1040)
 
 # Creación de la función
-fisher_scoring_poisson <- function(y, X, beta_init, tol = 1e-4, max_iter = 100) {
+fisher_scoring_poisson <- function(y, X, beta_init, tol = 1e-7, max_iter = 100){
   beta <- beta_init
-  for (iter in 1:max_iter) {
+  for (iter in 1:max_iter){
     eta <- X %*% beta
     mu <- exp(eta)
     
     W <- diag(as.vector(mu))
     
     z <- eta + (y - mu) / mu
-    beta_new <- solve(t(X) %*% W %*% X) %*% (t
-                                             
-                                             (X) %*% W %*% z)
+    beta_new <- solve(t(X) %*% W %*% X) %*% (t(X) %*% W %*% z)
     
     if (max(abs(beta_new - beta)) < tol) {
-      message("Convergió en iteración ", iter)
+      message("Convergió en la iteración ", iter)
       return(as.vector(beta_new))
     }
     
@@ -122,35 +136,41 @@ fisher_scoring_poisson <- function(y, X, beta_init, tol = 1e-4, max_iter = 100) 
 
 ```{r}
 ## Ejecutamos
-beta_est <- fisher_scoring_poisson(y = Y,X = X,beta_init = rep(0.01, ncol(X)),
-                      max_iter = 100)
+beta_est <- fisher_scoring_poisson(y = y, X = X, 
+                                   beta_init = c(log(mean(y)), rep(0, ncol(X)-1)),
+                                   max_iter = 100)
+names(beta_est) <- colnames(X)
 beta_est
 ```
 
+<<<<<<< HEAD
 ```{r}
 ## Con pquete de R
 modelo_poisson <- glm(PTS ~ ., family = poisson(link = "log"), data = players)
 summary(modelo_poisson)
 ```
-::: {=latex}
-En la siguiente tabla podemos ver los resultados de ambas funciones:
-\begin{longtable}{|c|c|}
+En la siguiente tabla se puede ver la comparación con ambos métodos:
 
-\caption{Comparación} \label{tabla:poisson-comparación} \\ 
-\hline
-\textbf{fisher_scoring_poisson} & \textbf{glm}  \\
-\hline
-$\hat{\beta_{0}}= 4.111$ &  $\hat{\beta_{0}}= 4.112$ \\
-\hline
-$\hat{\beta_{1}}= 0.007617$ & $\hat{\beta_{1}}= 0.007618$ \\
-$\hat{\beta_{2}}= 0.00007472$ & $\hat{\beta_{2}}= 0.00007473$\\
-$\hat{\beta_{3}}= 0.01819$ & $\hat{\beta_{3}}= 0.01819$\\
-$\hat{\beta_{4}}= 0.001907$ & $\hat{\beta_{4}}= 0.001908$\\
-$\hat{\beta_{5}}= 0.0002784$ & $\hat{\beta_{5}}= 0.0002784$\\
-$\hat{\beta_{6}}= 0.003640$ & $\hat{\beta_{6}}= 0.003640$\\
-$\hat{\beta_{7}}= -0.001145$ & $\hat{\beta_{7}}= -0.001145$\\
-$\hat{\beta_{8}}= 0.0001737$ & $\hat{\beta_{8}}= 0.0001737$\\
-$\hat{\beta_{9}}= 0.0002852$ & $\hat{\beta_{9}}= 0.0002852$\\
-\hline
-\end{longtable}
-:::
+| fisher_scoring_poisson | glm              |
+|:----------------------:|:----------------:|
+| $\hat{\beta_0} = 4.111$ | $\hat{\beta_0} = 4.112$ |
+| $\hat{\beta_1} = 0.007617$ | $\hat{\beta_1} = 0.007618$ |
+| $\hat{\beta_2} = 0.00007472$ | $\hat{\beta_2} = 0.00007473$ |
+| $\hat{\beta_3} = 0.01819$ | $\hat{\beta_3} = 0.01819$ |
+| $\hat{\beta_4} = 0.001907$ | $\hat{\beta_4} = 0.001908$ |
+| $\hat{\beta_5} = 0.0002784$ | $\hat{\beta_5} = 0.0002784$ |
+| $\hat{\beta_6} = 0.003640$ | $\hat{\beta_6} = 0.003640$ |
+| $\hat{\beta_7} = -0.001145$ | $\hat{\beta_7} = -0.001145$ |
+| $\hat{\beta_8} = 0.0001737$ | $\hat{\beta_8} = 0.0001737$ |
+| $\hat{\beta_9} = 0.0002852$ | $\hat{\beta_9} = 0.0002852$ |
+
+Estimación de los parámetros usando la función `glm` del paquete `stats`
+
+```{r}
+modelo_poisson <- glm(y ~ X - 1, family = poisson(link = "log"))
+
+modelo_poisson$coefficients
+```
+
+## Regresión Binomial
+>>>>>>> 6c0c1af036e754f1791b0ed30e57223b24a0ac36
