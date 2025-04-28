@@ -86,6 +86,9 @@ players <- read_excel("players_202223.xlsx") %>%
 ```
 
 ```{r}
+#| message: false
+#| out-width: 100%
+
 players %>%
   ggpairs(
     upper = list(continuous = wrap("cor", size = 3)),
@@ -153,7 +156,6 @@ Estimación de los parámetros usando la función `glm` del paquete `stats`
 modelo_poisson <- glm(y ~ X - 1, family = poisson(link = "log"))
 
 modelo_poisson$coefficients
-
 ```
 En la siguiente tabla se puede ver la comparación con ambos métodos:
 
@@ -172,6 +174,7 @@ En la siguiente tabla se puede ver la comparación con ambos métodos:
 
 
 ## Regresión Binomial
+
 -   Sean $Y_1, Y_2, \cdots, Y_n$ variables aleatorias independientes con distribución *Binomial*, tales que
 
     $$Y_i \sim Binomial(n_i, p_i) \quad i=1,2,\cdots,n.$$
@@ -234,14 +237,12 @@ n <- 100
 beta <- c(1, 0.5)
 ```
 
-
 ```{r}
 # Simulación de datos
 xbin <- runif(n, min = 0, max = 10)
 X2 <- model.matrix(~ xbin)  # Incluye intercepto automáticamente
 eta <- X2 %*% beta
 ```
-
 
 ```{r}
 # Dataset simulado
@@ -253,7 +254,6 @@ for (i in 1:n) {
 
 data_bin <- tibble(y = yb, x = xbin)
 ```
-
 
 ```{r}
 # Creación de la función
@@ -290,7 +290,17 @@ fisher_scoring_binomial <- function(y, X, beta_init, tol = 1e-5, max_iter = 100)
 beta_binomial <- fisher_scoring_binomial(y = yb, X = X2, 
                                          beta_init = rep(0.01, ncol(X2)))
 
+names(beta_binomial) <- colnames(X2)
 beta_binomial
+```
 
+```{r}
+modelo_logistico <- glm(yb ~ X2 - 1, family = binomial(link = "logit"))
 
->>>>>>> ff120f0dc18f1583ae87376ecf6366d55b434b56
+modelo_logistico$coefficients
+```
+
+| fisher_scoring_binomial | glm              |
+|:----------------------:|:----------------:|
+| $\hat{\beta_0} = 0.6978429$ | $\hat{\beta_0} = 0.6978430$ |
+| $\hat{\beta_1} = 0.4927746$ | $\hat{\beta_1} = 0.4927746$ |
