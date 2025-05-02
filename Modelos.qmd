@@ -135,13 +135,15 @@ fisher_scoring_poisson <- function(y, X, beta_init, tol = 1e-7, max_iter = 100){
     
     if (max(abs(beta_new - beta)) < tol) {
       message("Convergió en la iteración ", iter)
-      return(as.vector(beta_new))
+      mu_hat <- as.vector(exp(X%*%beta_new))
+      residual_response <- y-mu_hat
+      return(list(beta = as.vector(beta_new),res_resp = residual_response))
     }
     
     beta <- beta_new
   }
   warning("No convergió")
-  return(as.vector(beta))
+  return(NULL)
 }
 ```
 
@@ -152,7 +154,8 @@ beta_est <- fisher_scoring_poisson(y = y, X = X,
                                    beta_init = c(log(mean(y)), rep(0, ncol(X)-1)),
                                    max_iter = 100)
 names(beta_est) <- colnames(X)
-beta_est
+beta_est$beta
+beta_est$res_resp
 ```
 
 Estimación de los parámetros usando la función `glm` del paquete `stats`
