@@ -3,8 +3,8 @@ title: "Algoritmo de Fisher Scoring"
 format: html
 page-layout: full
 author:
-  - Sergio Alejandro Buitrago Melo
-  - María Alejandra Cabra Arias
+  - Carlos Mario Castaño Suaza
+  - Juan Pablo Lara Chaves
   - María Paula Camargo Rincón
     
 ---
@@ -117,27 +117,35 @@ y <- players$PTS
 ```
 
 ```{r}
-set.seed(1040)
-
 # Creación de la función
 
 fisher_scoring_poisson <- function(y, X, beta_init, tol = 1e-7, max_iter = 100){
-
+  #Nombramos un objeto donde se guardará el beta inicial (beta_init)
   beta <- beta_init
+  # iniciamos el bucle 
   for (iter in 1:max_iter){
+    #creamos un objeto "eta" que será la parte sistemática del modelo
     eta <- X %*% beta
+    #creamos un objeto "mu" donde se guarda el despeje de la media de "eta"
     mu <- exp(eta)
-    
+    #creamos la matriz diagonal "W"
     W <- diag(as.vector(mu))
-    
+    #creamos el objeto z que almacena la matriz y^~ 
     z <- eta + (y - mu) / mu
+    #Obtenemos el nuevo beta
     beta_new <- solve(t(X) %*% W %*% X) %*% (t(X) %*% W %*% z)
     
     if (max(abs(beta_new - beta)) < tol) {
       message("Convergió en la iteración ", iter)
       mu_hat <- as.vector(exp(X%*%beta_new))
+      #Resdiaul crudo
       residual_response <- y-mu_hat
-      return(list(beta = as.vector(beta_new),res_resp = residual_response))
+      #Residual de pearson
+      residual_pearson <- (y - mu_hat) / sqrt(mu_hat)
+      #Residual de devianza
+      
+      return(list(beta = as.vector(beta_new),res_resp = residual_response,
+                  res_pear=residual_pearson))
     }
     
     beta <- beta_new
@@ -286,7 +294,13 @@ fisher_scoring_binomial <- function(y, X, beta_init, tol = 1e-5, max_iter = 100)
     
     if (max(abs(beta_new - beta), na.rm = TRUE) < tol) {
       message("Convergió en iteración ", iter)
-      return(as.vector(beta_new))
+      #Resdiaul crudo
+      residual_response <- y-mu_hat
+      #Residual de pearson
+      residual_pearson <- (y - mu_hat) / sqrt(mu_hat)
+      #Residual de devianza
+      return(list(beta = as.vector(beta_new),res_resp = residual_response,
+                  res_pear=residual_pearson))
     }
     
     beta <- beta_new
