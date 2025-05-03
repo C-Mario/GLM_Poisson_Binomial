@@ -161,7 +161,7 @@ beta_est <- fisher_scoring_poisson(y = y, X = X,
 
                                    beta_init = c(log(mean(y)), rep(0, ncol(X)-1)),
                                    max_iter = 100)
-names(beta_est) <- colnames(X)
+names(beta_est$beta) <- colnames(X)
 beta_est$beta
 beta_est$res_resp
 ```
@@ -277,8 +277,6 @@ fisher_scoring_binomial <- function(y, X, beta_init, tol = 1e-5, max_iter = 100)
   beta <- beta_init
   for (iter in 1:max_iter) {
     eta <- X %*% beta
-    eta <- pmin(eta, 700)
-    eta <- pmax(eta, -700)
     
     pi <- exp(eta) / (1 + exp(eta))
     
@@ -294,10 +292,11 @@ fisher_scoring_binomial <- function(y, X, beta_init, tol = 1e-5, max_iter = 100)
     
     if (max(abs(beta_new - beta), na.rm = TRUE) < tol) {
       message("Convergió en iteración ", iter)
+      pi_hat <- exp(X%*%beta_new) / (1 + exp(X%*%beta_new))
       #Resdiaul crudo
-      residual_response <- y-mu_hat
+      residual_response <- y-pi_hat
       #Residual de pearson
-      residual_pearson <- (y - mu_hat) / sqrt(mu_hat)
+      residual_pearson <- (y - pi_hat) / sqrt(pi_hat)
       #Residual de devianza
       return(list(beta = as.vector(beta_new),res_resp = residual_response,
                   res_pear=residual_pearson))
