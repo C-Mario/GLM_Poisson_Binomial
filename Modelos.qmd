@@ -15,7 +15,7 @@ rm(list = ls())
 
 ```{r}
 #| output: false
-# install.packages("GGally", repos = "http://cran.r-project.org")
+
 library(GGally)
 library(ggplot2)
 library(dplyr)
@@ -32,7 +32,7 @@ Sabemos que en la distribución *Poisson*, el parámetro canónico está dado po
 En el contexto de un modelo de regresión, el predictor lineal $\eta_i$ está dado por
 
 $$\eta_i = \beta_0 + \beta_1X_1 + \beta_2X_2 + \cdots + \beta_pX_p,$$
-y la relación entre el predictor $\eta_i$ y la media $\mu_i$ está dada por 
+y la relación entre el predictor $\eta_i$ y la media $\mu_i$, en el caso de la regresión *Poisson*, está dada por 
 
 $$\eta_i = \ln(\mu_i) \Rightarrow \mu_i = \exp(\eta_i).$$
 
@@ -62,7 +62,7 @@ y la variable ajustada $\widetilde{y}$ está dada por $$\widetilde{y} = \eta_i +
 
 De esta forma, el **Algoritmo de Fisher-Scoring** queda determinado por los siguientes pasos:
 
-1) Iniciar el algoritmo con un valor inicial para $\beta$. Se usará una estimación inicial de $\beta_0^{(0)}$ usando la media global de $y$.
+1) Iniciar el algoritmo con un valor inicial para $\beta$. Se usará una estimación inicial de $\beta_0^{(0)}$ usando la media global de $y$
 
 $$
 \beta_0^{(0)} = \log\left(\frac{1}{n}\sum_{i=1}^n y_i\right), \quad
@@ -70,11 +70,11 @@ $$
 \beta_p^{(0)} = 0.
 $$
 
-2) obtener $\beta^{(k+1)}$ a partir de $\beta^{(k)}$ usando la siguiente expresión
+2) Obtener $\beta^{(k+1)}$ a partir de $\beta^{(k)}$ usando la siguiente expresión
 
-$$\beta^{(k+1)} = \left(X^tW^{(k)}X\right)^{-1}X^tW^{(k)}\widetilde{y}$$
+$$\beta^{(k+1)} = \left(X^tW^{(k)}X\right)^{-1}X^tW^{(k)}\widetilde{y}.$$
 
-3) repetir **(2)** hasta satisfacer un criterio de convergencia. El criterio de convergencia que se usará en este caso es el siguiente
+3) Repetir **(2)** hasta satisfacer un criterio de convergencia. El criterio de convergencia que se usará en este caso es el siguiente
 
 $$\|\beta^{(k+1)} - \beta^{(k)}\| < \epsilon, \quad \quad \epsilon=0.0000001$$
 
@@ -85,9 +85,10 @@ Datos de jugadores de baloncesto de la temporada 2022-2023, los cuales incluyen 
 
 
 ```{r}
+# seleccionamos las variables de interés
+
 players <- read_excel("players_202223.xlsx") %>% 
   select(AGE, MIN, GP, FGM, FGA, FG3M, FG3A, FTM, FTA, PTS)
-
 ```
 
 ```{r}
@@ -107,86 +108,155 @@ En la matriz de dispersión realizada se usó el coeficiente de correlación de 
 
 Se puede evidenciar que entre las variables tambien se presentan algunas correlaciones casi perfectas, como se presentan entre las variables FGM y FGA, FG3M y FG3A, y FTM y FTA, lo cual tiene sentido ya que los pares de variables mencionadas deberían estar relacionadas entre sí, ya que a nivel general una variable es el número de intentos totales de tiros, mientras que la otra es cuántos de esos tiros lograron ser encestados.
 
-Por otro lado se logra ver una baja correlación lineal entre la variable AGE y el resto de variables, incluyendo la variable respuesta PTS, además de esto en los gráficos de dispersión no se puede evidenciar ningún tipo de correlación entre las variables mencionadas, puesto que los datos son bastante dispersos.
+Por otro lado, se observa una baja correlación lineal entre la variable AGE y el resto de las variables, incluida la variable respuesta PTS. Además, en los gráficos de dispersión no se evidencia ningún tipo de correlación entre estas variables, ya que los datos se encuentran muy dispersos.
 
 
 ```{r}
-x1 <- as.matrix(players %>% select(-last_col()))
-X <- model.matrix(~x1)
-y <- players$PTS
+x1 <- players %>% select(-last_col())
+X <- model.matrix(~ ., data = x1) # Matriz diseño, con intercepto
+y <- players$PTS # Variable respuesta
 ```
 
 ```{r}
 # Creación de la función
 
 fisher_scoring_poisson <- function(y, X, beta_init, tol = 1e-7, max_iter = 100){
-  #Nombramos un objeto donde se guardará el beta inicial (beta_init)
+  # Nombramos un objeto donde se guardará el beta inicial (beta_init)
   beta <- beta_init
   # iniciamos el bucle 
   for (iter in 1:max_iter){
-    #creamos un objeto "eta" que será la parte sistemática del modelo
+    # creamos un objeto "eta" que será la parte sistemática del modelo
     eta <- X %*% beta
-    #creamos un objeto "mu" donde se guarda el despeje de la media de "eta"
+    # creamos un objeto "mu" donde se guarda el despeje de la media de "eta"
     mu <- exp(eta)
-    #creamos la matriz diagonal "W"
+    # creamos la matriz diagonal "W"
     W <- diag(as.vector(mu))
-    #creamos el objeto z que almacena la matriz y^~ 
+    # creamos el objeto z (variable de trabajo y^~)
     z <- eta + (y - mu) / mu
-    #Obtenemos el nuevo beta
+    # obtenemos el nuevo beta
     beta_new <- solve(t(X) %*% W %*% X) %*% (t(X) %*% W %*% z)
     
+    # guardamos la matriz de varianzas y covarianzas de los betas
+    
+    cov_beta <- solve(t(X) %*% W %*% X)
+    
     if (max(abs(beta_new - beta)) < tol) {
-      message("Convergió en la iteración ", iter)
-      mu_hat <- as.vector(exp(X%*%beta_new))
-      #Resdiaul crudo
-      residual_response <- y-mu_hat
-      #Residual de pearson
+      message("El algoritmo convergió en la iteración ", iter)
+      mu_hat <- as.vector(exp(X %*% beta_new))
+      # residual crudo
+      residual <- y - mu_hat
+      # residual de pearson
       residual_pearson <- (y - mu_hat) / sqrt(mu_hat)
-      #Residual de devianza
-      
-      return(list(beta = as.vector(beta_new),res_resp = residual_response,
-                  res_pear=residual_pearson))
+      #Residual Anscombe
+      residual_anscombe <- (3/2) * (y^(2/3) - mu_hat^(2/3)) / (mu_hat^(1/6))
+      # Residual de devianza
+      residual_deviance <- sign(y - mu_hat) * sqrt(2 * (y * log(ifelse(y == 0, 1, y / mu_hat)) - (y - mu_hat)))
+      return(list( beta = as.vector(beta_new), predichos = mu_hat, covarianza = cov_beta, residual = residual,
+                   residual_pearson = residual_pearson,
+                   residual_anscombe = residual_anscombe,
+                   residual_deviance = residual_deviance))
     }
     
     beta <- beta_new
   }
-  warning("No convergió")
+  warning("El algoritmo no convergió")
   return(NULL)
 }
 ```
 
 ```{r}
-## Ejecutamos
-beta_est <- fisher_scoring_poisson(y = y, X = X, 
+# Ejecutamos la función
 
-                                   beta_init = c(log(mean(y)), rep(0, ncol(X)-1)),
-                                   max_iter = 100)
-names(beta_est$beta) <- colnames(X)
-beta_est$beta
-beta_est$res_resp
+beta_inicial <- c(log(mean(y)), rep(0, ncol(X)-1)) # beta inicial
+regresion_poisson <- fisher_scoring_poisson(y = y, X = X, beta_init = beta_inicial)
+
+# Estimación de los parámetros del modelo
+
+names(regresion_poisson$beta) <- c("Intercept", "AGE", "MIN", "GP", "FGM", "FGA", "FG3M", "FG3A", "FTM", "FTA")
+regresion_poisson$beta
 ```
 
 Estimación de los parámetros usando la función `glm` del paquete `stats`
 
 ```{r}
-modelo_poisson <- glm(y ~ X - 1, family = poisson(link = "log"))
+modelo_poisson_glm <- glm(y ~ X - 1, family = poisson(link = "log"))
 
-modelo_poisson$coefficients
+names(modelo_poisson_glm$coefficients) <- names(regresion_poisson$beta)
+modelo_poisson_glm$coefficients
 ```
 En la siguiente tabla se puede ver la comparación con ambos métodos:
 
-| fisher_scoring_poisson | glm              |
-|:----------------------:|:----------------:|
-| $\hat{\beta_0} = 4.111$ | $\hat{\beta_0} = 4.112$ |
-| $\hat{\beta_1} = 0.007617$ | $\hat{\beta_1} = 0.007618$ |
-| $\hat{\beta_2} = 0.00007472$ | $\hat{\beta_2} = 0.00007473$ |
-| $\hat{\beta_3} = 0.01819$ | $\hat{\beta_3} = 0.01819$ |
-| $\hat{\beta_4} = 0.001907$ | $\hat{\beta_4} = 0.001908$ |
-| $\hat{\beta_5} = 0.0002784$ | $\hat{\beta_5} = 0.0002784$ |
-| $\hat{\beta_6} = 0.003640$ | $\hat{\beta_6} = 0.003640$ |
-| $\hat{\beta_7} = -0.001145$ | $\hat{\beta_7} = -0.001145$ |
-| $\hat{\beta_8} = 0.0001737$ | $\hat{\beta_8} = 0.0001737$ |
-| $\hat{\beta_9} = 0.0002852$ | $\hat{\beta_9} = 0.0002852$ |
+| Variable     | fisher_scoring_poisson     | glm                     |
+|:-------------|:---------------------------:|:-----------------------:|
+| (Intercept)  | $\hat{\beta_0} = 4.111$     | $\hat{\beta_0} = 4.112$ |
+| AGE          | $\hat{\beta_1} = 0.007617$  | $\hat{\beta_1} = 0.007618$ |
+| MIN          | $\hat{\beta_2} = 0.00007472$ | $\hat{\beta_2} = 0.00007473$ |
+| GP           | $\hat{\beta_3} = 0.01819$   | $\hat{\beta_3} = 0.01819$ |
+| FGM          | $\hat{\beta_4} = 0.001907$  | $\hat{\beta_4} = 0.001908$ |
+| FGA          | $\hat{\beta_5} = 0.0002784$ | $\hat{\beta_5} = 0.0002784$ |
+| FG3M         | $\hat{\beta_6} = 0.003640$  | $\hat{\beta_6} = 0.003640$ |
+| FG3A         | $\hat{\beta_7} = -0.001145$ | $\hat{\beta_7} = -0.001145$ |
+| FTM          | $\hat{\beta_8} = 0.0001737$ | $\hat{\beta_8} = 0.0001737$ |
+| FTA          | $\hat{\beta_9} = 0.0002852$ | $\hat{\beta_9} = 0.0002852$ |
+
+Los resultados parecen ser exactamente los mismos
+
+```{r}
+all.equal(regresion_poisson$beta, modelo_poisson_glm$coefficients)
+```
+
+La matriz de covarianza estimada obtenida mediante el algoritmo de Fisher-Scoring coincide con la obtenida a través de la función `glm`, salvo por algunas diferencias numéricas muy pequeñas
+
+```{r}
+all.equal(regresion_poisson$covarianza, vcov(modelo_poisson_glm))
+```
+Las desviaciones estándar estimadas con ambos métodos son las siguientes:
+
+```{r}
+sqrt(diag(regresion_poisson$covarianza))
+sqrt(diag(vcov(modelo_poisson_glm)))
+```
+
+```{r}
+df_residuals <- data.frame(
+    predichos = regresion_poisson$predichos,
+    residual = regresion_poisson$residual,
+    residual_pearson = regresion_poisson$residual_pearson,
+    residual_anscombe = regresion_poisson$residual_anscombe,
+    residual_deviance = regresion_poisson$residual_deviance
+  )
+```
+
+```{r}
+# Gráfico de los tres tipos de residuales
+
+p1 <- ggplot(df_residuals, aes(x = predichos, y = residual)) +
+    geom_point(color = 'blue') +
+    labs(title = 'Residual Crudo', x = 'Valores Predichos', y = 'Residual Crudo') +
+    theme_minimal()
+
+p2 <- ggplot(df_residuals, aes(x = predichos, y = residual_pearson)) +
+    geom_point(color = 'red') +
+    labs(title = 'Residual de Pearson', x = 'Valores Predichos', y = 'Residual de Pearson') +
+    theme_minimal()
+
+p3 <- ggplot(df_residuals, aes(x = predichos, y = residual_anscombe)) +
+    geom_point(color = 'green') +
+    labs(title = 'Residual de Anscombe', x = 'Valores Predichos', y = 'Residual de Anscombe') +
+    theme_minimal()
+
+p4 <- ggplot(df_residuals, aes(x = predichos, y = residual_deviance)) +
+    geom_point(color = 'orange') +
+    labs(title = 'Residual de Devianza', x = 'Valores Predichos', y = 'Residual de Devianza') +
+    theme_minimal()
+```
+
+```{r}
+#| layout-ncol: 2
+#| out-width: 100%
+
+p1; p2; p3; p4
+```
 
 
 ## Regresión Binomial
@@ -293,13 +363,19 @@ fisher_scoring_binomial <- function(y, X, beta_init, tol = 1e-5, max_iter = 100)
     if (max(abs(beta_new - beta), na.rm = TRUE) < tol) {
       message("Convergió en iteración ", iter)
       pi_hat <- exp(X%*%beta_new) / (1 + exp(X%*%beta_new))
-      #Resdiaul crudo
-      residual_response <- y-pi_hat
-      #Residual de pearson
+      # Resdiaul crudo
+      residual <- y-pi_hat
+      # Residual de pearson
       residual_pearson <- (y - pi_hat) / sqrt(pi_hat)
-      #Residual de devianza
-      return(list(beta = as.vector(beta_new),res_resp = residual_response,
-                  res_pear=residual_pearson))
+      # Residual de Anscombe
+      residual_anscombe <- 3*(y^(1/3)-pi_hat^(1/3))/(pi_hat^(1/3))
+      # Residual de devianza
+      dev <- sqrt(2*(y*log(y/pi_hat)-y+pi_hat))
+      residual_deviance <- sign(y - pi_hat) * sqrt(dev)
+      return(list(beta = as.vector(beta_new), residual = residual,
+                  residual_pearson = residual_pearson,
+                  residual_anscombe = residual_anscombe,
+                  residual_deviance = residual_deviance))
     }
     
     beta <- beta_new
