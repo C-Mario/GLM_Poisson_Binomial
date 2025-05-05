@@ -216,6 +216,9 @@ Las desviaciones estándar estimadas con ambos métodos son las siguientes:
 sqrt(diag(regresion_poisson$covarianza))
 sqrt(diag(vcov(modelo_poisson_glm)))
 ```
+Son exactamente las mismas.
+
+A continuación, se muestran gráficamente los cuatro tipos de residuales calculados: *residuales crudos*, *residuales de pearson*, *residuales de Anscombe* y *residuales de devianza*
 
 ```{r}
 df_residuals <- data.frame(
@@ -372,7 +375,8 @@ fisher_scoring_binomial <- function(y, X, beta_init, tol = 1e-5, max_iter = 100)
       # Residual de devianza
       dev <- sqrt(2*(y*log(y/pi_hat)-y+pi_hat))
       residual_deviance <- sign(y - pi_hat) * sqrt(dev)
-      return(list(beta = as.vector(beta_new), residual = residual,
+      return(list(beta = as.vector(beta_new), predichos = pi_hat,
+                  residual = residual,
                   residual_pearson = residual_pearson,
                   residual_anscombe = residual_anscombe,
                   residual_deviance = residual_deviance))
@@ -383,12 +387,19 @@ fisher_scoring_binomial <- function(y, X, beta_init, tol = 1e-5, max_iter = 100)
   warning("No convergió")
   return(as.vector(beta))
 }
+```
+
+
+```{r}
+# Ejecutamos la función
 
 beta_binomial <- fisher_scoring_binomial(y = yb, X = X2, 
                                          beta_init = rep(0.01, ncol(X2)))
 
-names(beta_binomial) <- colnames(X2)
-beta_binomial
+# Estimación de los parámetros del modelo
+
+names(beta_binomial$beta) <- colnames(X2)
+beta_binomial$beta
 ```
 
 ```{r}
@@ -397,23 +408,33 @@ modelo_logistico <- glm(yb ~ X2 - 1, family = binomial(link = "logit"))
 modelo_logistico$coefficients
 ```
 
-| fisher_scoring_binomial | glm              |
-|:----------------------:|:----------------:|
-| $\hat{\beta_0} = 0.6978429$ | $\hat{\beta_0} = 0.6978430$ |
-| $\hat{\beta_1} = 0.4927746$ | $\hat{\beta_1} = 0.4927746$ |
+| Variable     | fisher_scoring_binomial | glm              |
+|:-------------|:----------------------:|:----------------:|
+| (Intercept)  | $\hat{\beta_0} = 0.6978429$ | $\hat{\beta_0} = 0.6978430$ |
+| xbin | $\hat{\beta_1} = 0.4927746$ | $\hat{\beta_1} = 0.4927746$ |
 
-A continución se hará uso de algunos datos obtenidos sobre unos tratamientos al agua, de los cuales la variable respuesta será si se le aplicó o no polímero:
+## Regresión logística con los datos del agua
+
+A continuación, se utilizarán datos relacionados con tratamientos aplicados al agua. La variable de respuesta indica si se utilizó o no un polímero.
 
 ```{r}
 TURB=c(300,250,190,160,560,150,160,270,450,210,420,550,1200,420,500,150,200,390,380,140,170,1110,140,150,870,720,430,550)
+
 COL=c(100,100,50,70,200,100,100,70,130,100,100,250,250,100,120,75,50,140,120,50,110,100,80,90,150,200,100,200)
+
 ALCA=c(49,43,51,52,44,48,55,43,56,51,46,65,43,53,48,45,52,52,39,54,52,51,55,50,49,44,48,40)
+
 PH=c(8.33,7.64,7.62,7.62,8.19,7.90,7.60,8.07,7.53,7.72,7.90,7.68,7.93,7.90,8.01,7.71,7.66,8.09,8.17,8.16,7.58,8.06,7.51,7.56,7.60,8.18,7.20,7.55)
+
 TEM=c(25,27,28,26,25,26,26,24,27,27,26,27,26,26,27,27,26,27,26,25,27,23,27,27,27,23,26,27)
+
 POL=c(0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,1,0,0,1,1,1,1)
+
 Xbin2 <- model.matrix(~ TURB+COL+ALCA+PH+TEM)
+
 fisher_scoring_binomial(y = POL,X = Xbin2,beta_init = c(log(mean(POL)/(1-mean(POL))), rep(0, ncol(Xbin2)-1)),
                         max_iter = 500)
+
 mode1<-glm(formula = POL ~ TURB+PH, family = binomial)
 mode2<-glm(formula = POL ~ TURB, family = binomial)
 summary(mode1)
