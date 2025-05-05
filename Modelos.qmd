@@ -78,6 +78,24 @@ $$\beta^{(k+1)} = \left(X^tW^{(k)}X\right)^{-1}X^tW^{(k)}\widetilde{y}.$$
 
 $$\|\beta^{(k+1)} - \beta^{(k)}\| < \epsilon, \quad \quad \epsilon=0.0000001$$
 
+El estudio de los residuales es importante ya que ayuda a evaluar la calidad del modelo y detectar posibles desviaciones de los supuestos del mismo. En este caso se ha trabajado con los residuales crudos, los residuales de pearson, los residuales de devianza y los residuales de anscombe.
+
+# Residuales
+- **Residuales crudos (o de respuesta):** estos residuales son normalmente usados en modelos de regresión lineal, en modelos lineales generalizados realmente no son tan eficientes, sin embargo se decidió usar este tipo de residuales debido a que se quiere comparar con los otros tipos. Estos residuales representan la diferencia entre el valor observado y el valor ajustado de la media:
+$$y-\hat{\mu}$$
+-**Residuales de Pearson:** estandariza el residual crudo dividiendolo por lo desviación estándar estimada para la distribución en cuestión. La formula general y en el caso de la Poisson son:
+$$r_{P}=\frac{y-\hat{\mu}}{\sqrt{Var(\hat{\mu})}}\Longrightarrow\frac{y-\hat{\mu}}{\sqrt{\hat{\mu}}}$$
+
+
+-**Residuales de desviación:** los residuos de desviación, como conjunto, suelen ser más cercanos a la normalidad con distribuciones GLM no normales que los residuos de Pearson.
+$$r_{D}=sign(y-\mu)\sqrt{d_{i}},\hspace{3cm}donde:d_{i}=$$
+Para el caso de la Poisson:
+$$r_{D}=sign(y-\mu)\sqrt{2()ylog(\frac{y}{\mu})-y+\mu}$$
+
+-**Residuales de Anscombe:** como los residuales de Person suelen ser sesgados para distribuciones no normales y esto ocasionaba que no podía tener propiedades similares a la de los residuos de la teoría normal, Anscombe propuso definir un residuo utlizando una función $A(y)$ en lugar de y, la formula general y en el caso de la Poisson son:
+$$A(.)=\int \frac{d\mu}{V^{1/3}(\mu)}\Longrightarrow\int\frac{d\mu}{\mu^{1/3}}=\frac{3}{2}\mu^{2/3}$$
+Para la distribución Poisson:
+$$r_{A}=\frac{\frac{3}{2}(y^{2/3}-\mu^{2/3})}{\mu^{1/6}}$$
 A continuación se presenta el algoritmo para encontrar una aproximación de $\beta$ usando datos reales.
 
 
