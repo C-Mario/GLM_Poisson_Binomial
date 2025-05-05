@@ -363,6 +363,9 @@ fisher_scoring_binomial <- function(y, X, beta_init, tol = 1e-5, max_iter = 100)
       stop("Fallo al invertir la matriz. ¿X tiene multicolinealidad?")
     })
     
+    # guardamos la matriz de varianzas y covarianzas de los betas
+    cov_beta <- solve(t(X) %*% W %*% X)
+    
     if (max(abs(beta_new - beta), na.rm = TRUE) < tol) {
       message("Convergió en iteración ", iter)
       pi_hat <- exp(X%*%beta_new) / (1 + exp(X%*%beta_new))
@@ -376,6 +379,7 @@ fisher_scoring_binomial <- function(y, X, beta_init, tol = 1e-5, max_iter = 100)
       dev <- sqrt(2*(y*log(y/pi_hat)-y+pi_hat))
       residual_deviance <- sign(y - pi_hat) * sqrt(dev)
       return(list(beta = as.vector(beta_new), predichos = pi_hat,
+                  covarianza = cov_beta,
                   residual = residual,
                   residual_pearson = residual_pearson,
                   residual_anscombe = residual_anscombe,
@@ -388,7 +392,6 @@ fisher_scoring_binomial <- function(y, X, beta_init, tol = 1e-5, max_iter = 100)
   return(as.vector(beta))
 }
 ```
-
 
 ```{r}
 # Ejecutamos la función
@@ -413,6 +416,56 @@ modelo_logistico$coefficients
 | (Intercept)  | $\hat{\beta_0} = 0.6978429$ | $\hat{\beta_0} = 0.6978430$ |
 | xbin | $\hat{\beta_1} = 0.4927746$ | $\hat{\beta_1} = 0.4927746$ |
 
+La matriz de covarianza estimada obtenida mediante el algoritmo de Fisher-Scoring coincide con la obtenida a través de la función `glm`, salvo por algunas diferencias numéricas muy pequeñas
+
+```{r}
+beta_binomial$covarianza; vcov(modelo_logistico)
+```
+La matriz de covarianza es prácticamente la misma con ambos métodos.
+
+A continuación, se muestran gráficamente los cuatro tipos de residuales calculados: *residuales crudos*, *residuales de pearson*, *residuales de Anscombe* y *residuales de devianza*
+
+```{r}
+df_residuals <- data.frame(
+    predichos = beta_binomial$predichos,
+    residual = beta_binomial$residual,
+    residual_pearson = beta_binomial$residual_pearson,
+    residual_anscombe = beta_binomial$residual_anscombe,
+    residual_deviance = beta_binomial$residual_deviance
+  )
+```
+
+```{r}
+# Gráfico de los tres tipos de residuales
+
+p1 <- ggplot(df_residuals, aes(x = predichos, y = residual)) +
+    geom_point(color = 'blue') +
+    labs(title = 'Residual Crudo', x = 'Valores Predichos', y = 'Residual Crudo') +
+    theme_minimal()
+
+p2 <- ggplot(df_residuals, aes(x = predichos, y = residual_pearson)) +
+    geom_point(color = 'red') +
+    labs(title = 'Residual de Pearson', x = 'Valores Predichos', y = 'Residual de Pearson') +
+    theme_minimal()
+
+p3 <- ggplot(df_residuals, aes(x = predichos, y = residual_anscombe)) +
+    geom_point(color = 'green') +
+    labs(title = 'Residual de Anscombe', x = 'Valores Predichos', y = 'Residual de Anscombe') +
+    theme_minimal()
+
+p4 <- ggplot(df_residuals, aes(x = predichos, y = residual_deviance)) +
+    geom_point(color = 'orange') +
+    labs(title = 'Residual de Devianza', x = 'Valores Predichos', y = 'Residual de Devianza') +
+    theme_minimal()
+```
+
+```{r}
+#| layout-ncol: 2
+#| out-width: 100%
+
+p1; p2; p3; p4
+```
+
 ## Regresión logística con los datos del agua
 
 A continuación, se utilizarán datos relacionados con tratamientos aplicados al agua. La variable de respuesta indica si se utilizó o no un polímero.
@@ -432,7 +485,7 @@ POL=c(0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,1,0,0,1,1,1,1)
 
 Xbin2 <- model.matrix(~ TURB+COL+ALCA+PH+TEM)
 
-fisher_scoring_binomial(y = POL,X = Xbin2,beta_init = c(log(mean(POL)/(1-mean(POL))), rep(0, ncol(Xbin2)-1)),
+regresión_logistica_agua <- fisher_scoring_binomial(y = POL,X = Xbin2, beta_init = c(log(mean(POL)/(1-mean(POL))), rep(0, ncol(Xbin2)-1)),
                         max_iter = 500)
 
 mode1<-glm(formula = POL ~ TURB+PH, family = binomial)
