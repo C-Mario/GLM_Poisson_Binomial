@@ -502,449 +502,6 @@
 <span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Residual de devianza</span></span>
 <span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a>      dev <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="dv">2</span><span class="sc">*</span>(y<span class="sc">*</span><span class="fu">log</span>(y<span class="sc">/</span>pi_hat)<span class="sc">-</span>y<span class="sc">+</span>pi_hat))</span>
 <span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>      residual_deviance <span class="ot">&lt;-</span> <span class="fu">sign</span>(y <span class="sc">-</span> pi_hat) <span class="sc">*</span> <span class="fu">sqrt</span>(dev)</span>
-<<<<<<< HEAD
-<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">beta =</span> <span class="fu">as.vector</span>(beta_new), <span class="at">residual =</span> residual,</span>
-<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a>                  <span class="at">residual_pearson =</span> residual_pearson,</span>
-<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a>                  <span class="at">residual_anscombe =</span> residual_anscombe,</span>
-<span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a>                  <span class="at">residual_deviance =</span> residual_deviance))</span>
-<span id="cb27-35"><a href="#cb27-35" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb27-36"><a href="#cb27-36" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb27-37"><a href="#cb27-37" aria-hidden="true" tabindex="-1"></a>    beta <span class="ot">&lt;-</span> beta_new</span>
-<span id="cb27-38"><a href="#cb27-38" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb27-39"><a href="#cb27-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"No convergió"</span>)</span>
-<span id="cb27-40"><a href="#cb27-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">as.vector</span>(beta))</span>
-<span id="cb27-41"><a href="#cb27-41" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb27-42"><a href="#cb27-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-43"><a href="#cb27-43" aria-hidden="true" tabindex="-1"></a>beta_binomial <span class="ot">&lt;-</span> <span class="fu">fisher_scoring_binomial</span>(<span class="at">y =</span> yb, <span class="at">X =</span> X2, </span>
-<span id="cb27-44"><a href="#cb27-44" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">beta_init =</span> <span class="fu">rep</span>(<span class="fl">0.01</span>, <span class="fu">ncol</span>(X2)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-stderr">
-<pre><code>Convergió en iteración 7</code></pre>
-</div>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(beta_binomial) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(X2)</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>beta_binomial</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-stdout">
-<pre><code>$`(Intercept)`
-[1] 0.6978429 0.4927746
-
-$xbin
-            [,1]
-1    0.010236001
-2    0.005081208
-3    0.043447303
-4   -0.718915110
-5    0.004001494
-6    0.046389044
-7    0.252848106
-8    0.005761076
-9    0.045241912
-10   0.127964540
-11   0.008406466
-12   0.035527529
-13  -0.753166818
-14   0.201190462
-15   0.028035402
-16   0.315906901
-17   0.024867708
-18   0.047255678
-19   0.004966947
-20   0.012948780
-21   0.034390435
-22   0.062325483
-23   0.004977509
-24  -0.877348713
-25   0.041324759
-26   0.049929566
-27   0.070108089
-28   0.004174983
-29   0.176680470
-30   0.005983242
-31   0.250588302
-32   0.005807639
-33   0.015661751
-34   0.004382540
-35   0.267655017
-36   0.040778651
-37   0.090171918
-38   0.088645933
-39   0.043805551
-40   0.222542005
-41   0.098870767
-42   0.126807549
-43   0.017933158
-44   0.020321466
-45   0.026172653
-46  -0.910524567
-47   0.004699047
-48   0.042997668
-49  -0.932327394
-50   0.188580269
-51   0.193511665
-52   0.280838591
-53   0.009526513
-54   0.019471146
-55   0.018898278
-56   0.004640264
-57   0.007730558
-58   0.206564226
-59   0.061637496
-60   0.019593249
-61   0.230649218
-62   0.011166709
-63   0.300375722
-64   0.007471176
-65   0.003834654
-66   0.010450705
-67   0.037363108
-68   0.067038372
-69   0.020952481
-70   0.015517294
-71   0.062086037
-72   0.069301105
-73   0.039496922
-74   0.067874402
-75   0.035053701
-76   0.008237431
-77   0.035616201
-78   0.027330398
-79   0.021660053
-80   0.013332875
-81   0.026551905
-82   0.003684310
-83   0.324422132
-84   0.051361163
-85   0.110278173
-86   0.022851067
-87   0.007552514
-88  -0.867094451
-89  -0.873265407
-90   0.004256931
-91   0.016430018
-92   0.243704817
-93   0.105615257
-94   0.023883280
-95   0.025269142
-96   0.228166387
-97   0.021938282
-98   0.312642421
-99  -0.750790836
-100  0.021211969
-
-$&lt;NA&gt;
-            [,1]
-1    0.010288795
-2    0.005094167
-3    0.044423050
-4   -0.847888619
-5    0.004009525
-6    0.047503959
-7    0.292519791
-8    0.005777743
-9    0.046301416
-10   0.137032180
-11   0.008442025
-12   0.036175961
-13  -0.867851841
-14   0.225105324
-15   0.028436855
-16   0.381945598
-17   0.025182798
-18   0.048413426
-19   0.004979328
-20   0.013033439
-21   0.034997489
-22   0.064363492
-23   0.004989944
-24  -0.936668945
-25   0.042206037
-26   0.051224755
-27   0.072702927
-28   0.004183725
-29   0.194717210
-30   0.006001222
-31   0.289468000
-32   0.005824578
-33   0.015785856
-34   0.004392175
-35   0.312764557
-36   0.041636425
-37   0.094534785
-38   0.092857128
-39   0.044797733
-40   0.252390806
-41   0.104153619
-42   0.135703211
-43   0.018096153
-44   0.020531148
-45   0.026522031
-46  -0.954214109
-47   0.004710127
-48   0.043952988
-49  -0.965571019
-50   0.209350243
-51   0.215480564
-52   0.331164364
-53   0.009572217
-54   0.019663522
-55   0.019079422
-56   0.004651067
-57   0.007760613
-58   0.231899184
-59   0.063629669
-60   0.019788064
-61   0.262960059
-62   0.011229584
-63   0.359114046
-64   0.007499243
-65   0.003842027
-66   0.010505745
-67   0.038081298
-68   0.069405129
-69   0.021175494
-70   0.015639106
-71   0.064108031
-72   0.071834912
-73   0.040300819
-74   0.070302181
-75   0.035684721
-76   0.008271569
-77   0.036267920
-78   0.027711707
-79   0.021898513
-80   0.013422657
-81   0.026911586
-82   0.003691116
-83   0.394705126
-84   0.052733234
-85   0.116912902
-86   0.023116714
-87   0.007581197
-88  -0.931179065
-89  -0.934486708
-90   0.004266021
-91   0.016566677
-92   0.280232464
-93   0.111677187
-94   0.024173698
-95   0.025594588
-96   0.259710687
-97   0.022182959
-98   0.377100009
-99  -0.866481873
-100  0.021440586
-
-$&lt;NA&gt;
-            [,1]
-1    0.010306413
-2    0.005098489
-3    0.044749875
-4   -3.000000000
-5    0.004012202
-6    0.047877519
-7    0.306117523
-8    0.005783302
-9    0.046656366
-10   0.140098029
-11   0.008453889
-12   0.036392961
-13  -3.000000000
-14   0.233256610
-15   0.028571091
-16   0.404731366
-17   0.025288119
-18   0.048801375
-19   0.004983458
-20   0.013061699
-21   0.035200616
-22   0.065047554
-23   0.004994091
-24  -3.000000000
-25   0.042501150
-26   0.051658889
-27   0.073574644
-28   0.004186641
-29   0.200848476
-30   0.006007219
-31   0.302791048
-32   0.005830227
-33   0.015827296
-34   0.004395389
-35   0.328250591
-36   0.041923649
-37   0.096003733
-38   0.094274768
-39   0.045130075
-40   0.262588318
-41   0.105934041
-42   0.138710527
-43   0.018150593
-44   0.020601200
-45   0.026638829
-46  -3.000000000
-47   0.004713822
-48   0.044272954
-49  -3.000000000
-50   0.216419848
-51   0.222962294
-52   0.348465251
-53   0.009587468
-54   0.019727787
-55   0.019139931
-56   0.004654670
-57   0.007770640
-58   0.240539569
-59   0.064298296
-60   0.019853144
-61   0.274008392
-62   0.011250568
-63   0.379348367
-64   0.007508606
-65   0.003844486
-66   0.010524113
-67   0.038321691
-68   0.070199953
-69   0.021250006
-70   0.015679781
-71   0.064786699
-72   0.072686050
-73   0.040569964
-74   0.071117573
-75   0.035895883
-76   0.008282959
-77   0.036486021
-78   0.027839197
-79   0.021978191
-80   0.013452629
-81   0.027031834
-82   0.003693386
-83   0.418976508
-84   0.053193210
-85   0.119151766
-86   0.023205489
-87   0.007590766
-88  -3.000000000
-89  -3.000000000
-90   0.004269052
-91   0.016612313
-92   0.292740281
-93   0.113721704
-94   0.024270761
-95   0.025703375
-96   0.270494015
-97   0.022264717
-98   0.399332759
-99  -3.000000000
-100  0.021516972
-
-$&lt;NA&gt;
-          [,1]
-1   0.10134662
-2   0.07134311
-3   0.20998326
-4          NaN
-5   0.06329964
-6   0.21708620
-7   0.52724569
-8   0.07597484
-9   0.21434267
-10  0.36588313
-11  0.09181579
-12  0.18962385
-13         NaN
-14  0.46532613
-15  0.16823129
-16  0.59756475
-17  0.15835683
-18  0.21913754
-19  0.07053506
-20  0.11403989
-21  0.18652821
-22  0.25232820
-23  0.07061014
-24         NaN
-25  0.20471476
-26  0.22535667
-27  0.26798680
-28  0.06465916
-29  0.43394765
-30  0.07742878
-31  0.52463304
-32  0.07628185
-33  0.12547617
-34  0.06624922
-35  0.54418474
-36  0.20333844
-37  0.30501542
-38  0.30234037
-39  0.21086027
-40  0.49152140
-41  0.31989240
-42  0.36414667
-43  0.13431862
-44  0.14304117
-45  0.16249474
-46         NaN
-47  0.06860341
-48  0.20887764
-49         NaN
-50  0.44937548
-51  0.45565944
-52  0.55902483
-53  0.09775957
-54  0.13999634
-55  0.13790814
-56  0.06817229
-57  0.08803731
-58  0.47200999
-59  0.25090132
-60  0.14043752
-61  0.50123161
-62  0.10587043
-63  0.58064888
-64  0.08654400
-65  0.06196423
-66  0.10240769
-67  0.19452212
-68  0.26191197
-69  0.14526056
-70  0.12489311
-71  0.25183243
-72  0.26640194
-73  0.20007310
-74  0.26357897
-75  0.18833978
-76  0.09088541
-77  0.18986323
-78  0.16608259
-79  0.14771068
-80  0.11572638
-81  0.16367839
-82  0.06073586
-83  0.60674808
-84  0.22862154
-85  0.33854769
-86  0.15174809
-87  0.08701501
-88         NaN
-89         NaN
-90  0.06529155
-91  0.12853354
-92  0.51662693
-93  0.33102994
-94  0.15516478
-95  0.15964078
-96  0.49827062
-97  0.14866336
-98  0.59402764
-99         NaN
-100 0.14616373</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode" id="cb31"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>modelo_logistico <span class="ot">&lt;-</span> <span class="fu">glm</span>(yb <span class="sc">~</span> X2 <span class="sc">-</span> <span class="dv">1</span>, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>modelo_logistico<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-stdout">
-=======
 <span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">beta =</span> <span class="fu">as.vector</span>(beta_new), <span class="at">predichos =</span> pi_hat,</span>
 <span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a>                  <span class="at">residual =</span> residual,</span>
 <span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a>                  <span class="at">residual_pearson =</span> residual_pearson,</span>
@@ -959,42 +516,37 @@ $&lt;NA&gt;
 <span id="cb27-42"><a href="#cb27-42" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ejecutamos la función</span></span>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ejecutamos la función</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>beta_binomial <span class="ot">&lt;-</span> <span class="fu">fisher_scoring_binomial</span>(<span class="at">y =</span> yb, <span class="at">X =</span> X2, </span>
 <span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">beta_init =</span> <span class="fu">rep</span>(<span class="fl">0.01</span>, <span class="fu">ncol</span>(X2)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
+<div class="cell-output-stderr">
 <pre><code>Convergió en iteración 7</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimación de los parámetros del modelo</span></span>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimación de los parámetros del modelo</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(beta_binomial<span class="sc">$</span>beta) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(X2)</span>
 <span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>beta_binomial<span class="sc">$</span>beta</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
+<div class="cell-output-stdout">
 <pre><code>(Intercept)        xbin 
   0.6978429   0.4927746 </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>modelo_logistico <span class="ot">&lt;-</span> <span class="fu">glm</span>(yb <span class="sc">~</span> X2 <span class="sc">-</span> <span class="dv">1</span>, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>modelo_logistico <span class="ot">&lt;-</span> <span class="fu">glm</span>(yb <span class="sc">~</span> X2 <span class="sc">-</span> <span class="dv">1</span>, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>modelo_logistico<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
->>>>>>> 7efb5cd65e9320c7a796e882e472f5e14222c67f
+<div class="cell-output-stdout">
 <pre><code>X2(Intercept)        X2xbin 
     0.6978430     0.4927746 </code></pre>
 </div>
 </div>
-<<<<<<< HEAD
 <table class="table">
-=======
-<table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
 <col style="width: 42%">
 <col style="width: 32%">
 </colgroup>
->>>>>>> 7efb5cd65e9320c7a796e882e472f5e14222c67f
 <thead>
 <tr class="header">
 <th style="text-align: left;">Variable</th>
@@ -1020,19 +572,7 @@ $&lt;NA&gt;
 <h2 class="anchored" data-anchor-id="regresión-logística-con-los-datos-del-agua">Regresión logística con los datos del agua</h2>
 <p>A continuación, se utilizarán datos relacionados con tratamientos aplicados al agua. La variable de respuesta indica si se utilizó o no un polímero.</p>
 <div class="cell">
-<<<<<<< HEAD
-<div class="sourceCode" id="cb33"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>TURB<span class="ot">=</span><span class="fu">c</span>(<span class="dv">300</span>,<span class="dv">250</span>,<span class="dv">190</span>,<span class="dv">160</span>,<span class="dv">560</span>,<span class="dv">150</span>,<span class="dv">160</span>,<span class="dv">270</span>,<span class="dv">450</span>,<span class="dv">210</span>,<span class="dv">420</span>,<span class="dv">550</span>,<span class="dv">1200</span>,<span class="dv">420</span>,<span class="dv">500</span>,<span class="dv">150</span>,<span class="dv">200</span>,<span class="dv">390</span>,<span class="dv">380</span>,<span class="dv">140</span>,<span class="dv">170</span>,<span class="dv">1110</span>,<span class="dv">140</span>,<span class="dv">150</span>,<span class="dv">870</span>,<span class="dv">720</span>,<span class="dv">430</span>,<span class="dv">550</span>)</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>COL<span class="ot">=</span><span class="fu">c</span>(<span class="dv">100</span>,<span class="dv">100</span>,<span class="dv">50</span>,<span class="dv">70</span>,<span class="dv">200</span>,<span class="dv">100</span>,<span class="dv">100</span>,<span class="dv">70</span>,<span class="dv">130</span>,<span class="dv">100</span>,<span class="dv">100</span>,<span class="dv">250</span>,<span class="dv">250</span>,<span class="dv">100</span>,<span class="dv">120</span>,<span class="dv">75</span>,<span class="dv">50</span>,<span class="dv">140</span>,<span class="dv">120</span>,<span class="dv">50</span>,<span class="dv">110</span>,<span class="dv">100</span>,<span class="dv">80</span>,<span class="dv">90</span>,<span class="dv">150</span>,<span class="dv">200</span>,<span class="dv">100</span>,<span class="dv">200</span>)</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>ALCA<span class="ot">=</span><span class="fu">c</span>(<span class="dv">49</span>,<span class="dv">43</span>,<span class="dv">51</span>,<span class="dv">52</span>,<span class="dv">44</span>,<span class="dv">48</span>,<span class="dv">55</span>,<span class="dv">43</span>,<span class="dv">56</span>,<span class="dv">51</span>,<span class="dv">46</span>,<span class="dv">65</span>,<span class="dv">43</span>,<span class="dv">53</span>,<span class="dv">48</span>,<span class="dv">45</span>,<span class="dv">52</span>,<span class="dv">52</span>,<span class="dv">39</span>,<span class="dv">54</span>,<span class="dv">52</span>,<span class="dv">51</span>,<span class="dv">55</span>,<span class="dv">50</span>,<span class="dv">49</span>,<span class="dv">44</span>,<span class="dv">48</span>,<span class="dv">40</span>)</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>PH<span class="ot">=</span><span class="fu">c</span>(<span class="fl">8.33</span>,<span class="fl">7.64</span>,<span class="fl">7.62</span>,<span class="fl">7.62</span>,<span class="fl">8.19</span>,<span class="fl">7.90</span>,<span class="fl">7.60</span>,<span class="fl">8.07</span>,<span class="fl">7.53</span>,<span class="fl">7.72</span>,<span class="fl">7.90</span>,<span class="fl">7.68</span>,<span class="fl">7.93</span>,<span class="fl">7.90</span>,<span class="fl">8.01</span>,<span class="fl">7.71</span>,<span class="fl">7.66</span>,<span class="fl">8.09</span>,<span class="fl">8.17</span>,<span class="fl">8.16</span>,<span class="fl">7.58</span>,<span class="fl">8.06</span>,<span class="fl">7.51</span>,<span class="fl">7.56</span>,<span class="fl">7.60</span>,<span class="fl">8.18</span>,<span class="fl">7.20</span>,<span class="fl">7.55</span>)</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>TEM<span class="ot">=</span><span class="fu">c</span>(<span class="dv">25</span>,<span class="dv">27</span>,<span class="dv">28</span>,<span class="dv">26</span>,<span class="dv">25</span>,<span class="dv">26</span>,<span class="dv">26</span>,<span class="dv">24</span>,<span class="dv">27</span>,<span class="dv">27</span>,<span class="dv">26</span>,<span class="dv">27</span>,<span class="dv">26</span>,<span class="dv">26</span>,<span class="dv">27</span>,<span class="dv">27</span>,<span class="dv">26</span>,<span class="dv">27</span>,<span class="dv">26</span>,<span class="dv">25</span>,<span class="dv">27</span>,<span class="dv">23</span>,<span class="dv">27</span>,<span class="dv">27</span>,<span class="dv">27</span>,<span class="dv">23</span>,<span class="dv">26</span>,<span class="dv">27</span>)</span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>POL<span class="ot">=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>)</span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>Xbin2 <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> TURB<span class="sc">+</span>COL<span class="sc">+</span>ALCA<span class="sc">+</span>PH<span class="sc">+</span>TEM)</span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="fu">fisher_scoring_binomial</span>(<span class="at">y =</span> POL,<span class="at">X =</span> Xbin2,<span class="at">beta_init =</span> <span class="fu">c</span>(<span class="fu">log</span>(<span class="fu">mean</span>(POL)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">mean</span>(POL))), <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(Xbin2)<span class="sc">-</span><span class="dv">1</span>)),</span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>                        <span class="at">max_iter =</span> <span class="dv">500</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-stderr">
-=======
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>TURB<span class="ot">=</span><span class="fu">c</span>(<span class="dv">300</span>,<span class="dv">250</span>,<span class="dv">190</span>,<span class="dv">160</span>,<span class="dv">560</span>,<span class="dv">150</span>,<span class="dv">160</span>,<span class="dv">270</span>,<span class="dv">450</span>,<span class="dv">210</span>,<span class="dv">420</span>,<span class="dv">550</span>,<span class="dv">1200</span>,<span class="dv">420</span>,<span class="dv">500</span>,<span class="dv">150</span>,<span class="dv">200</span>,<span class="dv">390</span>,<span class="dv">380</span>,<span class="dv">140</span>,<span class="dv">170</span>,<span class="dv">1110</span>,<span class="dv">140</span>,<span class="dv">150</span>,<span class="dv">870</span>,<span class="dv">720</span>,<span class="dv">430</span>,<span class="dv">550</span>)</span>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>TURB<span class="ot">=</span><span class="fu">c</span>(<span class="dv">300</span>,<span class="dv">250</span>,<span class="dv">190</span>,<span class="dv">160</span>,<span class="dv">560</span>,<span class="dv">150</span>,<span class="dv">160</span>,<span class="dv">270</span>,<span class="dv">450</span>,<span class="dv">210</span>,<span class="dv">420</span>,<span class="dv">550</span>,<span class="dv">1200</span>,<span class="dv">420</span>,<span class="dv">500</span>,<span class="dv">150</span>,<span class="dv">200</span>,<span class="dv">390</span>,<span class="dv">380</span>,<span class="dv">140</span>,<span class="dv">170</span>,<span class="dv">1110</span>,<span class="dv">140</span>,<span class="dv">150</span>,<span class="dv">870</span>,<span class="dv">720</span>,<span class="dv">430</span>,<span class="dv">550</span>)</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>COL<span class="ot">=</span><span class="fu">c</span>(<span class="dv">100</span>,<span class="dv">100</span>,<span class="dv">50</span>,<span class="dv">70</span>,<span class="dv">200</span>,<span class="dv">100</span>,<span class="dv">100</span>,<span class="dv">70</span>,<span class="dv">130</span>,<span class="dv">100</span>,<span class="dv">100</span>,<span class="dv">250</span>,<span class="dv">250</span>,<span class="dv">100</span>,<span class="dv">120</span>,<span class="dv">75</span>,<span class="dv">50</span>,<span class="dv">140</span>,<span class="dv">120</span>,<span class="dv">50</span>,<span class="dv">110</span>,<span class="dv">100</span>,<span class="dv">80</span>,<span class="dv">90</span>,<span class="dv">150</span>,<span class="dv">200</span>,<span class="dv">100</span>,<span class="dv">200</span>)</span>
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -1048,8 +588,7 @@ $&lt;NA&gt;
 <span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a><span class="fu">fisher_scoring_binomial</span>(<span class="at">y =</span> POL,<span class="at">X =</span> Xbin2,<span class="at">beta_init =</span> <span class="fu">c</span>(<span class="fu">log</span>(<span class="fu">mean</span>(POL)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">mean</span>(POL))), <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(Xbin2)<span class="sc">-</span><span class="dv">1</span>)),</span>
 <span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>                        <span class="at">max_iter =</span> <span class="dv">500</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
->>>>>>> 7efb5cd65e9320c7a796e882e472f5e14222c67f
+<div class="cell-output-stderr">
 <pre><code>Convergió en iteración 9</code></pre>
 </div>
 <div class="cell-output-stdout">
@@ -1211,17 +750,10 @@ $residual_deviance
 27 0.089440524
 28 0.500880466</code></pre>
 </div>
-<<<<<<< HEAD
-<div class="sourceCode" id="cb36"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>mode1<span class="ot">&lt;-</span><span class="fu">glm</span>(<span class="at">formula =</span> POL <span class="sc">~</span> TURB<span class="sc">+</span>PH, <span class="at">family =</span> binomial)</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>mode2<span class="ot">&lt;-</span><span class="fu">glm</span>(<span class="at">formula =</span> POL <span class="sc">~</span> TURB, <span class="at">family =</span> binomial)</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mode1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-stdout">
-=======
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>mode1<span class="ot">&lt;-</span><span class="fu">glm</span>(<span class="at">formula =</span> POL <span class="sc">~</span> TURB<span class="sc">+</span>PH, <span class="at">family =</span> binomial)</span>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>mode1<span class="ot">&lt;-</span><span class="fu">glm</span>(<span class="at">formula =</span> POL <span class="sc">~</span> TURB<span class="sc">+</span>PH, <span class="at">family =</span> binomial)</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>mode2<span class="ot">&lt;-</span><span class="fu">glm</span>(<span class="at">formula =</span> POL <span class="sc">~</span> TURB, <span class="at">family =</span> binomial)</span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mode1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
->>>>>>> 7efb5cd65e9320c7a796e882e472f5e14222c67f
+<div class="cell-output-stdout">
 <pre><code>
 Call:
 glm(formula = POL ~ TURB + PH, family = binomial)
@@ -1242,13 +774,8 @@ AIC: 18.191
 
 Number of Fisher Scoring iterations: 7</code></pre>
 </div>
-<<<<<<< HEAD
-<div class="sourceCode" id="cb38"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mode2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mode2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-stdout">
-=======
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mode2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
->>>>>>> 7efb5cd65e9320c7a796e882e472f5e14222c67f
 <pre><code>
 Call:
 glm(formula = POL ~ TURB, family = binomial)
@@ -1268,13 +795,8 @@ AIC: 19.394
 
 Number of Fisher Scoring iterations: 7</code></pre>
 </div>
-<<<<<<< HEAD
-<div class="sourceCode" id="cb40"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>r1<span class="ot">=</span><span class="fu">resid</span>(mode1, <span class="at">type=</span><span class="st">'deviance'</span>)</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>r2<span class="ot">=</span><span class="fu">resid</span>(mode2, <span class="at">type=</span><span class="st">'deviance'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-=======
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>r1<span class="ot">=</span><span class="fu">resid</span>(mode1, <span class="at">type=</span><span class="st">'deviance'</span>)</span>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>r1<span class="ot">=</span><span class="fu">resid</span>(mode1, <span class="at">type=</span><span class="st">'deviance'</span>)</span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>r2<span class="ot">=</span><span class="fu">resid</span>(mode2, <span class="at">type=</span><span class="st">'deviance'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
->>>>>>> 7efb5cd65e9320c7a796e882e472f5e14222c67f
 </div>
 <ul>
 <li><p>La <strong>función score</strong> (vector de primeras derivadas) se puede derivar y resulta ser: <span class="math display">\[\frac{\partial \mathcal{l}(\beta)}{\partial \beta} = \sum_{i=1}^n (y_i - n_i p_i)x_i = \sum_{i=1}^n (y_i - \mu_i)x_i = X^t(y - \mu)\]</span></p></li>
@@ -1297,78 +819,78 @@ Number of Fisher Scoring iterations: 7</code></pre>
 </ul>
 <p>A continuación, adaptaremos el algoritmo para un caso binomial usando datos generados por simulación.</p>
 <div class="cell">
-<div class="sourceCode" id="cb41"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Población binomial</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Parámetros</span></span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1040</span>)</span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Población binomial</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Parámetros</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1040</span>)</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb42"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulación de datos</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>xbin <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">10</span>)</span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>X2 <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> xbin)  <span class="co"># Incluye intercepto automáticamente</span></span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>eta <span class="ot">&lt;-</span> X2 <span class="sc">%*%</span> beta</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulación de datos</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>xbin <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">10</span>)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>X2 <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> xbin)  <span class="co"># Incluye intercepto automáticamente</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>eta <span class="ot">&lt;-</span> X2 <span class="sc">%*%</span> beta</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb43"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dataset simulado</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>pi <span class="ot">&lt;-</span> <span class="fu">exp</span>(eta)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(eta))</span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>yb <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  yb[i] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>,<span class="at">size =</span> <span class="dv">1</span>,<span class="at">prob =</span> pi[i])</span>
-<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>data_bin <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">y =</span> yb, <span class="at">x =</span> xbin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dataset simulado</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>pi <span class="ot">&lt;-</span> <span class="fu">exp</span>(eta)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(eta))</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>yb <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>  yb[i] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>,<span class="at">size =</span> <span class="dv">1</span>,<span class="at">prob =</span> pi[i])</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>data_bin <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">y =</span> yb, <span class="at">x =</span> xbin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb44"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creación de la función</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>fisher_scoring_binomial <span class="ot">&lt;-</span> <span class="cf">function</span>(y, X, beta_init, <span class="at">tol =</span> <span class="fl">1e-5</span>, <span class="at">max_iter =</span> <span class="dv">100</span>) {</span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">&lt;-</span> beta_init</span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>max_iter) {</span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    eta <span class="ot">&lt;-</span> X <span class="sc">%*%</span> beta</span>
-<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>    pi <span class="ot">&lt;-</span> <span class="fu">exp</span>(eta) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(eta))</span>
-<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>    W <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="fu">as.vector</span>(pi <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi)))</span>
-<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>    z <span class="ot">&lt;-</span> eta <span class="sc">+</span> (y <span class="sc">-</span> pi) <span class="sc">/</span> (pi <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi))</span>
-<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>    beta_new <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
-<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> W <span class="sc">%*%</span> X) <span class="sc">%*%</span> (<span class="fu">t</span>(X) <span class="sc">%*%</span> W <span class="sc">%*%</span> z)</span>
-<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>    }, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
-<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">"Fallo al invertir la matriz. ¿X tiene multicolinealidad?"</span>)</span>
-<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">max</span>(<span class="fu">abs</span>(beta_new <span class="sc">-</span> beta), <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">&lt;</span> tol) {</span>
-<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a>      <span class="fu">message</span>(<span class="st">"Convergió en iteración "</span>, iter)</span>
-<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a>      pi_hat <span class="ot">&lt;-</span> <span class="fu">exp</span>(X<span class="sc">%*%</span>beta_new) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(X<span class="sc">%*%</span>beta_new))</span>
-<span id="cb44-22"><a href="#cb44-22" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Resdiaul crudo</span></span>
-<span id="cb44-23"><a href="#cb44-23" aria-hidden="true" tabindex="-1"></a>      residual <span class="ot">&lt;-</span> y<span class="sc">-</span>pi_hat</span>
-<span id="cb44-24"><a href="#cb44-24" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Residual de pearson</span></span>
-<span id="cb44-25"><a href="#cb44-25" aria-hidden="true" tabindex="-1"></a>      residual_pearson <span class="ot">&lt;-</span> (y <span class="sc">-</span> pi_hat) <span class="sc">/</span> <span class="fu">sqrt</span>(pi_hat)</span>
-<span id="cb44-26"><a href="#cb44-26" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Residual de Anscombe</span></span>
-<span id="cb44-27"><a href="#cb44-27" aria-hidden="true" tabindex="-1"></a>      residual_anscombe <span class="ot">&lt;-</span> <span class="dv">3</span><span class="sc">*</span>(y<span class="sc">^</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>)<span class="sc">-</span>pi_hat<span class="sc">^</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>))<span class="sc">/</span>(pi_hat<span class="sc">^</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>))</span>
-<span id="cb44-28"><a href="#cb44-28" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Residual de devianza</span></span>
-<span id="cb44-29"><a href="#cb44-29" aria-hidden="true" tabindex="-1"></a>      dev <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="dv">2</span><span class="sc">*</span>(y<span class="sc">*</span><span class="fu">log</span>(y<span class="sc">/</span>pi_hat)<span class="sc">-</span>y<span class="sc">+</span>pi_hat))</span>
-<span id="cb44-30"><a href="#cb44-30" aria-hidden="true" tabindex="-1"></a>      residual_deviance <span class="ot">&lt;-</span> <span class="fu">sign</span>(y <span class="sc">-</span> pi_hat) <span class="sc">*</span> <span class="fu">sqrt</span>(dev)</span>
-<span id="cb44-31"><a href="#cb44-31" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">beta =</span> <span class="fu">as.vector</span>(beta_new), <span class="at">residual =</span> residual,</span>
-<span id="cb44-32"><a href="#cb44-32" aria-hidden="true" tabindex="-1"></a>                  <span class="at">residual_pearson =</span> residual_pearson,</span>
-<span id="cb44-33"><a href="#cb44-33" aria-hidden="true" tabindex="-1"></a>                  <span class="at">residual_anscombe =</span> residual_anscombe,</span>
-<span id="cb44-34"><a href="#cb44-34" aria-hidden="true" tabindex="-1"></a>                  <span class="at">residual_deviance =</span> residual_deviance))</span>
-<span id="cb44-35"><a href="#cb44-35" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb44-36"><a href="#cb44-36" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb44-37"><a href="#cb44-37" aria-hidden="true" tabindex="-1"></a>    beta <span class="ot">&lt;-</span> beta_new</span>
-<span id="cb44-38"><a href="#cb44-38" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb44-39"><a href="#cb44-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"No convergió"</span>)</span>
-<span id="cb44-40"><a href="#cb44-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">as.vector</span>(beta))</span>
-<span id="cb44-41"><a href="#cb44-41" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb44-42"><a href="#cb44-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-43"><a href="#cb44-43" aria-hidden="true" tabindex="-1"></a>beta_binomial <span class="ot">&lt;-</span> <span class="fu">fisher_scoring_binomial</span>(<span class="at">y =</span> yb, <span class="at">X =</span> X2, </span>
-<span id="cb44-44"><a href="#cb44-44" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">beta_init =</span> <span class="fu">rep</span>(<span class="fl">0.01</span>, <span class="fu">ncol</span>(X2)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creación de la función</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>fisher_scoring_binomial <span class="ot">&lt;-</span> <span class="cf">function</span>(y, X, beta_init, <span class="at">tol =</span> <span class="fl">1e-5</span>, <span class="at">max_iter =</span> <span class="dv">100</span>) {</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">&lt;-</span> beta_init</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>max_iter) {</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>    eta <span class="ot">&lt;-</span> X <span class="sc">%*%</span> beta</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>    pi <span class="ot">&lt;-</span> <span class="fu">exp</span>(eta) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(eta))</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>    W <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="fu">as.vector</span>(pi <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi)))</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>    z <span class="ot">&lt;-</span> eta <span class="sc">+</span> (y <span class="sc">-</span> pi) <span class="sc">/</span> (pi <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi))</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>    beta_new <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> W <span class="sc">%*%</span> X) <span class="sc">%*%</span> (<span class="fu">t</span>(X) <span class="sc">%*%</span> W <span class="sc">%*%</span> z)</span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>    }, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">"Fallo al invertir la matriz. ¿X tiene multicolinealidad?"</span>)</span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">max</span>(<span class="fu">abs</span>(beta_new <span class="sc">-</span> beta), <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">&lt;</span> tol) {</span>
+<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a>      <span class="fu">message</span>(<span class="st">"Convergió en iteración "</span>, iter)</span>
+<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a>      pi_hat <span class="ot">&lt;-</span> <span class="fu">exp</span>(X<span class="sc">%*%</span>beta_new) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(X<span class="sc">%*%</span>beta_new))</span>
+<span id="cb45-22"><a href="#cb45-22" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Resdiaul crudo</span></span>
+<span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a>      residual <span class="ot">&lt;-</span> y<span class="sc">-</span>pi_hat</span>
+<span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Residual de pearson</span></span>
+<span id="cb45-25"><a href="#cb45-25" aria-hidden="true" tabindex="-1"></a>      residual_pearson <span class="ot">&lt;-</span> (y <span class="sc">-</span> pi_hat) <span class="sc">/</span> <span class="fu">sqrt</span>(pi_hat)</span>
+<span id="cb45-26"><a href="#cb45-26" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Residual de Anscombe</span></span>
+<span id="cb45-27"><a href="#cb45-27" aria-hidden="true" tabindex="-1"></a>      residual_anscombe <span class="ot">&lt;-</span> <span class="dv">3</span><span class="sc">*</span>(y<span class="sc">^</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>)<span class="sc">-</span>pi_hat<span class="sc">^</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>))<span class="sc">/</span>(pi_hat<span class="sc">^</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>))</span>
+<span id="cb45-28"><a href="#cb45-28" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Residual de devianza</span></span>
+<span id="cb45-29"><a href="#cb45-29" aria-hidden="true" tabindex="-1"></a>      dev <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="dv">2</span><span class="sc">*</span>(y<span class="sc">*</span><span class="fu">log</span>(y<span class="sc">/</span>pi_hat)<span class="sc">-</span>y<span class="sc">+</span>pi_hat))</span>
+<span id="cb45-30"><a href="#cb45-30" aria-hidden="true" tabindex="-1"></a>      residual_deviance <span class="ot">&lt;-</span> <span class="fu">sign</span>(y <span class="sc">-</span> pi_hat) <span class="sc">*</span> <span class="fu">sqrt</span>(dev)</span>
+<span id="cb45-31"><a href="#cb45-31" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">beta =</span> <span class="fu">as.vector</span>(beta_new), <span class="at">residual =</span> residual,</span>
+<span id="cb45-32"><a href="#cb45-32" aria-hidden="true" tabindex="-1"></a>                  <span class="at">residual_pearson =</span> residual_pearson,</span>
+<span id="cb45-33"><a href="#cb45-33" aria-hidden="true" tabindex="-1"></a>                  <span class="at">residual_anscombe =</span> residual_anscombe,</span>
+<span id="cb45-34"><a href="#cb45-34" aria-hidden="true" tabindex="-1"></a>                  <span class="at">residual_deviance =</span> residual_deviance))</span>
+<span id="cb45-35"><a href="#cb45-35" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb45-36"><a href="#cb45-36" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-37"><a href="#cb45-37" aria-hidden="true" tabindex="-1"></a>    beta <span class="ot">&lt;-</span> beta_new</span>
+<span id="cb45-38"><a href="#cb45-38" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb45-39"><a href="#cb45-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"No convergió"</span>)</span>
+<span id="cb45-40"><a href="#cb45-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">as.vector</span>(beta))</span>
+<span id="cb45-41"><a href="#cb45-41" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb45-42"><a href="#cb45-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-43"><a href="#cb45-43" aria-hidden="true" tabindex="-1"></a>beta_binomial <span class="ot">&lt;-</span> <span class="fu">fisher_scoring_binomial</span>(<span class="at">y =</span> yb, <span class="at">X =</span> X2, </span>
+<span id="cb45-44"><a href="#cb45-44" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">beta_init =</span> <span class="fu">rep</span>(<span class="fl">0.01</span>, <span class="fu">ncol</span>(X2)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-stderr">
 <pre><code>Convergió en iteración 7</code></pre>
 </div>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(beta_binomial) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(X2)</span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>beta_binomial</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(beta_binomial) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(X2)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>beta_binomial</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-stdout">
 <pre><code>$`(Intercept)`
 [1] 0.6978429 0.4927746
@@ -1787,9 +1309,9 @@ $&lt;NA&gt;
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb48"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>modelo_logistico <span class="ot">&lt;-</span> <span class="fu">glm</span>(yb <span class="sc">~</span> X2 <span class="sc">-</span> <span class="dv">1</span>, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>modelo_logistico<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>modelo_logistico <span class="ot">&lt;-</span> <span class="fu">glm</span>(yb <span class="sc">~</span> X2 <span class="sc">-</span> <span class="dv">1</span>, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>modelo_logistico<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-stdout">
 <pre><code>X2(Intercept)        X2xbin 
     0.6978430     0.4927746 </code></pre>
@@ -1815,15 +1337,15 @@ $&lt;NA&gt;
 </table>
 <p>A continución se hará uso de algunos datos obtenidos sobre unos tratamientos al agua, de los cuales la variable respuesta será si se le aplicó o no polímero:</p>
 <div class="cell">
-<div class="sourceCode" id="cb50"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>TURB<span class="ot">=</span><span class="fu">c</span>(<span class="dv">300</span>,<span class="dv">250</span>,<span class="dv">190</span>,<span class="dv">160</span>,<span class="dv">560</span>,<span class="dv">150</span>,<span class="dv">160</span>,<span class="dv">270</span>,<span class="dv">450</span>,<span class="dv">210</span>,<span class="dv">420</span>,<span class="dv">550</span>,<span class="dv">1200</span>,<span class="dv">420</span>,<span class="dv">500</span>,<span class="dv">150</span>,<span class="dv">200</span>,<span class="dv">390</span>,<span class="dv">380</span>,<span class="dv">140</span>,<span class="dv">170</span>,<span class="dv">1110</span>,<span class="dv">140</span>,<span class="dv">150</span>,<span class="dv">870</span>,<span class="dv">720</span>,<span class="dv">430</span>,<span class="dv">550</span>)</span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>COL<span class="ot">=</span><span class="fu">c</span>(<span class="dv">100</span>,<span class="dv">100</span>,<span class="dv">50</span>,<span class="dv">70</span>,<span class="dv">200</span>,<span class="dv">100</span>,<span class="dv">100</span>,<span class="dv">70</span>,<span class="dv">130</span>,<span class="dv">100</span>,<span class="dv">100</span>,<span class="dv">250</span>,<span class="dv">250</span>,<span class="dv">100</span>,<span class="dv">120</span>,<span class="dv">75</span>,<span class="dv">50</span>,<span class="dv">140</span>,<span class="dv">120</span>,<span class="dv">50</span>,<span class="dv">110</span>,<span class="dv">100</span>,<span class="dv">80</span>,<span class="dv">90</span>,<span class="dv">150</span>,<span class="dv">200</span>,<span class="dv">100</span>,<span class="dv">200</span>)</span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>ALCA<span class="ot">=</span><span class="fu">c</span>(<span class="dv">49</span>,<span class="dv">43</span>,<span class="dv">51</span>,<span class="dv">52</span>,<span class="dv">44</span>,<span class="dv">48</span>,<span class="dv">55</span>,<span class="dv">43</span>,<span class="dv">56</span>,<span class="dv">51</span>,<span class="dv">46</span>,<span class="dv">65</span>,<span class="dv">43</span>,<span class="dv">53</span>,<span class="dv">48</span>,<span class="dv">45</span>,<span class="dv">52</span>,<span class="dv">52</span>,<span class="dv">39</span>,<span class="dv">54</span>,<span class="dv">52</span>,<span class="dv">51</span>,<span class="dv">55</span>,<span class="dv">50</span>,<span class="dv">49</span>,<span class="dv">44</span>,<span class="dv">48</span>,<span class="dv">40</span>)</span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>PH<span class="ot">=</span><span class="fu">c</span>(<span class="fl">8.33</span>,<span class="fl">7.64</span>,<span class="fl">7.62</span>,<span class="fl">7.62</span>,<span class="fl">8.19</span>,<span class="fl">7.90</span>,<span class="fl">7.60</span>,<span class="fl">8.07</span>,<span class="fl">7.53</span>,<span class="fl">7.72</span>,<span class="fl">7.90</span>,<span class="fl">7.68</span>,<span class="fl">7.93</span>,<span class="fl">7.90</span>,<span class="fl">8.01</span>,<span class="fl">7.71</span>,<span class="fl">7.66</span>,<span class="fl">8.09</span>,<span class="fl">8.17</span>,<span class="fl">8.16</span>,<span class="fl">7.58</span>,<span class="fl">8.06</span>,<span class="fl">7.51</span>,<span class="fl">7.56</span>,<span class="fl">7.60</span>,<span class="fl">8.18</span>,<span class="fl">7.20</span>,<span class="fl">7.55</span>)</span>
-<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>TEM<span class="ot">=</span><span class="fu">c</span>(<span class="dv">25</span>,<span class="dv">27</span>,<span class="dv">28</span>,<span class="dv">26</span>,<span class="dv">25</span>,<span class="dv">26</span>,<span class="dv">26</span>,<span class="dv">24</span>,<span class="dv">27</span>,<span class="dv">27</span>,<span class="dv">26</span>,<span class="dv">27</span>,<span class="dv">26</span>,<span class="dv">26</span>,<span class="dv">27</span>,<span class="dv">27</span>,<span class="dv">26</span>,<span class="dv">27</span>,<span class="dv">26</span>,<span class="dv">25</span>,<span class="dv">27</span>,<span class="dv">23</span>,<span class="dv">27</span>,<span class="dv">27</span>,<span class="dv">27</span>,<span class="dv">23</span>,<span class="dv">26</span>,<span class="dv">27</span>)</span>
-<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>POL<span class="ot">=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>)</span>
-<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>Xbin2 <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> TURB<span class="sc">+</span>COL<span class="sc">+</span>ALCA<span class="sc">+</span>PH<span class="sc">+</span>TEM)</span>
-<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a><span class="fu">fisher_scoring_binomial</span>(<span class="at">y =</span> POL,<span class="at">X =</span> Xbin2,<span class="at">beta_init =</span> <span class="fu">c</span>(<span class="fu">log</span>(<span class="fu">mean</span>(POL)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">mean</span>(POL))), <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(Xbin2)<span class="sc">-</span><span class="dv">1</span>)),</span>
-<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>                        <span class="at">max_iter =</span> <span class="dv">500</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>TURB<span class="ot">=</span><span class="fu">c</span>(<span class="dv">300</span>,<span class="dv">250</span>,<span class="dv">190</span>,<span class="dv">160</span>,<span class="dv">560</span>,<span class="dv">150</span>,<span class="dv">160</span>,<span class="dv">270</span>,<span class="dv">450</span>,<span class="dv">210</span>,<span class="dv">420</span>,<span class="dv">550</span>,<span class="dv">1200</span>,<span class="dv">420</span>,<span class="dv">500</span>,<span class="dv">150</span>,<span class="dv">200</span>,<span class="dv">390</span>,<span class="dv">380</span>,<span class="dv">140</span>,<span class="dv">170</span>,<span class="dv">1110</span>,<span class="dv">140</span>,<span class="dv">150</span>,<span class="dv">870</span>,<span class="dv">720</span>,<span class="dv">430</span>,<span class="dv">550</span>)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>COL<span class="ot">=</span><span class="fu">c</span>(<span class="dv">100</span>,<span class="dv">100</span>,<span class="dv">50</span>,<span class="dv">70</span>,<span class="dv">200</span>,<span class="dv">100</span>,<span class="dv">100</span>,<span class="dv">70</span>,<span class="dv">130</span>,<span class="dv">100</span>,<span class="dv">100</span>,<span class="dv">250</span>,<span class="dv">250</span>,<span class="dv">100</span>,<span class="dv">120</span>,<span class="dv">75</span>,<span class="dv">50</span>,<span class="dv">140</span>,<span class="dv">120</span>,<span class="dv">50</span>,<span class="dv">110</span>,<span class="dv">100</span>,<span class="dv">80</span>,<span class="dv">90</span>,<span class="dv">150</span>,<span class="dv">200</span>,<span class="dv">100</span>,<span class="dv">200</span>)</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>ALCA<span class="ot">=</span><span class="fu">c</span>(<span class="dv">49</span>,<span class="dv">43</span>,<span class="dv">51</span>,<span class="dv">52</span>,<span class="dv">44</span>,<span class="dv">48</span>,<span class="dv">55</span>,<span class="dv">43</span>,<span class="dv">56</span>,<span class="dv">51</span>,<span class="dv">46</span>,<span class="dv">65</span>,<span class="dv">43</span>,<span class="dv">53</span>,<span class="dv">48</span>,<span class="dv">45</span>,<span class="dv">52</span>,<span class="dv">52</span>,<span class="dv">39</span>,<span class="dv">54</span>,<span class="dv">52</span>,<span class="dv">51</span>,<span class="dv">55</span>,<span class="dv">50</span>,<span class="dv">49</span>,<span class="dv">44</span>,<span class="dv">48</span>,<span class="dv">40</span>)</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>PH<span class="ot">=</span><span class="fu">c</span>(<span class="fl">8.33</span>,<span class="fl">7.64</span>,<span class="fl">7.62</span>,<span class="fl">7.62</span>,<span class="fl">8.19</span>,<span class="fl">7.90</span>,<span class="fl">7.60</span>,<span class="fl">8.07</span>,<span class="fl">7.53</span>,<span class="fl">7.72</span>,<span class="fl">7.90</span>,<span class="fl">7.68</span>,<span class="fl">7.93</span>,<span class="fl">7.90</span>,<span class="fl">8.01</span>,<span class="fl">7.71</span>,<span class="fl">7.66</span>,<span class="fl">8.09</span>,<span class="fl">8.17</span>,<span class="fl">8.16</span>,<span class="fl">7.58</span>,<span class="fl">8.06</span>,<span class="fl">7.51</span>,<span class="fl">7.56</span>,<span class="fl">7.60</span>,<span class="fl">8.18</span>,<span class="fl">7.20</span>,<span class="fl">7.55</span>)</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>TEM<span class="ot">=</span><span class="fu">c</span>(<span class="dv">25</span>,<span class="dv">27</span>,<span class="dv">28</span>,<span class="dv">26</span>,<span class="dv">25</span>,<span class="dv">26</span>,<span class="dv">26</span>,<span class="dv">24</span>,<span class="dv">27</span>,<span class="dv">27</span>,<span class="dv">26</span>,<span class="dv">27</span>,<span class="dv">26</span>,<span class="dv">26</span>,<span class="dv">27</span>,<span class="dv">27</span>,<span class="dv">26</span>,<span class="dv">27</span>,<span class="dv">26</span>,<span class="dv">25</span>,<span class="dv">27</span>,<span class="dv">23</span>,<span class="dv">27</span>,<span class="dv">27</span>,<span class="dv">27</span>,<span class="dv">23</span>,<span class="dv">26</span>,<span class="dv">27</span>)</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>POL<span class="ot">=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>)</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>Xbin2 <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> TURB<span class="sc">+</span>COL<span class="sc">+</span>ALCA<span class="sc">+</span>PH<span class="sc">+</span>TEM)</span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a><span class="fu">fisher_scoring_binomial</span>(<span class="at">y =</span> POL,<span class="at">X =</span> Xbin2,<span class="at">beta_init =</span> <span class="fu">c</span>(<span class="fu">log</span>(<span class="fu">mean</span>(POL)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">mean</span>(POL))), <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(Xbin2)<span class="sc">-</span><span class="dv">1</span>)),</span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>                        <span class="at">max_iter =</span> <span class="dv">500</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-stderr">
 <pre><code>Convergió en iteración 9</code></pre>
 </div>
@@ -1955,9 +1477,9 @@ $residual_deviance
 27 0.089440524
 28 0.500880466</code></pre>
 </div>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>mode1<span class="ot">&lt;-</span><span class="fu">glm</span>(<span class="at">formula =</span> POL <span class="sc">~</span> TURB<span class="sc">+</span>PH, <span class="at">family =</span> binomial)</span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>mode2<span class="ot">&lt;-</span><span class="fu">glm</span>(<span class="at">formula =</span> POL <span class="sc">~</span> TURB, <span class="at">family =</span> binomial)</span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mode1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>mode1<span class="ot">&lt;-</span><span class="fu">glm</span>(<span class="at">formula =</span> POL <span class="sc">~</span> TURB<span class="sc">+</span>PH, <span class="at">family =</span> binomial)</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>mode2<span class="ot">&lt;-</span><span class="fu">glm</span>(<span class="at">formula =</span> POL <span class="sc">~</span> TURB, <span class="at">family =</span> binomial)</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mode1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-stdout">
 <pre><code>
 Call:
@@ -1979,7 +1501,7 @@ AIC: 18.191
 
 Number of Fisher Scoring iterations: 7</code></pre>
 </div>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mode2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mode2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-stdout">
 <pre><code>
 Call:
@@ -2000,8 +1522,8 @@ AIC: 19.394
 
 Number of Fisher Scoring iterations: 7</code></pre>
 </div>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>r1<span class="ot">=</span><span class="fu">resid</span>(mode1, <span class="at">type=</span><span class="st">'deviance'</span>)</span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>r2<span class="ot">=</span><span class="fu">resid</span>(mode2, <span class="at">type=</span><span class="st">'deviance'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>r1<span class="ot">=</span><span class="fu">resid</span>(mode1, <span class="at">type=</span><span class="st">'deviance'</span>)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>r2<span class="ot">=</span><span class="fu">resid</span>(mode2, <span class="at">type=</span><span class="st">'deviance'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </main>
