@@ -78,6 +78,24 @@ $$\beta^{(k+1)} = \left(X^tW^{(k)}X\right)^{-1}X^tW^{(k)}\widetilde{y}.$$
 
 $$\|\beta^{(k+1)} - \beta^{(k)}\| < \epsilon, \quad \quad \epsilon=0.0000001$$
 
+El estudio de los residuales es importante ya que ayuda a evaluar la calidad del modelo y detectar posibles desviaciones de los supuestos del mismo. En este caso se ha trabajado con los residuales crudos, los residuales de pearson, los residuales de devianza y los residuales de anscombe.
+
+# Residuales
+- **Residuales crudos (o de respuesta):** estos residuales son normalmente usados en modelos de regresión lineal, en modelos lineales generalizados realmente no son tan eficientes, sin embargo se decidió usar este tipo de residuales debido a que se quiere comparar con los otros tipos. Estos residuales representan la diferencia entre el valor observado y el valor ajustado de la media:
+$$y-\hat{\mu}$$
+-**Residuales de Pearson:** estandariza el residual crudo dividiendolo por lo desviación estándar estimada para la distribución en cuestión. La formula general y en el caso de la Poisson son:
+$$r_{P}=\frac{y-\hat{\mu}}{\sqrt{Var(\hat{\mu})}}\Longrightarrow\frac{y-\hat{\mu}}{\sqrt{\hat{\mu}}}$$
+
+
+-**Residuales de desviación:** los residuos de desviación, como conjunto, suelen ser más cercanos a la normalidad con distribuciones GLM no normales que los residuos de Pearson.
+$$r_{D}=sign(y-\mu)\sqrt{d_{i}},\hspace{3cm}donde:d_{i}=$$
+Para el caso de la Poisson:
+$$r_{D}=sign(y-\mu)\sqrt{2()ylog(\frac{y}{\mu})-y+\mu}$$
+
+-**Residuales de Anscombe:** como los residuales de Person suelen ser sesgados para distribuciones no normales y esto ocasionaba que no podía tener propiedades similares a la de los residuos de la teoría normal, Anscombe propuso definir un residuo utlizando una función $A(y)$ en lugar de y, la formula general y en el caso de la Poisson son:
+$$A(.)=\int \frac{d\mu}{V^{1/3}(\mu)}\Longrightarrow\int\frac{d\mu}{\mu^{1/3}}=\frac{3}{2}\mu^{2/3}$$
+Para la distribución Poisson:
+$$r_{A}=\frac{\frac{3}{2}(y^{2/3}-\mu^{2/3})}{\mu^{1/6}}$$
 A continuación se presenta el algoritmo para encontrar una aproximación de $\beta$ usando datos reales.
 
 
@@ -488,140 +506,6 @@ Xbin2 <- model.matrix(~ TURB+COL+ALCA+PH+TEM)
 regresión_logistica_agua <- fisher_scoring_binomial(y = POL,X = Xbin2, beta_init = c(log(mean(POL)/(1-mean(POL))), rep(0, ncol(Xbin2)-1)),
                         max_iter = 500)
 
-mode1<-glm(formula = POL ~ TURB+PH, family = binomial)
-mode2<-glm(formula = POL ~ TURB, family = binomial)
-summary(mode1)
-summary(mode2)
-r1=resid(mode1, type='deviance')
-r2=resid(mode2, type='deviance')
-```
-
--   La **función score** (vector de primeras derivadas) se puede derivar y resulta ser:
-    $$\frac{\partial \mathcal{l}(\beta)}{\partial \beta} = \sum_{i=1}^n (y_i - n_i p_i)x_i = \sum_{i=1}^n (y_i - \mu_i)x_i = X^t(y - \mu)$$
-
--   La **Matriz de Información de Fisher** es $I(\beta) = X^tWX$, donde $W$ es una matriz diagonal. Para calcular los elementos $w_{ii}$ de $W$, necesitamos la varianza $Var(Y_i)$ y la derivada $d\mu_i / d\eta_i$:
-    $$Var(Y_i) = n_i p_i (1-p_i)$$
-    $$\frac{\partial \mu_i}{\partial \eta_i} = \frac{\partial (n_i p_i)}{\partial \eta_i} = n_i \frac{\partial p_i}{\partial \eta_i} = n_i \frac{e^{\eta_i}}{(1+e^{\eta_i})^2} = n_i p_i (1-p_i)$$
-    Entonces, los pesos son:
-    $$w_{ii} = \frac{\left(\frac{\partial \mu_i}{\partial \eta_i}\right)^2}{Var(y_i)} = \frac{(n_i p_i (1-p_i))^2}{n_i p_i (1-p_i)} = n_i p_i (1-p_i)$$
-
--   Nuestro $\widetilde{y}$ para el algoritmo Fisher Scoring es:
-    $$\widetilde{y} = \eta_i + (y_i - \mu_i)\frac{\partial \eta_i}{\partial \mu_i}$$
-    Dado que $\frac{\partial \eta_i}{\partial \mu_i} = \left(\frac{\partial \mu_i}{\partial \eta_i}\right)^{-1} = \frac{1}{n_i p_i (1-p_i)}$, tenemos:
-    $$\widetilde{y} = \eta_i + \frac{y_i - \mu_i}{n_i p_i (1-p_i)}$$
-
--   El **Algoritmo de Fisher-Scoring** para la regresión binomial (logit) es:
-    1.  Iniciar con un valor $\beta^{(0)}$.
-    2.  Obtener $\beta^{(k+1)}$ a partir de $\beta^{(k)}$ usando:
-        a.  Calcular $\eta^{(k)} = X \beta^{(k)}$.
-        b.  Calcular $p^{(k)}_i = 1 / (1 + \exp(-\eta^{(k)}_i))$.
-        c.  Calcular $\mu^{(k)}_i = n_i p^{(k)}_i$.
-        d.  Calcular pesos $w^{(k)}_{ii} = n_i p^{(k)}_i (1-p^{(k)}_i)$. Formar $W^{(k)}$.
-        e.  Calcular $\widetilde{y}^{(k)}_i = \eta^{(k)}_i + (y_i - \mu^{(k)}_i) / w^{(k)}_{ii}$. Formar $\widetilde{y}^{(k)}$.
-        f.  Actualizar $\beta^{(k+1)} = \left(X^tW^{(k)}X\right)^{-1}X^tW^{(k)}\widetilde{y}^{(k)}$.
-    3.  Repetir el paso (2) hasta la convergencia.
-
-A continuación, adaptaremos el algoritmo para un caso binomial usando datos generados por simulación.
-
-```{r}
-## Población binomial
-# Parámetros
-set.seed(1040)
-n <- 100
-beta <- c(1, 0.5)
-```
-
-```{r}
-# Simulación de datos
-xbin <- runif(n, min = 0, max = 10)
-X2 <- model.matrix(~ xbin)  # Incluye intercepto automáticamente
-eta <- X2 %*% beta
-```
-
-```{r}
-# Dataset simulado
-pi <- exp(eta)/(1+exp(eta))
-yb <- c()
-for (i in 1:n) {
-  yb[i] <- rbinom(1,size = 1,prob = pi[i])
-}
-
-data_bin <- tibble(y = yb, x = xbin)
-```
-
-```{r}
-# Creación de la función
-fisher_scoring_binomial <- function(y, X, beta_init, tol = 1e-5, max_iter = 100) {
-  beta <- beta_init
-  for (iter in 1:max_iter) {
-    eta <- X %*% beta
-    
-    pi <- exp(eta) / (1 + exp(eta))
-    
-    W <- diag(as.vector(pi * (1 - pi)))
-    
-    z <- eta + (y - pi) / (pi * (1 - pi))
-    
-    beta_new <- tryCatch({
-      solve(t(X) %*% W %*% X) %*% (t(X) %*% W %*% z)
-    }, error = function(e) {
-      stop("Fallo al invertir la matriz. ¿X tiene multicolinealidad?")
-    })
-    
-    if (max(abs(beta_new - beta), na.rm = TRUE) < tol) {
-      message("Convergió en iteración ", iter)
-      pi_hat <- exp(X%*%beta_new) / (1 + exp(X%*%beta_new))
-      # Resdiaul crudo
-      residual <- y-pi_hat
-      # Residual de pearson
-      residual_pearson <- (y - pi_hat) / sqrt(pi_hat)
-      # Residual de Anscombe
-      residual_anscombe <- 3*(y^(1/3)-pi_hat^(1/3))/(pi_hat^(1/3))
-      # Residual de devianza
-      dev <- sqrt(2*(y*log(y/pi_hat)-y+pi_hat))
-      residual_deviance <- sign(y - pi_hat) * sqrt(dev)
-      return(list(beta = as.vector(beta_new), residual = residual,
-                  residual_pearson = residual_pearson,
-                  residual_anscombe = residual_anscombe,
-                  residual_deviance = residual_deviance))
-    }
-    
-    beta <- beta_new
-  }
-  warning("No convergió")
-  return(as.vector(beta))
-}
-
-beta_binomial <- fisher_scoring_binomial(y = yb, X = X2, 
-                                         beta_init = rep(0.01, ncol(X2)))
-
-names(beta_binomial) <- colnames(X2)
-beta_binomial
-```
-
-```{r}
-modelo_logistico <- glm(yb ~ X2 - 1, family = binomial(link = "logit"))
-
-modelo_logistico$coefficients
-```
-
-| fisher_scoring_binomial | glm              |
-|:----------------------:|:----------------:|
-| $\hat{\beta_0} = 0.6978429$ | $\hat{\beta_0} = 0.6978430$ |
-| $\hat{\beta_1} = 0.4927746$ | $\hat{\beta_1} = 0.4927746$ |
-
-A continución se hará uso de algunos datos obtenidos sobre unos tratamientos al agua, de los cuales la variable respuesta será si se le aplicó o no polímero:
-
-```{r}
-TURB=c(300,250,190,160,560,150,160,270,450,210,420,550,1200,420,500,150,200,390,380,140,170,1110,140,150,870,720,430,550)
-COL=c(100,100,50,70,200,100,100,70,130,100,100,250,250,100,120,75,50,140,120,50,110,100,80,90,150,200,100,200)
-ALCA=c(49,43,51,52,44,48,55,43,56,51,46,65,43,53,48,45,52,52,39,54,52,51,55,50,49,44,48,40)
-PH=c(8.33,7.64,7.62,7.62,8.19,7.90,7.60,8.07,7.53,7.72,7.90,7.68,7.93,7.90,8.01,7.71,7.66,8.09,8.17,8.16,7.58,8.06,7.51,7.56,7.60,8.18,7.20,7.55)
-TEM=c(25,27,28,26,25,26,26,24,27,27,26,27,26,26,27,27,26,27,26,25,27,23,27,27,27,23,26,27)
-POL=c(0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,1,0,0,1,1,1,1)
-Xbin2 <- model.matrix(~ TURB+COL+ALCA+PH+TEM)
-fisher_scoring_binomial(y = POL,X = Xbin2,beta_init = c(log(mean(POL)/(1-mean(POL))), rep(0, ncol(Xbin2)-1)),
-                        max_iter = 500)
 mode1<-glm(formula = POL ~ TURB+PH, family = binomial)
 mode2<-glm(formula = POL ~ TURB, family = binomial)
 summary(mode1)
