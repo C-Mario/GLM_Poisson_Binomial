@@ -84,7 +84,7 @@ El estudio de los residuales es importante ya que ayuda a evaluar la calidad del
 - **Residuales crudos (o de respuesta):** estos residuales son normalmente usados en modelos de regresión lineal, en modelos lineales generalizados realmente no son tan eficientes, sin embargo se decidió usar este tipo de residuales debido a que se quiere comparar con los otros tipos. Estos residuales representan la diferencia entre el valor observado y el valor ajustado de la media:
 $$y-\hat{\mu}$$
 -**Residuales de Pearson:** estandariza el residual crudo dividiendolo por lo desviación estándar estimada para la distribución en cuestión. La formula general y en el caso de la Poisson son:
-$$r_{P}=\frac{y-\hat{\mu}}{\sqrt{Var(\hat{\mu})}}\Longrightarrow\frac{y-\hat{\mu}}{\sqrt{\hat{\mu}}}$$
+$$r_{P}=\frac{y-\hat{\mu}}{\sqrt{V(\hat{\mu})}}\Longrightarrow\frac{y-\hat{\mu}}{\sqrt{\hat{\mu}}}$$
 
 
 -**Residuales de desviación:** los residuos de desviación, como conjunto, suelen ser más cercanos a la normalidad con distribuciones GLM no normales que los residuos de Pearson.
@@ -95,7 +95,7 @@ $$r_{D}=sign(y-\mu)\sqrt{2()ylog(\frac{y}{\mu})-y+\mu}$$
 -**Residuales de Anscombe:** como los residuales de Person suelen ser sesgados para distribuciones no normales y esto ocasionaba que no podía tener propiedades similares a la de los residuos de la teoría normal, Anscombe propuso definir un residuo utlizando una función $A(y)$ en lugar de y, la formula general y en el caso de la Poisson son:
 $$A(.)=\int \frac{d\mu}{V^{1/3}(\mu)}\Longrightarrow\int\frac{d\mu}{\mu^{1/3}}=\frac{3}{2}\mu^{2/3}$$
 Para la distribución Poisson:
-$$r_{A}=\frac{\frac{3}{2}(y^{2/3}-\mu^{2/3})}{\mu^{1/6}}$$
+$$r_{A}=\frac{A(y)-A(\mu)}{\sqrt{V(A(y))}}\approx\frac{A(y)-A(\mu)}{\sqrt{(A'(\hat{\mu}))^{2}V(\hat{\mu})}}\Longrightarrow\frac{\frac{3}{2}(y^{2/3}-\mu^{2/3})}{\mu^{1/6}}$$
 A continuación se presenta el algoritmo para encontrar una aproximación de $\beta$ usando datos reales.
 
 
@@ -281,7 +281,22 @@ p1; p2; p3; p4
 
 
 ## Regresión Binomial
+# Residuales
+- **Residuales crudos (o de respuesta):** 
+$$y-\hat{\mu}$$
+-**Residuales de Pearson:** 
+$$r_{P}=\frac{y-n\hat{\pi}}{\sqrt{n\hat{\pi}(1-\hat{\pi})}}$$
 
+
+-**Residuales de desviación:** 
+$$r_{D}=sign(y-\mu)\sqrt{d_{i}},\hspace{3cm}donde:d_{i}=$$
+Para el caso de la Poisson:
+$$r_{D}=sign(y-\mu)\sqrt{2()ylog(\frac{y}{\mu})-y+\mu}$$
+
+-**Residuales de Anscombe:** 
+$$A(.)=\int\frac{d\mu}{\mu^{1/3}}=\frac{3}{2}\mu^{2/3}=\frac{3}{2}(n\pi)^{2/3}$$
+Para la distribución Poisson:
+$$r_{A}=\frac{A(y)-A(\mu)}{\sqrt{V(A(y))}}\approx\frac{A(y)-A(\mu)}{\sqrt{(A'(\mu))^{2}V(\mu)}}\Longrightarrow\frac{\frac{3}{2}((\frac{y}{n})^{2/3}-\pi^{2/3})}{(\frac{\pi(1-\pi)}{n})^{1/6}}$$
 -   Sean $Y_1, Y_2, \cdots, Y_n$ variables aleatorias independientes con distribución *Binomial*, tales que
 
     $$Y_i \sim Binomial(n_i, p_i) \quad i=1,2,\cdots,n.$$
@@ -392,7 +407,7 @@ fisher_scoring_binomial <- function(y, X, beta_init, tol = 1e-5, max_iter = 100)
       # Residual de pearson
       residual_pearson <- (y - pi_hat) / sqrt(pi_hat)
       # Residual de Anscombe
-      residual_anscombe <- 3*(y^(1/3)-pi_hat^(1/3))/(pi_hat^(1/3))
+      residual_anscombe <- (3/2)*(y^(2/3)-pi_hat^(2/3))/((pi_hat*(1-pi_hat))^(1/3))
       # Residual de devianza
       dev <- sqrt(2*(y*log(y/pi_hat)-y+pi_hat))
       residual_deviance <- sign(y - pi_hat) * sqrt(dev)
