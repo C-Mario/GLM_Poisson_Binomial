@@ -79,15 +79,7 @@ $$\max_j \left| \beta_j^{(k+1)} - \beta_j^{(k)} \right| < \epsilon, \quad \quad 
 
 ### Residuales
 
-<<<<<<< HEAD
-# Residuales
-- **Residuales crudos (o de respuesta):** estos residuales son normalmente usados en modelos de regresión lineal, en modelos lineales generalizados realmente no son tan eficientes, sin embargo se decidió usar este tipo de residuales debido a que se quiere comparar con los otros tipos. Estos residuales representan la diferencia entre el valor observado y el valor ajustado de la media:
-$$y-\hat{\mu}$$
--**Residuales de Pearson:** estandariza el residual crudo dividiendolo por lo desviación estándar estimada para la distribución en cuestión. La formula general y en el caso de la Poisson son:
-$$r_{P}=\frac{y-\hat{\mu}}{\sqrt{V(\hat{\mu})}}\Longrightarrow\frac{y-\hat{\mu}}{\sqrt{\hat{\mu}}}$$
-=======
 El estudio de los residuales es importante ya que ayuda a evaluar la calidad del modelo y detectar posibles desviaciones de los supuestos del mismo. En este caso se ha trabajado con los residuales crudos, los residuales de Pearson, los residuales de devianza y los residuales de Anscombe.
->>>>>>> a3471374f39a20e71b575f5098bc97ccd246253d
 
 - **Residuales crudos (o de respuesta):** estos residuales son normalmente usados en modelos de regresión lineal; en modelos lineales generalizados realmente no son tan eficientes. Sin embargo, se decidió usar este tipo de residuales debido a que se quiere comparar con los otros tipos. Estos residuales representan la diferencia entre el valor observado y el valor ajustado de la media:
 
@@ -114,13 +106,6 @@ $$r_{D}=sign(y-\mu)\sqrt{2\left(y\cdot log(\frac{y}{\mu})-(y-\mu)\right)}$$
 
 ### Datos a usar
 
-<<<<<<< HEAD
--**Residuales de Anscombe:** como los residuales de Person suelen ser sesgados para distribuciones no normales y esto ocasionaba que no podía tener propiedades similares a la de los residuos de la teoría normal, Anscombe propuso definir un residuo utlizando una función $A(y)$ en lugar de y, la formula general y en el caso de la Poisson son:
-$$A(.)=\int \frac{d\mu}{V^{1/3}(\mu)}\Longrightarrow\int\frac{d\mu}{\mu^{1/3}}=\frac{3}{2}\mu^{2/3}$$
-Para la distribución Poisson:
-$$r_{A}=\frac{A(y)-A(\mu)}{\sqrt{V(A(y))}}\approx\frac{A(y)-A(\mu)}{\sqrt{(A'(\hat{\mu}))^{2}V(\hat{\mu})}}\Longrightarrow\frac{\frac{3}{2}(y^{2/3}-\mu^{2/3})}{\mu^{1/6}}$$
-=======
->>>>>>> a3471374f39a20e71b575f5098bc97ccd246253d
 A continuación se presenta el algoritmo para encontrar una aproximación de $\beta$ usando datos reales.
 
 Datos de jugadores de baloncesto de la temporada 2022-2023, los cuales incluyen la edad del jugador (AGE), tiempo en minutos jugado en la temporada (MIN), juegos participados (GP), tiros de campo hechos (FGM), tiros de campo intentados (FGA), tiros de campo hechos de 3 puntos (FG3M), tiros de campo intentados de 3 puntos (FGA) y puntos realizados en la temporada (PTS).
