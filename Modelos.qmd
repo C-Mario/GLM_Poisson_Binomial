@@ -6,7 +6,6 @@ author:
   - Carlos Mario Castaño Suaza
   - Juan Pablo Lara Chaves
   - María Paula Camargo Rincón
-    
 ---
 
 ```{r}
@@ -72,35 +71,59 @@ $$
 
 2) Obtener $\beta^{(k+1)}$ a partir de $\beta^{(k)}$ usando la siguiente expresión
 
-$$\beta^{(k+1)} = \left(X^tW^{(k)}X\right)^{-1}X^tW^{(k)}\widetilde{y}.$$
+$$\beta^{(k+1)} = \left(X^tW^{(k)}X\right)^{-1}X^tW^{(k)}\widetilde{y}^{(k)}.$$
 
 3) Repetir **(2)** hasta satisfacer un criterio de convergencia. El criterio de convergencia que se usará en este caso es el siguiente
 
-$$\|\beta^{(k+1)} - \beta^{(k)}\| < \epsilon, \quad \quad \epsilon=0.0000001$$
+$$\max_j \left| \beta_j^{(k+1)} - \beta_j^{(k)} \right| < \epsilon, \quad \quad \epsilon=0.0000001$$
 
-El estudio de los residuales es importante ya que ayuda a evaluar la calidad del modelo y detectar posibles desviaciones de los supuestos del mismo. En este caso se ha trabajado con los residuales crudos, los residuales de pearson, los residuales de devianza y los residuales de anscombe.
+### Residuales
 
+<<<<<<< HEAD
 # Residuales
 - **Residuales crudos (o de respuesta):** estos residuales son normalmente usados en modelos de regresión lineal, en modelos lineales generalizados realmente no son tan eficientes, sin embargo se decidió usar este tipo de residuales debido a que se quiere comparar con los otros tipos. Estos residuales representan la diferencia entre el valor observado y el valor ajustado de la media:
 $$y-\hat{\mu}$$
 -**Residuales de Pearson:** estandariza el residual crudo dividiendolo por lo desviación estándar estimada para la distribución en cuestión. La formula general y en el caso de la Poisson son:
 $$r_{P}=\frac{y-\hat{\mu}}{\sqrt{V(\hat{\mu})}}\Longrightarrow\frac{y-\hat{\mu}}{\sqrt{\hat{\mu}}}$$
+=======
+El estudio de los residuales es importante ya que ayuda a evaluar la calidad del modelo y detectar posibles desviaciones de los supuestos del mismo. En este caso se ha trabajado con los residuales crudos, los residuales de Pearson, los residuales de devianza y los residuales de Anscombe.
+>>>>>>> a3471374f39a20e71b575f5098bc97ccd246253d
 
+- **Residuales crudos (o de respuesta):** estos residuales son normalmente usados en modelos de regresión lineal; en modelos lineales generalizados realmente no son tan eficientes. Sin embargo, se decidió usar este tipo de residuales debido a que se quiere comparar con los otros tipos. Estos residuales representan la diferencia entre el valor observado y el valor ajustado de la media:
 
--**Residuales de desviación:** los residuos de desviación, como conjunto, suelen ser más cercanos a la normalidad con distribuciones GLM no normales que los residuos de Pearson.
-$$r_{D}=sign(y-\mu)\sqrt{d_{i}},\hspace{3cm}donde:d_{i}=$$
-Para el caso de la Poisson:
-$$r_{D}=sign(y-\mu)\sqrt{2()ylog(\frac{y}{\mu})-y+\mu}$$
+  $$r = y-\hat{\mu}$$
 
+- **Residuales de Pearson:** estandariza el residual crudo dividiéndolo por la desviación estándar estimada para la distribución en cuestión. La formula general y en el caso de la Poisson son:
+
+  $$r_{P}=\frac{y-\hat{\mu}}{\sqrt{Var(\hat{\mu})}}\Longrightarrow\frac{y-\hat{\mu}}{\sqrt{\hat{\mu}}}$$
+
+- **Residuales de devianza:** los residuos de devianza, como conjunto, suelen ser más cercanos a la normalidad con distribuciones GLM no normales que los residuos de Pearson.
+
+  $$r_{D}=sign(y-\mu)\sqrt{d_{i}},\hspace{3cm}donde:d_{i}=\sqrt{2 \left[ \ell(y_i; y_i) - \ell(\hat{\mu}_i; y_i) \right]}$$
+  Para el caso de la Poisson:
+
+$$r_{D}=sign(y-\mu)\sqrt{2\left(y\cdot log(\frac{y}{\mu})-(y-\mu)\right)}$$
+
+- **Residuales de Anscombe:** como los residuales de Pearson suelen ser sesgados para distribuciones no normales y esto ocasionaba que no podía tener propiedades similares a la de los residuos de la teoría normal, Anscombe propuso definir un residuo utlizando una función $A(y)$ en lugar de y, la formula general y en el caso de la Poisson son:
+
+  $$A(\cdot)=\int \frac{d\mu}{V^{1/3}(\mu)}\Longrightarrow\int\frac{d\mu}{\mu^{1/3}}=\frac{3}{2}\mu^{2/3}$$
+
+  Para la distribución Poisson:
+
+  $$r_{A}=\frac{\frac{3}{2}(y^{2/3}-\mu^{2/3})}{\mu^{1/6}}$$
+
+### Datos a usar
+
+<<<<<<< HEAD
 -**Residuales de Anscombe:** como los residuales de Person suelen ser sesgados para distribuciones no normales y esto ocasionaba que no podía tener propiedades similares a la de los residuos de la teoría normal, Anscombe propuso definir un residuo utlizando una función $A(y)$ en lugar de y, la formula general y en el caso de la Poisson son:
 $$A(.)=\int \frac{d\mu}{V^{1/3}(\mu)}\Longrightarrow\int\frac{d\mu}{\mu^{1/3}}=\frac{3}{2}\mu^{2/3}$$
 Para la distribución Poisson:
 $$r_{A}=\frac{A(y)-A(\mu)}{\sqrt{V(A(y))}}\approx\frac{A(y)-A(\mu)}{\sqrt{(A'(\hat{\mu}))^{2}V(\hat{\mu})}}\Longrightarrow\frac{\frac{3}{2}(y^{2/3}-\mu^{2/3})}{\mu^{1/6}}$$
+=======
+>>>>>>> a3471374f39a20e71b575f5098bc97ccd246253d
 A continuación se presenta el algoritmo para encontrar una aproximación de $\beta$ usando datos reales.
 
-
 Datos de jugadores de baloncesto de la temporada 2022-2023, los cuales incluyen la edad del jugador (AGE), tiempo en minutos jugado en la temporada (MIN), juegos participados (GP), tiros de campo hechos (FGM), tiros de campo intentados (FGA), tiros de campo hechos de 3 puntos (FG3M), tiros de campo intentados de 3 puntos (FGA) y puntos realizados en la temporada (PTS).
-
 
 ```{r}
 # seleccionamos las variables de interés
@@ -128,12 +151,13 @@ Se puede evidenciar que entre las variables tambien se presentan algunas correla
 
 Por otro lado, se observa una baja correlación lineal entre la variable AGE y el resto de las variables, incluida la variable respuesta PTS. Además, en los gráficos de dispersión no se evidencia ningún tipo de correlación entre estas variables, ya que los datos se encuentran muy dispersos.
 
-
 ```{r}
 x1 <- players %>% select(-last_col())
 X <- model.matrix(~ ., data = x1) # Matriz diseño, con intercepto
 y <- players$PTS # Variable respuesta
 ```
+
+### Algoritmo de Fisher-Scoring
 
 ```{r}
 # Creación de la función
@@ -254,22 +278,22 @@ df_residuals <- data.frame(
 p1 <- ggplot(df_residuals, aes(x = predichos, y = residual)) +
     geom_point(color = 'blue') +
     labs(title = 'Residual Crudo', x = 'Valores Predichos', y = 'Residual Crudo') +
-    theme_minimal()
+    theme_minimal(12)
 
 p2 <- ggplot(df_residuals, aes(x = predichos, y = residual_pearson)) +
     geom_point(color = 'red') +
     labs(title = 'Residual de Pearson', x = 'Valores Predichos', y = 'Residual de Pearson') +
-    theme_minimal()
+    theme_minimal(12)
 
 p3 <- ggplot(df_residuals, aes(x = predichos, y = residual_anscombe)) +
     geom_point(color = 'green') +
     labs(title = 'Residual de Anscombe', x = 'Valores Predichos', y = 'Residual de Anscombe') +
-    theme_minimal()
+    theme_minimal(12)
 
 p4 <- ggplot(df_residuals, aes(x = predichos, y = residual_deviance)) +
     geom_point(color = 'orange') +
     labs(title = 'Residual de Devianza', x = 'Valores Predichos', y = 'Residual de Devianza') +
-    theme_minimal()
+    theme_minimal(12)
 ```
 
 ```{r}
@@ -349,6 +373,8 @@ $$r_{A}=\frac{A(y)-A(\mu)}{\sqrt{V(A(y))}}\approx\frac{A(y)-A(\mu)}{\sqrt{(A'(\m
         f.  Actualizar $\beta^{(k+1)} = \left(X^tW^{(k)}X\right)^{-1}X^tW^{(k)}\widetilde{y}^{(k)}$.
     3.  Repetir el paso (2) hasta la convergencia.
 
+### Datos simulados
+
 A continuación, adaptaremos el algoritmo para un caso binomial usando datos generados por simulación.
 
 ```{r}
@@ -356,7 +382,7 @@ A continuación, adaptaremos el algoritmo para un caso binomial usando datos gen
 # Parámetros
 set.seed(1040)
 n <- 100
-beta <- c(1, 0.5)
+beta <- c(0, 0.2)
 ```
 
 ```{r}
@@ -377,6 +403,22 @@ for (i in 1:n) {
 data_bin <- tibble(y = yb, x = xbin)
 ```
 
+A continuación se presentan los datos simulados
+
+```{r}
+#| out-width: 100%
+
+ggplot(data_bin, aes(x = x, y = y)) +
+    geom_jitter(height = 0.02, width = 0, 
+                alpha = 0.6, size = 3, color = "#1f77b4") +
+  ggtitle("Distribución binomial - Datos simulados") +
+  theme_minimal(12)
+```
+
+### Algoritmo de Fisher-Scoring
+
+El algoritmo de Fisher-Scoring para la regresión logística se presenta a continuación
+
 ```{r}
 # Creación de la función
 fisher_scoring_binomial <- function(y, X, beta_init, tol = 1e-5, max_iter = 100) {
@@ -385,6 +427,7 @@ fisher_scoring_binomial <- function(y, X, beta_init, tol = 1e-5, max_iter = 100)
     eta <- X %*% beta
     
     pi <- exp(eta) / (1 + exp(eta))
+    pi <- pmax(pmin(pi, 1 - 1e-10), 1e-10)
     
     W <- diag(as.vector(pi * (1 - pi)))
     
@@ -401,7 +444,8 @@ fisher_scoring_binomial <- function(y, X, beta_init, tol = 1e-5, max_iter = 100)
     
     if (max(abs(beta_new - beta), na.rm = TRUE) < tol) {
       message("Convergió en iteración ", iter)
-      pi_hat <- exp(X%*%beta_new) / (1 + exp(X%*%beta_new))
+      pi_hat <- exp(X %*% beta_new) / (1 + exp(X %*% beta_new))
+      pi_hat <- pmax(pmin(pi_hat, 1 - 1e-10), 1e-10) 
       # Resdiaul crudo
       residual <- y-pi_hat
       # Residual de pearson
@@ -409,7 +453,9 @@ fisher_scoring_binomial <- function(y, X, beta_init, tol = 1e-5, max_iter = 100)
       # Residual de Anscombe
       residual_anscombe <- (3/2)*(y^(2/3)-pi_hat^(2/3))/((pi_hat*(1-pi_hat))^(1/3))
       # Residual de devianza
-      dev <- sqrt(2*(y*log(y/pi_hat)-y+pi_hat))
+      # Handle y=0 and y=1 cases for deviance
+      dev <- ifelse(y == 0, 2 * pi_hat, ifelse(y == 1, 2 * (1 - pi_hat),
+                    sqrt(2 * (y * log(y / pi_hat) + (1 - y) * log((1 - y) / (1 - pi_hat))))))
       residual_deviance <- sign(y - pi_hat) * sqrt(dev)
       return(list(beta = as.vector(beta_new), predichos = pi_hat,
                   covarianza = cov_beta,
@@ -446,8 +492,8 @@ modelo_logistico$coefficients
 
 | Variable     | fisher_scoring_binomial | glm              |
 |:-------------|:----------------------:|:----------------:|
-| (Intercept)  | $\hat{\beta_0} = 0.6978429$ | $\hat{\beta_0} = 0.6978430$ |
-| xbin | $\hat{\beta_1} = 0.4927746$ | $\hat{\beta_1} = 0.4927746$ |
+| (Intercept)  | $\hat{\beta_0} = -0.05789329$ | $\hat{\beta_0} = -0.05789329$ |
+| xbin | $\hat{\beta_1} = 0.26830824$ | $\hat{\beta_1} = 0.26830824$ |
 
 La matriz de covarianza estimada obtenida mediante el algoritmo de Fisher-Scoring coincide con la obtenida a través de la función `glm`, salvo por algunas diferencias numéricas muy pequeñas
 
@@ -455,6 +501,8 @@ La matriz de covarianza estimada obtenida mediante el algoritmo de Fisher-Scorin
 beta_binomial$covarianza; vcov(modelo_logistico)
 ```
 La matriz de covarianza es prácticamente la misma con ambos métodos.
+
+### Residuales
 
 A continuación, se muestran gráficamente los cuatro tipos de residuales calculados: *residuales crudos*, *residuales de pearson*, *residuales de Anscombe* y *residuales de devianza*
 
@@ -474,22 +522,22 @@ df_residuals <- data.frame(
 p1 <- ggplot(df_residuals, aes(x = predichos, y = residual)) +
     geom_point(color = 'blue') +
     labs(title = 'Residual Crudo', x = 'Valores Predichos', y = 'Residual Crudo') +
-    theme_minimal()
+    theme_minimal(12)
 
 p2 <- ggplot(df_residuals, aes(x = predichos, y = residual_pearson)) +
     geom_point(color = 'red') +
     labs(title = 'Residual de Pearson', x = 'Valores Predichos', y = 'Residual de Pearson') +
-    theme_minimal()
+    theme_minimal(12)
 
 p3 <- ggplot(df_residuals, aes(x = predichos, y = residual_anscombe)) +
     geom_point(color = 'green') +
     labs(title = 'Residual de Anscombe', x = 'Valores Predichos', y = 'Residual de Anscombe') +
-    theme_minimal()
+    theme_minimal(12)
 
 p4 <- ggplot(df_residuals, aes(x = predichos, y = residual_deviance)) +
     geom_point(color = 'orange') +
     labs(title = 'Residual de Devianza', x = 'Valores Predichos', y = 'Residual de Devianza') +
-    theme_minimal()
+    theme_minimal(12)
 ```
 
 ```{r}
@@ -499,7 +547,7 @@ p4 <- ggplot(df_residuals, aes(x = predichos, y = residual_deviance)) +
 p1; p2; p3; p4
 ```
 
-## Regresión logística con los datos del agua
+### Regresión logística con los datos del agua
 
 A continuación, se utilizarán datos relacionados con tratamientos aplicados al agua. La variable de respuesta indica si se utilizó o no un polímero.
 
@@ -515,16 +563,91 @@ PH=c(8.33,7.64,7.62,7.62,8.19,7.90,7.60,8.07,7.53,7.72,7.90,7.68,7.93,7.90,8.01,
 TEM=c(25,27,28,26,25,26,26,24,27,27,26,27,26,26,27,27,26,27,26,25,27,23,27,27,27,23,26,27)
 
 POL=c(0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,1,0,0,1,1,1,1)
+```
 
+```{r}
 Xbin2 <- model.matrix(~ TURB+COL+ALCA+PH+TEM)
 
 regresión_logistica_agua <- fisher_scoring_binomial(y = POL,X = Xbin2, beta_init = c(log(mean(POL)/(1-mean(POL))), rep(0, ncol(Xbin2)-1)),
                         max_iter = 500)
 
-mode1<-glm(formula = POL ~ TURB+PH, family = binomial)
-mode2<-glm(formula = POL ~ TURB, family = binomial)
-summary(mode1)
-summary(mode2)
-r1=resid(mode1, type='deviance')
-r2=resid(mode2, type='deviance')
+names(regresión_logistica_agua$beta) <- colnames(Xbin2)
+```
+
+Estimación de los parámetros con el algoritmo manual y la función `glm`
+
+```{r}
+regresión_logistica_agua$beta
+
+modelo<-glm(formula = POL ~ TURB+COL+ALCA+PH+TEM, family = 'binomial')
+modelo$coefficients
+```
+
+Vemos que los coeficientes estimados son prácticamente los mismos.
+
+La interpretación de los coeficientes estimados del modelo es la siguiente:
+
+- **(Intercepto)** = +79.20: Es el log-odds de usar el polímero cuando todas las otras variables valen cero.
+- **TURB (Turbiedad)** = +0.0255: A mayor turbiedad del agua, aumenta ligeramente la probabilidad de usar el polímero.
+- **COL (Color del agua)** = -0.0229: A mayor color en el agua, disminuye ligeramente la probabilidad de usar el polímero.
+- **ALCA (Alcalinidad)** = +0.0679: A mayor alcalinidad, aumenta la probabilidad de usar el polímero.
+- **PH (pH del agua)** = -7.21: A mayor pH, la probabilidad de usar el polímero disminuye fuertemente.
+- **TEM (Temperatura)** = -1.32: A mayor temperatura, disminuye la probabilidad de usar el polímero.
+
+Ahora, la matriz de covarianza de los coeficientes del modelo, se presentan a continuación
+
+```{r}
+library(knitr)
+kable(as.data.frame(regresión_logistica_agua$covarianza))
+kable(as.data.frame(vcov(modelo)))
+
+all.equal(regresión_logistica_agua$covarianza, vcov(modelo))
+```
+Es prácticamente la misma, con diferencias numéricas muy pequeñas.
+
+Veamos cómo se comportan los residuales
+
+```{r}
+df_residuals <- data.frame(
+    predichos = regresión_logistica_agua$predichos,
+    residual = regresión_logistica_agua$residual,
+    residual_pearson = regresión_logistica_agua$residual_pearson,
+    residual_anscombe = regresión_logistica_agua$residual_anscombe,
+    residual_deviance = regresión_logistica_agua$residual_deviance
+  )
+```
+
+```{r}
+# Gráfico de los tres tipos de residuales
+
+p1 <- ggplot(df_residuals, aes(x = predichos, y = residual)) +
+    geom_point(color = 'blue') +
+    labs(title = 'Residual Crudo', x = 'Valores Predichos', y = 'Residual Crudo') +
+    ylim(-1, 1) + 
+    theme_minimal(12)
+
+p2 <- ggplot(df_residuals, aes(x = predichos, y = residual_pearson)) +
+    geom_point(color = 'red') +
+    labs(title = 'Residual de Pearson', x = 'Valores Predichos', y = 'Residual de Pearson') +
+    ylim(-1, 1.1) +
+    theme_minimal(12)
+
+p3 <- ggplot(df_residuals, aes(x = predichos, y = residual_anscombe)) +
+    geom_point(color = 'green') +
+    labs(title = 'Residual de Anscombe', x = 'Valores Predichos', y = 'Residual de Anscombe') +
+    ylim(-3.1, 1.3) +
+    theme_minimal(12)
+
+p4 <- ggplot(df_residuals, aes(x = predichos, y = residual_deviance)) +
+    geom_point(color = 'orange') +
+    labs(title = 'Residual de Devianza', x = 'Valores Predichos', y = 'Residual de Devianza') +
+    ylim(-1.3, 1.15) +
+    theme_minimal(12)
+```
+
+```{r}
+#| layout-ncol: 2
+#| out-width: 100%
+
+p1; p2; p3; p4
 ```
