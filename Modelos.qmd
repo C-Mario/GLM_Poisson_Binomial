@@ -288,6 +288,122 @@ p4 <- ggplot(df_residuals, aes(x = predichos, y = residual_deviance)) +
 p1; p2; p3; p4
 ```
 
+## Ejemplo 2 para distribución Poisson
+```{r}
+crabs <- data.frame(
+  C = c(2,3,3,2,2,1,2,1,3,2,2,2,1,2,2,2,2,3,3,2,2,2,2,3,3,2,2,2,2,3,3,3,2,3,2,2,
+        2,3,3,2,2,1,1,3,3,3,2,2,3,3,3,3,2,2,3,2,3,2,1,3,2,3,1,1,2,2,3,2,3,2,3,2,
+        2,2,3,3,2,2,1,2,2,2,1,2,2,3,2,2,1,2,3,3,3,3,3,1,3,2,3,2),
+  S = c(3,3,3,3,1,2,1,1,2,2,1,3,1,1,1,2,2,2,2,2,2,1,2,3,3,1,3,1,1,3,3,3,3,2,2,1,
+        1,3,2,1,3,3,1,2,3,2,1,1,3,1,2,3,2,2,1,2,1,1,3,1,3,3,1,1,2,1,2,2,2,2,1,3,
+        3,3,3,2,2,1,1,2,2,2,2,3,3,3,3,3,3,3,3,2,3,3,3,3,3,3,2,1),
+  W = c(28.3,26.0,26.0,21.0,21.0,25.0,26.0,24.9,25.0,24.7,26.5,24.8,24.9,26.0,
+        28.7,30.3,26.2,27.5,30.0,28.2,30.5,30.3,30.0,26.2,28.5,29.5,27.0,29.0,
+        28.7,26.5,26.5,27.3,26.3,30.0,29.0,27.2,27.0,26.5,26.5,25.5,26.5,26.5,
+        22.0,27.3,26.6,25.0,25.0,30.2,28.7,24.9,24.5,25.2,24.0,22.9,26.2,24.4,
+        26.3,24.5,27.9,30.5,28.2,27.6,23.0,23.9,22.9,25.8,25.8,24.1,28.0,26.0,
+        24.5,24.5,24.2,28.5,24.7,29.0,27.0,23.7,27.0,24.2,24.2,25.1,27.5,29.3,
+        26.3,29.4,26.2,26.2,24.1,27.0,26.5,28.5,24.7,25.2,25.3,25.3,29.3,27.4,
+        28.0,24.5),
+  Wt = c(3.05,2.60,2.45,1.85,2.05,2.30,2.10,2.10,2.00,1.90,2.80,2.10,2.10,2.50,
+         3.20,3.60,2.20,2.75,3.05,2.95,3.50,3.00,3.40,2.30,2.40,2.55,2.25,2.30,
+         3.20,1.30,1.97,2.90,2.30,3.05,3.30,2.75,2.25,2.00,2.20,2.25,1.97,1.60,
+         1.90,2.90,2.30,2.10,2.10,3.28,3.20,2.30,2.05,2.10,2.00,1.60,2.40,1.90,
+         2.05,1.95,3.05,3.20,2.80,2.85,3.00,1.85,1.90,2.20,2.20,1.80,2.62,2.30,
+         2.00,2.00,2.20,3.00,2.55,3.10,2.95,1.80,2.00,2.20,1.65,1.80,2.30,3.23,
+         2.90,3.10,2.30,2.17,1.95,2.63,2.35,3.00,2.55,2.00,1.90,1.90,3.23,2.90,
+         3.00,2.00),
+  Sa = c(8,4,3,0,0,3,0,1,3,0,4,0,1,1,0,4,3,0,5,4,6,4,4,0,3,0,3,0,0,0,1,1,2,4,0,
+         4,4,0,0,0,0,0,0,1,1,2,0,2,1,0,0,1,0,0,0,0,0,1,0,3,3,2,3,0,0,0,2,1,0,1,
+         0,0,0,1,0,4,1,0,3,3,3,0,6,12,0,3,0,2,1,4,0,1,0,1,2,2,5,4,2,0)
+)
+
+```
+Descripción de la base de datos....
+```{r}
+X.c <- model.matrix(~.,data=crabs[,-1])
+modelos_crangrejos <- fisher_scoring_poisson(crabs[,1],X = X.c,beta_init = c(log(mean(crabs[,1])),rep(0, ncol(X.c)-1)))
+names(modelos_crangrejos$beta) <- c("Intercept", "S", "W", "Wt", "Sa")
+modelos_crangrejos$beta
+```
+```{r}
+modelo_cangrejos_glm <- glm(crabs[,1] ~ X.c - 1, family = poisson(link = "log"))
+
+names(modelo_cangrejos_glm$coefficients) <- names(modelos_crangrejos$beta)
+modelo_cangrejos_glm$coefficients
+```
+En la siguiente tabla se puede ver la comparación con ambos métodos:
+
+| Variable     | fisher_scoring_poisson     | glm                     |
+|:-------------|:---------------------------:|:-----------------------:|
+| (Intercept)  | $\hat{\beta_0} = -0.53746436$     | $\hat{\beta_0} = -0.53746436 $ |
+| S          | $\hat{\beta_1} = 0.09545252$  | $\hat{\beta_1} =  0.09545252$ |
+| W          | $\hat{\beta_2} = 0.04434613$ | $\hat{\beta_2} = 0.04434613$ |
+| Wt           | $\hat{\beta_3} = 0.01054370$   | $\hat{\beta_3} = 0.01054370$ |
+| Sa          | $\hat{\beta_4} = -0.03375652$  | $\hat{\beta_4} = -0.03375652$ |
+Los resultados parecen ser exactamente los mismos
+
+```{r}
+all.equal(modelos_crangrejos$beta, modelo_cangrejos_glm$coefficients)
+```
+La matriz de covarianza estimada obtenida mediante el algoritmo de Fisher-Scoring coincide con la obtenida a través de la función `glm`, salvo por algunas diferencias numéricas muy pequeñas
+
+```{r}
+all.equal(modelos_crangrejos$covarianza, vcov(modelo_cangrejos_glm))
+```
+Las desviaciones estándar estimadas con ambos métodos son las siguientes:
+
+```{r}
+sqrt(diag(modelos_crangrejos$covarianza))
+sqrt(diag(vcov(modelo_cangrejos_glm)))
+```
+Son exactamente las mismas.
+
+A continuación, se muestran gráficamente los cuatro tipos de residuales calculados: *residuales crudos*, *residuales de pearson*, *residuales de Anscombe* y *residuales de devianza*
+
+```{r}
+df_residuals.c <- data.frame(
+    predichos = modelos_crangrejos$predichos,
+    residual = modelos_crangrejos$residual,
+    residual_pearson = modelos_crangrejos$residual_pearson,
+    residual_anscombe = modelos_crangrejos$residual_anscombe,
+    residual_deviance = modelos_crangrejos$residual_deviance
+  )
+```
+```{r}
+# Gráfico de los tres tipos de residuales
+
+c1 <- ggplot(df_residuals.c, aes(x = predichos, y = residual)) +
+    geom_point(color = 'blue') +
+    labs(title = 'Residual Crudo', x = 'Valores Predichos', y = 'Residual Crudo') +
+    theme_minimal(12)
+
+c2 <- ggplot(df_residuals.c, aes(x = predichos, y = residual_pearson)) +
+    geom_point(color = 'red') +
+    labs(title = 'Residual de Pearson', x = 'Valores Predichos', y = 'Residual de Pearson') +
+    theme_minimal(12)
+
+c3 <- ggplot(df_residuals.c, aes(x = predichos, y = residual_anscombe)) +
+    geom_point(color = 'green') +
+    labs(title = 'Residual de Anscombe', x = 'Valores Predichos', y = 'Residual de Anscombe') +
+    theme_minimal(12)
+
+c4 <- ggplot(df_residuals.c, aes(x = predichos, y = residual_deviance)) +
+    geom_point(color = 'orange') +
+    labs(title = 'Residual de Devianza', x = 'Valores Predichos', y = 'Residual de Devianza') +
+    theme_minimal(12)
+```
+
+```{r}
+#| layout-ncol: 2
+#| out-width: 100%
+
+c1; c2; c3; c4
+```
+
+
+
+
 
 ## Regresión Binomial
 # Residuales
