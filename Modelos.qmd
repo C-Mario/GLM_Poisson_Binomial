@@ -359,13 +359,13 @@ En la siguiente tabla se puede ver la comparación con ambos métodos:
 
 | Variable     | fisher_scoring_poisson     | glm                     |
 |:-------------|:---------------------------:|:-----------------------:|
-| (Intercept)  | $\hat{\beta_0} = -6.4407728$| $\hat{\beta_0} = -6.4407727 $ |
-| C2          | $\hat{\beta_1} = -0.4973794$  | $\hat{\beta_1} =  -0.4973794$ |
-| C3          | $\hat{\beta_2} = -0.8020200$ | $\hat{\beta_2} = -0.8020200$ |
-| S2           | $\hat{\beta_3} = 0.5369707$   | $\hat{\beta_3} = 0.5369707$ |
-| S3          | $\hat{\beta_4} = 0.6290147 $  | $\hat{\beta_4} = 0.6290147 $ |
-| W          | $\hat{\beta_5} = 0.2159377 $  | $\hat{\beta_5} = 0.2159377 $ |
-| Wt          | $\hat{\beta_6} = 0.4628472 $  | $\hat{\beta_6} = 0.4628472 $ |
+| (Intercept)  | $\hat{\beta}_0 = -6.4407728$| $\hat{\beta}_0 = -6.4407727$ |
+| C2           | $\hat{\beta}_1 = -0.4973794$| $\hat{\beta}_1 = -0.4973794$ |
+| C3           | $\hat{\beta}_2 = -0.8020200$| $\hat{\beta}_2 = -0.8020200$ |
+| S2           | $\hat{\beta}_3 = 0.5369707$ | $\hat{\beta}_3 = 0.5369707$ |
+| S3           | $\hat{\beta}_4 = 0.6290147$ | $\hat{\beta}_4 = 0.6290147$ |
+| W            | $\hat{\beta}_5 = 0.2159377$ | $\hat{\beta}_5 = 0.2159377$ |
+| Wt           | $\hat{\beta}_6 = 0.4628472$ | $\hat{\beta}_6 = 0.4628472$ |
 
 Los resultados parecen ser exactamente los mismos
 
@@ -430,7 +430,7 @@ c4 <- ggplot(df_residuals.c, aes(x = predichos, y = residual_deviance)) +
 
 c1; c2; c3; c4
 ```
-En todos los casos se puede evidenciar que los residuales presentan un patrón no aleatorio con formaciones de lineas de puntos paralelas, esto sugiere que hay presencia de efectos en alguna de las variables independientes que no ha sido adecuadamente modelada 
+En todos los casos se puede evidenciar que los residuales presentan un patrón no aleatorio, esto sugiere que hay presencia de efectos en alguna de las variables independientes que no ha sido adecuadamente modelada 
 
 Además se graficaron los residuales contra las diferentes variables, para darnos una idea de que podría ser el problema:
 
@@ -555,8 +555,112 @@ c4 <- ggplot(df_residuals.c, aes(x = C, y = residual_deviance)) +
 
 c1; c2; c3; c4
 ```
-En los gráficos de los distintos residuales frente a las variables se puede ver que
+En los gráficos de los distintos residuales frente a las variables se puede ver que las variables de ancho y peso parecen estar bien modeladas, mientras que las variables categóricas de la condición de la espina y el color pueden estar necesitando interacciones.
 
+```{r}
+X_completa <- model.matrix(Sa
+  ~ C + S + W + Wt +
+    C:S + C:W + C:Wt +
+    S:W + S:Wt,
+  data = crabs
+)
+
+# Ajustar modelo con Fisher Scoring
+modelos_crangrejos_interactions <- fisher_scoring_poisson(
+  crabs[,5],
+  X = X_completa,
+  beta_init = c(log(mean(crabs[,5])), rep(0, ncol(X_completa)-1)
+))
+
+# Nombres para los coeficientes (incluyendo términos de interacción)
+names(modelos_crangrejos_interactions$beta) <- colnames(X_completa)
+modelos_crangrejos_interactions$beta
+```
+
+```{r}
+modelo_cangre_completo_glm <- glm(Sa
+  ~ C + S + W + Wt +
+    C:S + C:W + C:Wt +
+    S:W + S:Wt,
+  data = crabs,
+family = poisson(link = "log"))
+
+names(modelo_cangre_completo_glm$coefficients) <- names(modelos_crangrejos_interactions$beta)
+modelo_cangre_completo_glm$coefficients
+```
+En la siguiente tabla se puede evidenciar los resultados de ambos métodos:
+En la siguiente tabla se puede ver la comparación con ambos métodos:
+
+| Variable     | fisher_scoring_poisson     | glm                     |
+|:-------------|:---------------------------:|:-----------------------:|
+| (Intercept)  | $\hat{\beta}_0 = -6.4407728$| $\hat{\beta}_0 = -6.4407727$ |
+| C2           | $\hat{\beta}_1 = -0.4973794$| $\hat{\beta}_1 = -0.4973794$ |
+| C3           | $\hat{\beta}_2 = -0.8020200$| $\hat{\beta}_2 = -0.8020200$ |
+| S2           | $\hat{\beta}_3 = 0.5369707$ | $\hat{\beta}_3 = 0.5369707$ |
+| S3           | $\hat{\beta}_4 = 0.6290147$ | $\hat{\beta}_4 = 0.6290147$ |
+| W            | $\hat{\beta}_5 = 0.2159377$ | $\hat{\beta}_5 = 0.2159377$ |
+| Wt           | $\hat{\beta}_6 = 0.4628472$ | $\hat{\beta}_6 = 0.4628472$ |
+| C2           | $\hat{\beta}_7 = -0.4973794$| $\hat{\beta}_1 = -0.4973794$ |
+| C3           | $\hat{\beta}_8 = -0.8020200$| $\hat{\beta}_2 = -0.8020200$ |
+| C2           | $\hat{\beta}_9 = -0.4973794$| $\hat{\beta}_1 = -0.4973794$ |
+| C3           | $\hat{\beta}_10 = -0.8020200$| $\hat{\beta}_2 = -0.8020200$ |
+| C2           | $\hat{\beta}_11 = -0.4973794$| $\hat{\beta}_1 = -0.4973794$ |
+| C3           | $\hat{\beta}_12 = -0.8020200$| $\hat{\beta}_2 = -0.8020200$ |
+| C2           | $\hat{\beta}_13 = -0.4973794$| $\hat{\beta}_1 = -0.4973794$ |
+| C3           | $\hat{\beta}_14 = -0.8020200$| $\hat{\beta}_2 = -0.8020200$ |
+| S2           | $\hat{\beta}_15 = 0.5369707$ | $\hat{\beta}_3 = 0.5369707$ |
+| S3           | $\hat{\beta}_16 = 0.6290147$ | $\hat{\beta}_4 = 0.6290147$ |
+| S2           | $\hat{\beta}_17 = 0.5369707$ | $\hat{\beta}_3 = 0.5369707$ |
+| S3           | $\hat{\beta}_18= 0.6290147$ | $\hat{\beta}_4 = 0.6290147$ |
+| S2           | $\hat{\beta}_19 = 0.5369707$ | $\hat{\beta}_3 = 0.5369707$ |
+| S3           | $\hat{\beta}_20 = 0.6290147$ | $\hat{\beta}_4 = 0.6290147$ |
+| S2           | $\hat{\beta}_21 = 0.5369707$ | $\hat{\beta}_3 = 0.5369707$ |
+| S3           | $\hat{\beta}_22 = 0.6290147$ | $\hat{\beta}_4 = 0.6290147$ |
+
+```{r}
+df_residuals.c.interac <- data.frame(
+    C=crabs$C,
+    S=crabs$S,
+    W=crabs$W,
+    Wt=crabs$Wt,
+    predichos = modelos_crangrejos_interactions$predichos,
+    residual = modelos_crangrejos_interactions$residual,
+    residual_pearson = modelos_crangrejos_interactions$residual_pearson,
+    residual_anscombe = modelos_crangrejos_interactions$residual_anscombe,
+    residual_deviance = modelos_crangrejos_interactions$residual_deviance
+  )
+```
+```{r}
+# Gráfico de los tres tipos de residuales
+
+c1 <- ggplot(df_residuals.c.interac, aes(x = predichos, y = residual)) +
+    geom_point(color = 'blue') +
+    labs(title = 'Residual Crudo', x = 'Valores Predichos', y = 'Residual Crudo') +
+    theme_minimal(12)
+
+c2 <- ggplot(df_residuals.c.interac, aes(x = predichos, y = residual_pearson)) +
+    geom_point(color = 'red') +
+    labs(title = 'Residual de Pearson', x = 'Valores Predichos', y = 'Residual de Pearson') +
+    theme_minimal(12)
+
+c3 <- ggplot(df_residuals.c.interac, aes(x = predichos, y = residual_anscombe)) +
+    geom_point(color = 'green') +
+    labs(title = 'Residual de Anscombe', x = 'Valores Predichos', y = 'Residual de Anscombe') +
+    theme_minimal(12)
+
+c4 <- ggplot(df_residuals.c.interac, aes(x = predichos, y = residual_deviance)) +
+    geom_point(color = 'orange') +
+    labs(title = 'Residual de Devianza', x = 'Valores Predichos', y = 'Residual de Devianza') +
+    theme_minimal(12)
+```
+
+```{r}
+#| layout-ncol: 2
+#| out-width: 100%
+
+c1; c2; c3; c4
+```
+Aún con las interacciones el modelo no parece ser adecuado.
 
 
 
