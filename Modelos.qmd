@@ -898,7 +898,9 @@ fisher_scoring_binomial <- function(y, X, beta_init, tol = 1e-5, max_iter = 100)
       # Residual de pearson
       residual_pearson <- (y - pi_hat) / sqrt(pi_hat)
       # Residual de Anscombe
-      residual_anscombe <- (3/2)*(y^(2/3)-pi_hat^(2/3))/((pi_hat*(1-pi_hat))^(1/3))
+      residual_anscombe <- (3/2) *
+        (y^(2/3) * (1 - y)^(2/3) - pi_hat^(2/3) * 
+           (1 - pi_hat)^(2/3)) / (pi_hat * (1 - pi_hat))^(1/6)
       # Residual de devianza
       # Handle y=0 and y=1 cases for deviance
       dev <- ifelse(y == 0, 2 * pi_hat, ifelse(y == 1, 2 * (1 - pi_hat),
