@@ -2,6 +2,12 @@
 title: "Algoritmo de Fisher Scoring"
 format: html
 page-layout: full
+
+# format:
+#   pdf:
+#     documentclass: article
+#     fontsize: 10pt
+#     geometry: a4paper, top=1.5cm, bottom=1.5cm, left=1cm, right=1cm
 author:
   - Carlos Mario Castaño Suaza
   - Juan Pablo Lara Chaves
@@ -27,22 +33,19 @@ library(boot)
 - Sean $Y_1, Y_2, \cdots, Y_n$ variables aleatorias independientes con distribución *Poisson*, tales que
 
 $$Y_i \sim Poisson(\mu_i) \quad i=1,2,\cdots,n.$$
-Veamos a que corresponde el link canónico mostrando que la Poisson pertenece a la familia de distribuciones exponencial e identificando sus componentes: 
+Veamos a qué corresponde el link canónico mostrando que la Poisson pertenece a la familia exponencial de distribuciones e identificando sus componentes: 
 La función de masa de probabilidad (PMF) de una variable aleatoria $Y$ que sigue una distribución de Poisson, $Y \sim Poisson(\lambda)$, donde $\lambda > 0$ es el parámetro de tasa, es:
-$$ f(y \mid \lambda) = \frac{e^{-\lambda} \lambda^y}{y!} $$
-para $y = 0, 1, 2, \dots$.
-
+$$ f(y \mid \lambda) = \frac{e^{-\lambda} \lambda^y}{y!} \quad y = 0, 1, 2, \dots$$
 Nuestro objetivo es reescribir esta PMF en la forma canónica de la familia exponencial:
 $$ f(y \mid \theta, \phi) = \exp\left(\frac{y\theta - b(\theta)}{a(\phi)} + c(y, \phi)\right) $$
 
 Comenzamos tomando el logaritmo de la PMF y luego exponenciando el resultado:
-$$
+
 \begin{align*}
 f(y \mid \lambda) &= \exp\left[ \ln\left( \frac{e^{-\lambda} \lambda^y}{y!} \right) \right] \\
 &= \exp\left[ \ln(e^{-\lambda}) + \ln(\lambda^y) - \ln(y!) \right] \\
 &= \exp\left[ -\lambda + y\ln(\lambda) - \ln(y!) \right]
 \end{align*}
-$$
 
 Ahora, definimos el parámetro canónico $\theta$. Observamos el término que multiplica a $y$:
 Sea $\theta = \ln(\lambda)$.
@@ -50,13 +53,13 @@ De esta definición, podemos expresar $\lambda$ en términos de $\theta$:
 $$ \lambda = e^\theta $$
 
 Sustituimos $\theta$ y la expresión para $\lambda$ en términos de $\theta$ de nuevo en la forma exponencial de la PMF:
-$$
+
 \begin{align*}
 f(y \mid \theta) &= \exp\left[ -e^\theta + y\theta - \ln(y!) \right] \\
 &= \exp\left[ y\theta - e^\theta - \ln(y!) \right] \\
 &= \exp\left[ \frac{y\theta - e^\theta}{1} - \ln(y!) \right]
 \end{align*}
-$$
+
 
 De esta forma, podemos identificar los componentes de la familia exponencial:
 
@@ -79,12 +82,12 @@ $$\eta_i = \ln(\mu_i) \Rightarrow \mu_i = \exp(\eta_i).$$
 
 La función de log-verosimilitud es como sigue
 
-$$
+
 \begin{align*}
 \mathcal{l}(\boldsymbol\beta) &= \sum_{i=1}^n \left[y_i\ln(\mu_i) - \mu_i - \ln(y_i!)\right]\\
 &= \sum_{i=1}^n \left[y_i x_i^t \boldsymbol\beta - \exp(x_i^t \boldsymbol\beta) - \ln(y_i!)\right]
 \end{align*}
-$$
+
 
 La **función score** (vector de primeras derivadas) está dado por
 
@@ -131,7 +134,7 @@ El estudio de los residuales es importante ya que ayuda a evaluar la calidad del
 
   $$r_{P}=\frac{y-\hat{\mu}}{\sqrt{Var(\hat{\mu})}}\Longrightarrow\frac{y-\hat{\mu}}{\sqrt{\hat{\mu}}}$$
 
-- **Residuales de devianza:** los residuos de devianza, como conjunto, suelen ser más cercanos a la normalidad con distribuciones GLM no normales que los residuos de Pearson.
+- **Residuales de devianza:** los residuos de devianza, como conjunto, suelen ser más cercanos a la normalidad con distribuciones GLM no normales que los residuos de Pearson. La devianza compara la log-verosimilitud entre el modelo saturado que ajusta perfectamente a las observaciones, con la del modelo ajustado. Se quiere que la devianza sea lo más pequeña posible.
 
   $$r_{D}=sign(y-\mu)\sqrt{d_{i}},\hspace{3cm}donde:d_{i}=\sqrt{2 \left[ \ell(y_i; y_i) - \ell(\hat{\mu}_i; y_i) \right]}$$
   Para el caso de la Poisson:
@@ -148,7 +151,7 @@ $$r_{D}=sign(y-\mu)\sqrt{2\left(y\cdot log(\frac{y}{\mu})-(y-\mu)\right)}$$
 
 ### Ejemplo 1 regresión Poisson - Jugadores de Baloncesto
 
-A continuación se presenta el algoritmo para encontrar una aproximación de $\beta$ usando datos reales.
+A continuación se presenta el algoritmo para encontrar una aproximación de $\boldsymbol\beta$ usando datos reales.
 
 Datos de jugadores de baloncesto de la temporada 2022-2023, los cuales incluyen la edad del jugador (AGE), tiempo en minutos jugado en la temporada (MIN), juegos participados (GP), tiros de campo hechos (FGM), tiros de campo intentados (FGA), tiros de campo hechos de 3 puntos (FG3M), tiros de campo intentados de 3 puntos (FGA) y puntos realizados en la temporada (PTS).
 
@@ -165,11 +168,12 @@ players <- read_excel("players_202223.xlsx") %>%
 
 players %>%
   ggpairs(
-    upper = list(continuous = wrap("cor", size = 3)),
+    upper = list(continuous = wrap("cor", size = 2)),
     diag = list(continuous = wrap("barDiag", colour = "burlywood")),
     lower = list(continuous = wrap("points", alpha = 0.5, shape = 20, 
                                    fill = "lightblue")),
-    axisLabels = "none")
+    axisLabels = "none") + 
+  theme(strip.text = element_text(size = 6))
 ```
 
 En la matriz de dispersión realizada se usó el coeficiente de correlación de Pearson, el cuál nos muestra que la mayoría de las variables tienen una alta correlación lineal con la variable respuesta, puntos realizados en la temporada (PTS). 
@@ -221,8 +225,10 @@ fisher_scoring_poisson <- function(y, X, beta_init, tol = 1e-7, max_iter = 100){
       #Residual Anscombe
       residual_anscombe <- (3/2) * (y^(2/3) - mu_hat^(2/3)) / (mu_hat^(1/6))
       # Residual de devianza
-      residual_deviance <- sign(y - mu_hat) * sqrt(2 * (y * log(ifelse(y == 0, 1, y / mu_hat)) - (y - mu_hat)))
-      return(list( beta = as.vector(beta_new), predichos = mu_hat, covarianza = cov_beta, residual = residual,
+      residual_deviance <- sign(y - mu_hat) * 
+        sqrt(2 * (y * log(ifelse(y == 0, 1, y / mu_hat)) - (y - mu_hat)))
+      return(list( beta = as.vector(beta_new), predichos = mu_hat, covarianza = cov_beta,
+                   residual = residual,
                    residual_pearson = residual_pearson,
                    residual_anscombe = residual_anscombe,
                    residual_deviance = residual_deviance))
@@ -245,7 +251,8 @@ regresion_poisson <- fisher_scoring_poisson(y = y, X = X, beta_init = beta_inici
 El vector de parámetros estimados $\boldsymbol\beta$ es el siguiente
 
 ```{r}
-names(regresion_poisson$beta) <- c("Intercept", "AGE", "MIN", "GP", "FGM", "FGA", "FG3M", "FG3A", "FTM", "FTA")
+names(regresion_poisson$beta) <- c("Intercept", "AGE", "MIN", "GP", "FGM",
+                                   "FGA", "FG3M", "FG3A", "FTM", "FTA")
 regresion_poisson$beta
 ```
 
@@ -295,6 +302,15 @@ A continuación, se muestran gráficamente los cuatro tipos de residuales calcul
 
 ```{r}
 df_residuals <- data.frame(
+    AGE = players$AGE,
+    MIN = players$MIN,
+    GP = players$GP,
+    FGM = players$FGM,
+    FGA = players$FGA,
+    FG3M = players$FG3M,
+    FG3A = players$FG3A,
+    FTM = players$FTM,
+    FTA = players$FTA,
     predichos = regresion_poisson$predichos,
     residual = regresion_poisson$residual,
     residual_pearson = regresion_poisson$residual_pearson,
@@ -304,7 +320,7 @@ df_residuals <- data.frame(
 ```
 
 ```{r}
-# Gráfico de los tres tipos de residuales
+# Gráfico de los cuatro tipos de residuales
 
 p1 <- ggplot(df_residuals, aes(x = log(predichos), y = residual)) +
     geom_point(color = 'blue') +
@@ -333,6 +349,7 @@ p4 <- ggplot(df_residuals, aes(x = log(predichos), y = residual_deviance)) +
 
 p1; p2; p3; p4
 ```
+
 Dado que en la distribución *Poisson* la varianza de cada observación depende de su media, los residuales *crudos* se ven afectados por esta relación. Esto hace que la escala de los residuales $r_i = y_i - \hat{\mu}_i$ varíe dependiendo del tamaño de $\hat{\mu}_i$. Naturalmente tendremos residuales pequeños cuando los valores predichos sean pequeños, y residuales grandes cuando los valores predichos sean grandes, haciendo evidente la heteroscedasticidad de los residuales.
 
 Si el modelo ajustara bien los datos, los residuales de *Pearson* debería solucionar la heteroscedasticidad presentada en los residuales crudos, y de esta forma no se reflejarían patrones en los residuales. En este caso, aún observamos patrones posiblemente no capturados por el modelo.
@@ -378,18 +395,78 @@ qq1; qq2; qq3; qq4
 
 En todos los casos, se observa una desviación evidente respecto a la normalidad, especialmente en las colas de las distribuciones. Esto sugiere la posible presencia de observaciones atípicas, un mal ajuste del modelo o datos influyentes que afectan la calidad del ajuste.
 
+Con el fin de explicar los patrones no explicados en los residuales, miramos los gráficos de los residuales contra las covariables, en aras de encontrar posibles relaciones no lineales y otro tipo de patrones 
+
+```{r}
+a1 <- ggplot(df_residuals, aes(x = AGE, y = residual_pearson)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual de Pearson', x = 'AGE', y = 'Residual de Pearson') +
+    theme_minimal(13)
+
+a2 <- ggplot(df_residuals, aes(x = MIN, y = residual_pearson)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual de Pearson', x = 'MIN', y = 'Residual de Pearson') +
+    theme_minimal(13)
+
+a3 <- ggplot(df_residuals, aes(x = GP, y = residual_pearson)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual de Pearson', x = 'GP', y = 'Residual de Pearson') +
+    theme_minimal(13)
+
+a4 <- ggplot(df_residuals, aes(x = FGM, y = residual_pearson)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual de Pearson', x = 'FGM', y = 'Residual de Pearson') +
+    theme_minimal(13)
+
+a5 <- ggplot(df_residuals, aes(x = FGA, y = residual_pearson)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual de Pearson', x = 'FGA', y = 'Residual de Pearson') +
+    theme_minimal(13)
+
+a6 <- ggplot(df_residuals, aes(x = FG3M, y = residual_pearson)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual de Pearson', x = 'FG3M', y = 'Residual de Pearson') +
+    theme_minimal(13)
+
+a7 <- ggplot(df_residuals, aes(x = FG3A, y = residual_pearson)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual de Pearson', x = 'FG3A', y = 'Residual de Pearson') +
+    theme_minimal(13)
+
+a8 <- ggplot(df_residuals, aes(x = FTM, y = residual_pearson)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual de Pearson', x = 'FTM', y = 'Residual de Pearson') +
+    theme_minimal(13)
+
+a9 <- ggplot(df_residuals, aes(x = FTA, y = residual_pearson)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual de Pearson', x = 'FTA', y = 'Residual de Pearson') +
+    theme_minimal(13)
+```
+
+```{r}
+#| layout-nrow: 3
+#| out-width: 100%
+
+a1; a2; a3; a4; a5; a6; a7; a8; a9
+```
+
+Vemos en especial las covariables MIN, FGM y FGA presentan un comportamiento similar al de los residuales, los que nos hace pensar que el modelo no está capturando correctamente este comportamiento similar al de una curva cuadrática. Valdría la pena explorar transformaciones de estas covariables o añadir términos cuadráticos en el modelo.
+
 ## Ejemplo 1 regresión Poisson - Cangrejos
 
 ```{r}
 crabs <- data.frame(
   
-  C = as.factor(c(2,3,3,2,2,1,2,1,3,2,2,2,1,2,2,2,2,3,3,2,2,2,2,3,3,2,2,2,2,3,3,3,2,3,2,2,
-        2,3,3,2,2,1,1,3,3,3,2,2,3,3,3,3,2,2,3,2,3,2,1,3,2,3,1,1,2,2,3,2,3,2,3,2,
-        2,2,3,3,2,2,1,2,2,2,1,2,2,3,2,2,1,2,3,3,3,3,3,1,3,2,3,2)),
+  C = as.factor(c(2,3,3,2,2,1,2,1,3,2,2,2,1,2,2,2,2,3,3,2,2,2,2,3,3,2,2,2,2,3,
+                  3,3,2,3,2,2,2,3,3,2,2,1,1,3,3,3,2,2,3,3,3,3,2,2,3,2,3,2,1,3,
+                  2,3,1,1,2,2,3,2,3,2,3,2,2,2,3,3,2,2,1,2,2,2,1,2,2,3,2,2,1,2,
+                  3,3,3,3,3,1,3,2,3,2)),
   
-  S = as.factor(c(3,3,3,3,1,2,1,1,2,2,1,3,1,1,1,2,2,2,2,2,2,1,2,3,3,1,3,1,1,3,3,3,3,2,2,1,
-        1,3,2,1,3,3,1,2,3,2,1,1,3,1,2,3,2,2,1,2,1,1,3,1,3,3,1,1,2,1,2,2,2,2,1,3,
-        3,3,3,2,2,1,1,2,2,2,2,3,3,3,3,3,3,3,3,2,3,3,3,3,3,3,2,1)),
+  S = as.factor(c(3,3,3,3,1,2,1,1,2,2,1,3,1,1,1,2,2,2,2,2,2,1,2,3,3,1,3,1,1,3,
+                  3,3,3,2,2,1,1,3,2,1,3,3,1,2,3,2,1,1,3,1,2,3,2,2,1,2,1,1,3,1,
+                  3,3,1,1,2,1,2,2,2,2,1,3,3,3,3,2,2,1,1,2,2,2,2,3,3,3,3,3,3,3,
+                  3,2,3,3,3,3,3,3,2,1)),
   
   W = c(28.3,26.0,26.0,21.0,21.0,25.0,26.0,24.9,25.0,24.7,26.5,24.8,24.9,26.0,
         28.7,30.3,26.2,27.5,30.0,28.2,30.5,30.3,30.0,26.2,28.5,29.5,27.0,29.0,
@@ -469,7 +546,8 @@ Aplicamos en algoritmo de Fisher-Scoring a los datos de cangrejos
 
 ```{r}
 X.c <- model.matrix(~., data=crabs[,-5])
-modelos_crangrejos <- fisher_scoring_poisson(crabs[,5], X = X.c, beta_init = c(log(mean(crabs[,5])), rep(0, ncol(X.c)-1)))
+modelos_crangrejos <- fisher_scoring_poisson(crabs[,5], X = X.c,
+                                  beta_init = c(log(mean(crabs[,5])), rep(0, ncol(X.c)-1)))
 ```
 
 ```{r}
@@ -529,22 +607,22 @@ df_residuals.c <- data.frame(
 ```{r}
 # Gráfico de los tres tipos de residuales
 
-c1 <- ggplot(df_residuals.c, aes(x = predichos, y = residual)) +
+c1 <- ggplot(df_residuals.c, aes(x = log(predichos), y = residual)) +
     geom_point(color = 'blue') +
     labs(title = 'Residual Crudo', x = 'Valores Predichos', y = 'Residual Crudo') +
     theme_minimal(12)
 
-c2 <- ggplot(df_residuals.c, aes(x = predichos, y = residual_pearson)) +
+c2 <- ggplot(df_residuals.c, aes(x = log(predichos), y = residual_pearson)) +
     geom_point(color = 'red') +
     labs(title = 'Residual de Pearson', x = 'Valores Predichos', y = 'Residual de Pearson') +
     theme_minimal(12)
 
-c3 <- ggplot(df_residuals.c, aes(x = predichos, y = residual_anscombe)) +
+c3 <- ggplot(df_residuals.c, aes(x = log(predichos), y = residual_anscombe)) +
     geom_point(color = 'green') +
     labs(title = 'Residual de Anscombe', x = 'Valores Predichos', y = 'Residual de Anscombe') +
     theme_minimal(12)
 
-c4 <- ggplot(df_residuals.c, aes(x = predichos, y = residual_deviance)) +
+c4 <- ggplot(df_residuals.c, aes(x = log(predichos), y = residual_deviance)) +
     geom_point(color = 'orange') +
     labs(title = 'Residual de Devianza', x = 'Valores Predichos', y = 'Residual de Devianza') +
     theme_minimal(12)
@@ -556,40 +634,47 @@ c4 <- ggplot(df_residuals.c, aes(x = predichos, y = residual_deviance)) +
 
 c1; c2; c3; c4
 ```
-En todos los casos se puede evidenciar que los residuales presentan un patrón no aleatorio, esto sugiere que hay presencia de efectos en alguna de las variables independientes que no ha sido adecuadamente modelada 
+En todos los casos se puede evidenciar que los residuales presentan un patrón no aleatorio, esto sugiere que hay presencia de patrones en alguna de las covariables que no ha sido adecuadamente modelada.
 
-Además se graficaron los residuales contra las diferentes variables, para darnos una idea de que podría ser el problema:
+A continuación, se presentan los QQ-plots de los residuales con el fin de evaluar su aproximación a la distribución normal
 
 ```{r}
-# Gráfico de los residuales crudos contra las covariables
+# qq-plots de los residuales
 
-c1 <- ggplot(df_residuals.c, aes(x = S, y = residual)) +
-    geom_point(color = 'blue') +
-    labs(title = 'Residual Crudo', x = '(S)', y = 'Residual Crudo') +
-    theme_minimal(12)
+qq1 <- ggplot(df_residuals.c, aes(sample = residual)) +
+  stat_qq(color = "blue") +
+  stat_qq_line(color = "blue") +
+  labs(title = "QQ Plot - Residual Crudo", x = "Teóricos", y = "Residuales") +
+  theme_minimal(12)
 
-c2 <- ggplot(df_residuals.c, aes(x = W, y = residual)) +
-    geom_point(color = 'red') +
-    labs(title = 'Residual Crudo', x = '(W)', y = 'Residual Crudo') +
-    theme_minimal(12)
+qq2 <- ggplot(df_residuals.c, aes(sample = residual_pearson)) +
+  stat_qq(color = "red") +
+  stat_qq_line(color = "red") +
+  labs(title = "QQ Plot - Residual de Pearson", x = "Teóricos", y = "Residuales") +
+  theme_minimal(12)
 
-c3 <- ggplot(df_residuals.c, aes(x = Wt, y = residual)) +
-    geom_point(color = 'green') +
-    labs(title = 'Residual Crudo', x = '(Wt)', y = 'Residual Crudo') +
-    theme_minimal(12)
+qq3 <- ggplot(df_residuals.c, aes(sample = residual_anscombe)) +
+  stat_qq(color = "green") +
+  stat_qq_line(color = "green") +
+  labs(title = "QQ Plot - Residual de Anscombe", x = "Teóricos", y = "Residuales") +
+  theme_minimal(12)
 
-c4 <- ggplot(df_residuals.c, aes(x = C, y = residual)) +
-    geom_point(color = 'orange') +
-    labs(title = 'Residual Crudo', x = '(C)', y = 'Residual Crudo') +
-    theme_minimal(12)
+qq4 <- ggplot(df_residuals.c, aes(sample = residual_deviance)) +
+  stat_qq(color = "orange") +
+  stat_qq_line(color = "orange") +
+  labs(title = "QQ Plot - Residual de Devianza", x = "Teóricos", y = "Residuales") +
+  theme_minimal(12)
 ```
 
 ```{r}
 #| layout-ncol: 2
 #| out-width: 100%
 
-c1; c2; c3; c4
+qq1; qq2; qq3; qq4
 ```
+Los residuales no se ajustan a la distribución normal.
+
+Además se graficaron los residuales contra las diferentes variables, para darnos una idea de que podría ser el problema:
 
 ```{r}
 # Gráfico de los residuales de Pearson contra las covariables
@@ -622,68 +707,7 @@ c4 <- ggplot(df_residuals.c, aes(x = C, y = residual_pearson)) +
 c1; c2; c3; c4
 ```
 
-```{r}
-# Gráfico de los residuales de Anscombe contra las covariables
-
-c1 <- ggplot(df_residuals.c, aes(x = S, y = residual_anscombe)) +
-    geom_point(color = 'blue') +
-    labs(title = 'Residual de Anscombe', x = '(S)', y = 'Residual de Anscombe') +
-    theme_minimal(12)
-
-c2 <- ggplot(df_residuals.c, aes(x = W, y = residual_anscombe)) +
-    geom_point(color = 'red') +
-    labs(title = 'Residual de Anscombe', x = '(W)', y = 'Residual de Anscombe') +
-    theme_minimal(12)
-
-c3 <- ggplot(df_residuals.c, aes(x = Wt, y = residual_anscombe)) +
-    geom_point(color = 'green') +
-    labs(title = 'Residual de Anscombe', x = '(Wt)', y = 'Residual de Anscombe') +
-    theme_minimal(12)
-
-c4 <- ggplot(df_residuals.c, aes(x = C, y = residual_anscombe)) +
-    geom_point(color = 'orange') +
-    labs(title = 'Residual de Anscombe', x = '(C)', y = 'Residual de Anscombe') +
-    theme_minimal(12)
-```
-
-```{r}
-#| layout-ncol: 2
-#| out-width: 100%
-
-c1; c2; c3; c4
-```
-
-```{r}
-# Gráfico de los residuales de devianza contra la covariables
-
-c1 <- ggplot(df_residuals.c, aes(x = S, y = residual_deviance)) +
-    geom_point(color = 'blue') +
-    labs(title = 'Residual de Devianza', x = '(S)', y = 'Residual de Devianza') +
-    theme_minimal(12)
-
-c2 <- ggplot(df_residuals.c, aes(x = W, y = residual_deviance)) +
-    geom_point(color = 'red') +
-    labs(title = 'Residual de Devianza', x = '(W)', y = 'Residual de Devianza') +
-    theme_minimal(12)
-
-c3 <- ggplot(df_residuals.c, aes(x = Wt, y = residual_deviance)) +
-    geom_point(color = 'green') +
-    labs(title = 'Residual de Devianza', x = '(Wt)', y = 'Residual de Devianza') +
-    theme_minimal(12)
-
-c4 <- ggplot(df_residuals.c, aes(x = C, y = residual_deviance)) +
-    geom_point(color = 'orange') +
-    labs(title = 'Residual de Devianza', x = '(C)', y = 'Residual de Devianza') +
-    theme_minimal(12)
-```
-
-```{r}
-#| layout-ncol: 2
-#| out-width: 100%
-
-c1; c2; c3; c4
-```
-En los gráficos de los distintos residuales frente a las variables se puede ver que las variables de ancho y peso parecen estar bien modeladas, mientras que las variables categóricas de la condición de la espina y el color pueden estar necesitando interacciones.
+En los gráficos de los residuales frente a las variables se puede ver que las variables de ancho y peso parecen estar bien modeladas, mientras que las variables categóricas de la condición de la espina y el color pueden estar necesitando interacciones.
 
 ```{r}
 X_completa <- model.matrix(Sa
@@ -728,18 +752,20 @@ En la siguiente tabla se puede ver la comparación con ambos métodos:
 | S3           | $\hat{\beta}_4 = -5.40619991$ | $\hat{\beta}_4 = -5.40619982$ |
 | W            | $\hat{\beta}_5 = 0.03903109$ | $\hat{\beta}_5 = 0.03903110$ |
 | Wt           | $\hat{\beta}_6 = 0.58667464$ | $\hat{\beta}_6 = 0.58667468$ |
-| C2:S2        | $\hat{\beta}_7 = -0.01213212$| $\hat{\beta}_1 = -0.01213211$ |
-| C3:S2        | $\hat{\beta}_8 = 0.25629744$| $\hat{\beta}_2 = 0.25629746$ |
-| C2:S3        | $\hat{\beta}_9 = 1.54090159$| $\hat{\beta}_1 = 1.54090153$ |
-| C3:S3        | $\hat{\beta}_10 = 1.54075734$| $\hat{\beta}_2 = 1.54075729$ |
-| C2:W         | $\hat{\beta}_11 = 0.14599903$| $\hat{\beta}_1 = 0.14599903$ |
-| C3:W         | $\hat{\beta}_12 = 0.08503343$| $\hat{\beta}_2 = 0.08503343$ |
-| C2:Wt        | $\hat{\beta}_13 = 0.48579785$| $\hat{\beta}_1 = 0.48579780$ |
-| C3:Wt        | $\hat{\beta}_14 = 0.37351649$| $\hat{\beta}_2 = 0.37351643$ |
-| S2:W         | $\hat{\beta}_15 = 0.30830437$ | $\hat{\beta}_3 = 0.30830437$ |
-| S3:W         | $\hat{\beta}_16 = 0.22286260$ | $\hat{\beta}_4 = 0.22286260$ |
-| S2:Wt        | $\hat{\beta}_17 = -1.88949419$ | $\hat{\beta}_3 = -1.88949416$ |
-| S3:Wt        | $\hat{\beta}_18= -0.49629809$ | $\hat{\beta}_4 = -0.49629806$ |
+| C2:S2        | $\hat{\beta}_7 = -0.01213212$| $\hat{\beta}_7 = -0.01213211$ |
+| C3:S2        | $\hat{\beta}_8 = 0.25629744$| $\hat{\beta}_8 = 0.25629746$ |
+| C2:S3        | $\hat{\beta}_9 = 1.54090159$| $\hat{\beta}_9 = 1.54090153$ |
+| C3:S3        | $\hat{\beta}_{10} = 1.54075734$| $\hat{\beta}_{10} = 1.54075729$ |
+| C2:W         | $\hat{\beta}_{11} = 0.14599903$| $\hat{\beta}_{11} = 0.14599903$ |
+| C3:W         | $\hat{\beta}_{12} = 0.08503343$| $\hat{\beta}_{12} = 0.08503343$ |
+| C2:Wt        | $\hat{\beta}_{13} = 0.48579785$| $\hat{\beta}_{13} = 0.48579780$ |
+| C3:Wt        | $\hat{\beta}_{14} = 0.37351649$| $\hat{\beta}_{14} = 0.37351643$ |
+| S2:W         | $\hat{\beta}_{15} = 0.30830437$ | $\hat{\beta}_{15} = 0.30830437$ |
+| S3:W         | $\hat{\beta}_{16} = 0.22286260$ | $\hat{\beta}_{16} = 0.22286260$ |
+| S2:Wt        | $\hat{\beta}_{17} = -1.88949419$ | $\hat{\beta}_{17} = -1.88949416$ |
+| S3:Wt        |$\hat{\beta}_{18}= -0.49629809$| $\hat{\beta}_{18} = -0.49629806$ |
+
+Exploremos los residuales del modelo con interacciones:x
 
 ```{r}
 df_residuals.c.interac <- data.frame(
@@ -756,7 +782,7 @@ df_residuals.c.interac <- data.frame(
 ```
 
 ```{r}
-# Gráfico de los tres tipos de residuales
+# Gráfico de los cuatro tipos de residuales
 
 c1 <- ggplot(df_residuals.c.interac, aes(x = log(predichos), y = residual)) +
     geom_point(color = 'blue') +
@@ -785,8 +811,8 @@ c4 <- ggplot(df_residuals.c.interac, aes(x = log(predichos), y = residual_devian
 
 c1; c2; c3; c4
 ```
-Aún con las interacciones el modelo no parece ser adecuado.
 
+Aún con las interacciones el modelo no parece ser adecuado.
 
 ## Regresión Binomial
 
@@ -795,7 +821,7 @@ Aún con las interacciones el modelo no parece ser adecuado.
 $$Y_i \sim Binomial(n_i, p_i) \quad i=1,2,\cdots,n.$$
 donde $n_i$ es el número de ensayos (conocido) para la observación $i$, y $p_i$ es la probabilidad de éxito. La variable $Y_i$ representa el número de éxitos en los $n_i$ ensayos.
 
-Veamos a que corresponde el link canónico mostrando que la Binomial pertenece a la familia de distribuciones exponencial e identificando sus componentes: 
+Veamos a que corresponde el link canónico mostrando que la Binomial pertenece a la familia exponencial de distribuciones e identificando sus componentes: 
 
 La función de masa de probabilidad (PMF) de una variable aleatoria $Y$ que sigue una distribución Binomial, $Y \sim Bin(n, \pi)$, donde $n$ es el número de ensayos y $\pi$ es la probabilidad de éxito en cada ensayo, es:
 $$ f(y \mid n, \pi) = \binom{n}{y} \pi^y (1-\pi)^{n-y} $$
@@ -805,6 +831,7 @@ Podemos reescribir esta PMF en la forma de la familia exponencial:
 $$ f(y \mid \theta, \phi) = \exp\left(\frac{y\theta - b(\theta)}{a(\phi)} + c(y, \phi)\right) $$
 
 Comenzamos tomando el logaritmo de la PMF y luego exponenciando:
+
 \begin{align*}
 f(y \mid n, \pi) &= \exp\left[ \ln\left( \binom{n}{y} \pi^y (1-\pi)^{n-y} \right) \right] \\
 &= \exp\left[ \ln\binom{n}{y} + \ln(\pi^y) + \ln((1-\pi)^{n-y}) \right] \\
@@ -816,13 +843,15 @@ f(y \mid n, \pi) &= \exp\left[ \ln\left( \binom{n}{y} \pi^y (1-\pi)^{n-y} \right
 
 Sea el parámetro canónico $\theta = \ln\left(\frac{\pi}{1-\pi}\right)$. Esta es la función de enlace logit.
 De esta definición, podemos expresar $\pi$ en términos de $\theta$:
+
 \begin{align*}
-e^\theta &= \frac{\pi}{1-\pi} \\
-e^\theta (1-\pi) &= \pi \\
-e^\theta - e^\theta \pi &= \pi \\
-e^\theta &= \pi(1+e^\theta) \\
-\pi &= \frac{e^\theta}{1+e^\theta}
+&e^\theta = \frac{\pi}{1-\pi} \\
+&e^\theta (1-\pi) = \pi \\
+&e^\theta - e^\theta \pi = \pi \\
+&e^\theta = \pi(1+e^\theta) \\
+&\pi = \frac{e^\theta}{1+e^\theta}
 \end{align*}
+
 Y también necesitamos expresar $1-\pi$ en términos de $\theta$:
 $$ 1-\pi = 1 - \frac{e^\theta}{1+e^\theta} = \frac{1+e^\theta - e^\theta}{1+e^\theta} = \frac{1}{1+e^\theta} $$
 Por lo tanto,
@@ -861,13 +890,13 @@ $$\eta_i = \beta_0 + \beta_1X_{i1} + \beta_2X_{i2} + \cdots + \beta_pX_{ip} = x_
 
 -   La función de log-verosimilitud (ignorando términos constantes como $\ln\binom{n_i}{y_i}$) es:
 
-$$
-    \begin{align*}
-    \mathcal{l}(\beta) &= \sum_{i=1}^n \left[y_i\ln(\pi_i) + (n_i - y_i)\ln(1-\pi_i)\right]\\
-    &= \sum_{i=1}^n \left[y_i \eta_i - n_i \ln(1+e^{\eta_i})\right] \\
-    &= \sum_{i=1}^n \left[y_i (x_i^T \beta) - n_i \ln(1+\exp(x_i^T \beta))\right]
-    \end{align*}
-$$
+
+\begin{align*}
+  \mathcal{l}(\beta) &= \sum_{i=1}^n \left[y_i\ln(\pi_i) + (n_i - y_i)\ln(1-\pi_i)\right]\\
+  &= \sum_{i=1}^n \left[y_i \eta_i - n_i \ln(1+e^{\eta_i})\right] \\
+  &= \sum_{i=1}^n \left[y_i (x_i^T \beta) - n_i \ln(1+\exp(x_i^T \beta))\right]
+\end{align*}
+
 
 $$\eta_i = logit(p_i) = \ln\left(\frac{p_i}{1-p_i}\right)$$
 donde $\eta_i$ es el predictor lineal:
@@ -880,13 +909,11 @@ $$\eta_i = \beta_0 + \beta_1X_{i1} + \beta_2X_{i2} + \cdots + \beta_pX_{ip} = x_
 
 -   La función de log-verosimilitud (ignorando términos constantes como $\ln\binom{n_i}{y_i}$) es:
 
-$$
-    \begin{align*}
-    \mathcal{l}(\beta) &= \sum_{i=1}^n \left[y_i\ln(p_i) + (n_i - y_i)\ln(1-p_i)\right]\\
-    &= \sum_{i=1}^n \left[y_i \eta_i - n_i \ln(1+e^{\eta_i})\right] \\
-    &= \sum_{i=1}^n \left[y_i (x_i^T \beta) - n_i \ln(1+\exp(x_i^T \beta))\right]
-    \end{align*}
-$$
+\begin{align*}
+  \mathcal{l}(\beta) &= \sum_{i=1}^n \left[y_i\ln(p_i) + (n_i - y_i)\ln(1-p_i)\right]\\
+  &= \sum_{i=1}^n \left[y_i \eta_i - n_i \ln(1+e^{\eta_i})\right] \\
+  &= \sum_{i=1}^n \left[y_i (x_i^T \beta) - n_i \ln(1+\exp(x_i^T \beta))\right]
+\end{align*}
 
 -   La **función score** (vector de primeras derivadas) se puede derivar y resulta ser:
 $$\frac{\partial \mathcal{l}(\beta)}{\partial \beta} = \sum_{i=1}^n (y_i - n_i p_i)x_i = \sum_{i=1}^n (y_i - \mu_i)x_i = X^t(y - \mu)$$
@@ -964,7 +991,7 @@ data_bin <- tibble(y = yb, x = xbin)
 A continuación se presentan los datos simulados
 
 ```{r}
-#| out-width: 100%
+#| out-width: 80%
 
 ggplot(data_bin, aes(x = x, y = y)) +
     geom_jitter(height = 0.02, width = 0, 
@@ -1067,7 +1094,8 @@ La matriz de covarianza es prácticamente la misma con ambos métodos.
 A continuación, se muestran gráficamente los cuatro tipos de residuales calculados: *residuales crudos*, *residuales de pearson*, *residuales de Anscombe* y *residuales de devianza*
 
 ```{r}
-df_residuals <- data.frame(
+df_residuals.sim <- data.frame(
+    xbin = xbin,
     predichos = beta_binomial$predichos,
     residual = beta_binomial$residual,
     residual_pearson = beta_binomial$residual_pearson,
@@ -1079,22 +1107,22 @@ df_residuals <- data.frame(
 ```{r}
 # Gráfico de los tres tipos de residuales
 
-p1 <- ggplot(df_residuals, aes(x = logit(predichos), y = residual)) +
+p1 <- ggplot(df_residuals.sim, aes(x = logit(predichos), y = residual)) +
     geom_point(color = 'blue') +
     labs(title = 'Residual Crudo', x = 'Valores Predichos', y = 'Residual Crudo') +
     theme_minimal(12)
 
-p2 <- ggplot(df_residuals, aes(x = logit(predichos), y = residual_pearson)) +
+p2 <- ggplot(df_residuals.sim, aes(x = logit(predichos), y = residual_pearson)) +
     geom_point(color = 'red') +
     labs(title = 'Residual de Pearson', x = 'Valores Predichos', y = 'Residual de Pearson') +
     theme_minimal(12)
 
-p3 <- ggplot(df_residuals, aes(x = logit(predichos), y = residual_anscombe)) +
+p3 <- ggplot(df_residuals.sim, aes(x = logit(predichos), y = residual_anscombe)) +
     geom_point(color = 'green') +
     labs(title = 'Residual de Anscombe', x = 'Valores Predichos', y = 'Residual de Anscombe') +
     theme_minimal(12)
 
-p4 <- ggplot(df_residuals, aes(x = logit(predichos), y = residual_deviance)) +
+p4 <- ggplot(df_residuals.sim, aes(x = logit(predichos), y = residual_deviance)) +
     geom_point(color = 'orange') +
     labs(title = 'Residual de Devianza', x = 'Valores Predichos', y = 'Residual de Devianza') +
     theme_minimal(12)
@@ -1107,18 +1135,74 @@ p4 <- ggplot(df_residuals, aes(x = logit(predichos), y = residual_deviance)) +
 p1; p2; p3; p4
 ```
 
+A continuación, se presentan los QQ-plots de los residuales con el fin de evaluar su aproximación a la distribución normal
+
+```{r}
+# qq-plots de los residuales
+
+qq1 <- ggplot(df_residuals.sim, aes(sample = residual)) +
+  stat_qq(color = "blue") +
+  stat_qq_line(color = "blue") +
+  labs(title = "QQ Plot - Residual Crudo", x = "Teóricos", y = "Residuales") +
+  theme_minimal(12)
+
+qq2 <- ggplot(df_residuals.sim, aes(sample = residual_pearson)) +
+  stat_qq(color = "red") +
+  stat_qq_line(color = "red") +
+  labs(title = "QQ Plot - Residual de Pearson", x = "Teóricos", y = "Residuales") +
+  theme_minimal(12)
+
+qq3 <- ggplot(df_residuals.sim, aes(sample = residual_anscombe)) +
+  stat_qq(color = "green") +
+  stat_qq_line(color = "green") +
+  labs(title = "QQ Plot - Residual de Anscombe", x = "Teóricos", y = "Residuales") +
+  theme_minimal(12)
+
+qq4 <- ggplot(df_residuals.sim, aes(sample = residual_deviance)) +
+  stat_qq(color = "orange") +
+  stat_qq_line(color = "orange") +
+  labs(title = "QQ Plot - Residual de Devianza", x = "Teóricos", y = "Residuales") +
+  theme_minimal(12)
+```
+
+```{r}
+#| layout-ncol: 2
+#| out-width: 100%
+
+qq1; qq2; qq3; qq4
+```
+Se presenta un comportamiento inusual en los residuales, a excepción de los resoiduales de Anscombe. Aún así, los residuales se desvían considerablemente de una distribución normal.
+
+```{r}
+res_xbin <- ggplot(df_residuals.sim, aes(x = xbin, y = residual_pearson)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual de Pearson', x = 'xbin', y = 'Residual de Pearson') +
+    theme_minimal(13)
+```
+
+Los residuales de Pearson vs la covariable del modelo se muestra a continuación
+
+```{r}
+#| out-width: 80%
+res_xbin
+```
+El patrón es muy similar al observado en los gráficos de los valores predichos.
+
 ### Regresión logística con los datos del agua
 
 A continuación, se utilizarán datos relacionados con tratamientos aplicados al agua. La variable de respuesta indica si se utilizó o no un polímero.
 
 ```{r}
-TURB=c(300,250,190,160,560,150,160,270,450,210,420,550,1200,420,500,150,200,390,380,140,170,1110,140,150,870,720,430,550)
+TURB=c(300,250,190,160,560,150,160,270,450,210,420,550,1200,420,500,
+       150,200,390,380,140,170,1110,140,150,870,720,430,550)
 
-COL=c(100,100,50,70,200,100,100,70,130,100,100,250,250,100,120,75,50,140,120,50,110,100,80,90,150,200,100,200)
+COL=c(100,100,50,70,200,100,100,70,130,100,100,250,250,100,120,75,50,
+      140,120,50,110,100,80,90,150,200,100,200)
 
 ALCA=c(49,43,51,52,44,48,55,43,56,51,46,65,43,53,48,45,52,52,39,54,52,51,55,50,49,44,48,40)
 
-PH=c(8.33,7.64,7.62,7.62,8.19,7.90,7.60,8.07,7.53,7.72,7.90,7.68,7.93,7.90,8.01,7.71,7.66,8.09,8.17,8.16,7.58,8.06,7.51,7.56,7.60,8.18,7.20,7.55)
+PH=c(8.33,7.64,7.62,7.62,8.19,7.90,7.60,8.07,7.53,7.72,7.90,7.68,7.93,
+     7.90,8.01,7.71,7.66,8.09,8.17,8.16,7.58,8.06,7.51,7.56,7.60,8.18,7.20,7.55)
 
 TEM=c(25,27,28,26,25,26,26,24,27,27,26,27,26,26,27,27,26,27,26,25,27,23,27,27,27,23,26,27)
 
@@ -1128,8 +1212,9 @@ POL=c(0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,1,0,0,1,1,1,1)
 ```{r}
 Xbin2 <- model.matrix(~ TURB+COL+ALCA+PH+TEM)
 
-regresión_logistica_agua <- fisher_scoring_binomial(y = POL,X = Xbin2, beta_init = c(log(mean(POL)/(1-mean(POL))), rep(0, ncol(Xbin2)-1)),
-                        max_iter = 500)
+regresión_logistica_agua <- fisher_scoring_binomial(y = POL,X = Xbin2,
+                              beta_init = c(log(mean(POL)/(1-mean(POL))), rep(0,ncol(Xbin2)-1)),
+                              max_iter = 500)
 
 names(regresión_logistica_agua$beta) <- colnames(Xbin2)
 ```
@@ -1163,7 +1248,7 @@ all.equal(regresión_logistica_agua$covarianza, vcov(modelo))
 Veamos cómo se comportan los residuales
 
 ```{r}
-df_residuals <- data.frame(
+df_residuals.agua <- data.frame(
     predichos = regresión_logistica_agua$predichos,
     residual = regresión_logistica_agua$residual,
     residual_pearson = regresión_logistica_agua$residual_pearson,
@@ -1175,25 +1260,25 @@ df_residuals <- data.frame(
 ```{r}
 # Gráfico de los tres tipos de residuales
 
-p1 <- ggplot(df_residuals, aes(x = logit(predichos), y = residual)) +
+p1 <- ggplot(df_residuals.agua, aes(x = logit(predichos), y = residual)) +
     geom_point(color = 'blue') +
     labs(title = 'Residual Crudo', x = 'Valores Predichos', y = 'Residual Crudo') +
     ylim(-1, 1) + 
     theme_minimal(12)
 
-p2 <- ggplot(df_residuals, aes(x = logit(predichos), y = residual_pearson)) +
+p2 <- ggplot(df_residuals.agua, aes(x = logit(predichos), y = residual_pearson)) +
     geom_point(color = 'red') +
     labs(title = 'Residual de Pearson', x = 'Valores Predichos', y = 'Residual de Pearson') +
     ylim(-1, 1.1) +
     theme_minimal(12)
 
-p3 <- ggplot(df_residuals, aes(x = logit(predichos), y = residual_anscombe)) +
+p3 <- ggplot(df_residuals.agua, aes(x = logit(predichos), y = residual_anscombe)) +
     geom_point(color = 'green') +
     labs(title = 'Residual de Anscombe', x = 'Valores Predichos', y = 'Residual de Anscombe') +
     ylim(-3.1, 1.3) +
     theme_minimal(12)
 
-p4 <- ggplot(df_residuals, aes(x = logit(predichos), y = residual_deviance)) +
+p4 <- ggplot(df_residuals.agua, aes(x = logit(predichos), y = residual_deviance)) +
     geom_point(color = 'orange') +
     labs(title = 'Residual de Devianza', x = 'Valores Predichos', y = 'Residual de Devianza') +
     ylim(-1.3, 1.15) +
@@ -1206,17 +1291,120 @@ p4 <- ggplot(df_residuals, aes(x = logit(predichos), y = residual_deviance)) +
 
 p1; p2; p3; p4
 ```
+Los residuales no parecen mostrar un patrón aleatorio. Los gráficos QQ-plot para evaluar la normalidad de los residuales se muestra a continaución
+
+```{r}
+# qq-plots de los residuales
+
+qq1 <- ggplot(df_residuals.agua, aes(sample = residual)) +
+  stat_qq(color = "blue") +
+  stat_qq_line(color = "blue") +
+  labs(title = "QQ Plot - Residual Crudo", x = "Teóricos", y = "Residuales") +
+  theme_minimal(12)
+
+qq2 <- ggplot(df_residuals.agua, aes(sample = residual_pearson)) +
+  stat_qq(color = "red") +
+  stat_qq_line(color = "red") +
+  labs(title = "QQ Plot - Residual de Pearson", x = "Teóricos", y = "Residuales") +
+  theme_minimal(12)
+
+qq3 <- ggplot(df_residuals.agua, aes(sample = residual_anscombe)) +
+  stat_qq(color = "green") +
+  stat_qq_line(color = "green") +
+  labs(title = "QQ Plot - Residual de Anscombe", x = "Teóricos", y = "Residuales") +
+  theme_minimal(12)
+
+qq4 <- ggplot(df_residuals.agua, aes(sample = residual_deviance)) +
+  stat_qq(color = "orange") +
+  stat_qq_line(color = "orange") +
+  labs(title = "QQ Plot - Residual de Devianza", x = "Teóricos", y = "Residuales") +
+  theme_minimal(12)
+```
+
+```{r}
+#| layout-ncol: 2
+#| out-width: 100%
+
+qq1; qq2; qq3; qq4
+```
+No se evidencia normalidad en los residuales, aunque también puede ser debido a que tenemos muy pocos datos.
+
 Dado que en el modelo ajustado ninguna de las covariables resultó ser significativa en la explicación de la variable respuesta, se ajustará un modelo considerando únicamente la turbiedad como la covariable.
 
 ```{r}
 modelo2 <- glm(formula = POL ~ TURB, family = 'binomial')
 modelo2$coefficients
 ```
+
 ```{r}
 summary(modelo2)
 ```
+Exploremos los residuales de este modelo
+
 ```{r}
-plot(modelo2, which = 1)
+df_residuals.agua2 <- data.frame(
+    TURB = TURB,
+    predichos = fitted(modelo2),
+    residual = residuals(modelo2, type = "response"),
+    residual_pearson = residuals(modelo2, type = "pearson"),
+    residual_deviance = residuals(modelo2, type = "deviance")
+  )
 ```
 
+```{r}
+# Gráfico de los tres tipos de residuales
 
+p1 <- ggplot(df_residuals.agua2, aes(x = logit(predichos), y = residual)) +
+    geom_point(color = 'blue') +
+    labs(title = 'Residual Crudo', x = 'Valores Predichos', y = 'Residual Crudo') +
+    # ylim(-1, 1) + 
+    theme_minimal(13)
+
+p2 <- ggplot(df_residuals.agua2, aes(x = logit(predichos), y = residual_pearson)) +
+    geom_point(color = 'red') +
+    labs(title = 'Residual de Pearson', x = 'Valores Predichos', y = 'Residual de Pearson') +
+    # ylim(-1, 1.1) +
+    theme_minimal(13)
+
+p3 <- ggplot(df_residuals.agua2, aes(x = logit(predichos), y = residual_deviance)) +
+    geom_point(color = 'orange') +
+    labs(title = 'Residual de Devianza', x = 'Valores Predichos', y = 'Residual de Devianza') +
+    # ylim(-1.3, 1.15) +
+    theme_minimal(13)
+```
+
+```{r}
+#| layout-ncol: 3
+#| out-width: 100%
+
+p1; p2; p3
+```
+Nuevamente parece haber patrones no explicados por el modelo. 
+
+El gráfico de residuales vs la turbiedad se muestraa  continuación
+
+```{r}
+res_turb1 <- ggplot(df_residuals.agua2, aes(x = TURB, y = residual)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual crudo', x = 'Turbiedad', y = 'Residual crudo') +
+    theme_minimal(13)
+
+res_turb2 <- ggplot(df_residuals.agua2, aes(x = TURB, y = residual_pearson)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual de Pearson', x = 'Turbiedad', y = 'Residual de Pearson') +
+    theme_minimal(13)
+
+res_turb3 <- ggplot(df_residuals.agua2, aes(x = TURB, y = residual_deviance)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual de Devianza', x = 'Turbiedad', y = 'Residual de Devianza') +
+    theme_minimal(13)
+```
+
+```{r}
+#| out-width: 100%
+#| layout-ncol: 3
+
+res_turb1; res_turb2; res_turb3
+```
+
+Los residuales presentan el mismo patrón, esto puede ser indicios de necesidad de transformación de la variable turbiedad.
