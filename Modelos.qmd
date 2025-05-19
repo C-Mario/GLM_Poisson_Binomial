@@ -27,8 +27,49 @@ library(boot)
 - Sean $Y_1, Y_2, \cdots, Y_n$ variables aleatorias independientes con distribución *Poisson*, tales que
 
 $$Y_i \sim Poisson(\mu_i) \quad i=1,2,\cdots,n.$$
-Sabemos que en la distribución *Poisson*, el parámetro canónico está dado por $\theta_i = \ln(\mu_i)$.
+Veamos a que corresponde el link canónico mostrando que la Poisson pertenece a la familia de distribuciones exponencial e identificando sus componentes: 
+La función de masa de probabilidad (PMF) de una variable aleatoria $Y$ que sigue una distribución de Poisson, $Y \sim Poisson(\lambda)$, donde $\lambda > 0$ es el parámetro de tasa, es:
+$$ f(y \mid \lambda) = \frac{e^{-\lambda} \lambda^y}{y!} $$
+para $y = 0, 1, 2, \dots$.
 
+Nuestro objetivo es reescribir esta PMF en la forma canónica de la familia exponencial:
+$$ f(y \mid \theta, \phi) = \exp\left(\frac{y\theta - b(\theta)}{a(\phi)} + c(y, \phi)\right) $$
+
+Comenzamos tomando el logaritmo de la PMF y luego exponenciando el resultado:
+$$
+\begin{align*}
+f(y \mid \lambda) &= \exp\left[ \ln\left( \frac{e^{-\lambda} \lambda^y}{y!} \right) \right] \\
+&= \exp\left[ \ln(e^{-\lambda}) + \ln(\lambda^y) - \ln(y!) \right] \\
+&= \exp\left[ -\lambda + y\ln(\lambda) - \ln(y!) \right]
+\end{align*}
+$$
+
+Ahora, definimos el parámetro canónico $\theta$. Observamos el término que multiplica a $y$:
+Sea $\theta = \ln(\lambda)$.
+De esta definición, podemos expresar $\lambda$ en términos de $\theta$:
+$$ \lambda = e^\theta $$
+
+Sustituimos $\theta$ y la expresión para $\lambda$ en términos de $\theta$ de nuevo en la forma exponencial de la PMF:
+$$
+\begin{align*}
+f(y \mid \theta) &= \exp\left[ -e^\theta + y\theta - \ln(y!) \right] \\
+&= \exp\left[ y\theta - e^\theta - \ln(y!) \right] \\
+&= \exp\left[ \frac{y\theta - e^\theta}{1} - \ln(y!) \right]
+\end{align*}
+$$
+
+De esta forma, podemos identificar los componentes de la familia exponencial:
+
+$\theta = \ln(\lambda)$
+
+$b(\theta) = e^\theta$
+
+$a(\phi) = 1$
+
+$c(y, \phi) = -\ln(y!)$
+
+
+Con lo anterior, ahora sabemos que en la distribución *Poisson*, el parámetro canónico está dado por $\theta_i = \ln(\mu_i)$ ya que $\lambda_i = \mu_i$.
 En el contexto de un modelo de regresión, el predictor lineal $\eta_i$ está dado por
 
 $$\eta_i = \beta_0 + \beta_1X_1 + \beta_2X_2 + \cdots + \beta_pX_p,$$
@@ -749,32 +790,84 @@ Aún con las interacciones el modelo no parece ser adecuado.
 
 ## Regresión Binomial
 
-# Residuales
-
-- **Residuales crudos (o de respuesta):** 
-$$y-\hat{\mu}$$
--**Residuales de Pearson:** 
-$$r_{P}=\frac{y-n\hat{\pi}}{\sqrt{n\hat{\pi}(1-\hat{\pi})}}$$
-
-
--**Residuales de devianza:** 
-$$r_{D}=sign(y-\mu)\sqrt{d_{i}},$$
-Para el caso de la Poisson:
-$$r_{D}=sign(y-\mu)\sqrt{2()ylog(\frac{y}{\mu})-y+\mu}$$
-
--**Residuales de Anscombe:** 
-$$A(.)=\int\frac{d\mu}{\mu^{1/3}}=\frac{3}{2}\mu^{2/3}=\frac{3}{2}(n\pi)^{2/3}$$
-Para la distribución Binomial:
-$$r_{A}=\frac{A(y)-A(\mu)}{\sqrt{V(A(y))}}\approx\frac{A(y)-A(\mu)}{\sqrt{(A'(\mu))^{2}V(\mu)}}\Longrightarrow\frac{\frac{3}{2}((\frac{y}{n})^{2/3}-\pi^{2/3})}{(\frac{\pi(1-\pi)}{n})^{1/6}}$$
-
 -   Sean $Y_1, Y_2, \cdots, Y_n$ variables aleatorias independientes con distribución *Binomial*, tales que
 
 $$Y_i \sim Binomial(n_i, p_i) \quad i=1,2,\cdots,n.$$
 donde $n_i$ es el número de ensayos (conocido) para la observación $i$, y $p_i$ es la probabilidad de éxito. La variable $Y_i$ representa el número de éxitos en los $n_i$ ensayos.
 
--   La media de $Y_i$ es $\mu_i = E[Y_i] = n_i p_i$.
+Veamos a que corresponde el link canónico mostrando que la Binomial pertenece a la familia de distribuciones exponencial e identificando sus componentes: 
 
--   La función de enlace canónica (y más común) para la probabilidad $p_i$ es la **logit**:
+La función de masa de probabilidad (PMF) de una variable aleatoria $Y$ que sigue una distribución Binomial, $Y \sim Bin(n, \pi)$, donde $n$ es el número de ensayos y $\pi$ es la probabilidad de éxito en cada ensayo, es:
+$$ f(y \mid n, \pi) = \binom{n}{y} \pi^y (1-\pi)^{n-y} $$
+para $y = 0, 1, \dots, n$.
+
+Podemos reescribir esta PMF en la forma de la familia exponencial:
+$$ f(y \mid \theta, \phi) = \exp\left(\frac{y\theta - b(\theta)}{a(\phi)} + c(y, \phi)\right) $$
+
+Comenzamos tomando el logaritmo de la PMF y luego exponenciando:
+\begin{align*}
+f(y \mid n, \pi) &= \exp\left[ \ln\left( \binom{n}{y} \pi^y (1-\pi)^{n-y} \right) \right] \\
+&= \exp\left[ \ln\binom{n}{y} + \ln(\pi^y) + \ln((1-\pi)^{n-y}) \right] \\
+&= \exp\left[ \ln\binom{n}{y} + y\ln(\pi) + (n-y)\ln(1-\pi) \right] \\
+&= \exp\left[ y\ln(\pi) - y\ln(1-\pi) + n\ln(1-\pi) + \ln\binom{n}{y} \right] \\
+&= \exp\left[ y\left(\ln(\pi) - \ln(1-\pi)\right) + n\ln(1-\pi) + \ln\binom{n}{y} \right] \\
+&= \exp\left[ y\ln\left(\frac{\pi}{1-\pi}\right) + n\ln(1-\pi) + \ln\binom{n}{y} \right]
+\end{align*}
+
+Sea el parámetro canónico $\theta = \ln\left(\frac{\pi}{1-\pi}\right)$. Esta es la función de enlace logit.
+De esta definición, podemos expresar $\pi$ en términos de $\theta$:
+\begin{align*}
+e^\theta &= \frac{\pi}{1-\pi} \\
+e^\theta (1-\pi) &= \pi \\
+e^\theta - e^\theta \pi &= \pi \\
+e^\theta &= \pi(1+e^\theta) \\
+\pi &= \frac{e^\theta}{1+e^\theta}
+\end{align*}
+Y también necesitamos expresar $1-\pi$ en términos de $\theta$:
+$$ 1-\pi = 1 - \frac{e^\theta}{1+e^\theta} = \frac{1+e^\theta - e^\theta}{1+e^\theta} = \frac{1}{1+e^\theta} $$
+Por lo tanto,
+$$ \ln(1-\pi) = \ln\left(\frac{1}{1+e^\theta}\right) = -\ln(1+e^\theta) $$
+
+Sustituyendo $\theta$ y $\ln(1-\pi)$ de nuevo en la expresión exponencial:
+$$ f(y \mid n, \theta) = \exp\left[ y\theta + n(-\ln(1+e^\theta)) + \ln\binom{n}{y} \right] $$
+$$ f(y \mid n, \theta) = \exp\left[ y\theta - n\ln(1+e^\theta) + \ln\binom{n}{y} \right] $$
+
+
+$$ f(y \mid \theta, n) = \exp\left[ \frac{y\theta - n\ln(1+e^\theta)}{1} + \ln\binom{n}{y} \right] $$
+
+Por lo tanto, podemos identificar los componentes:
+
+$\theta = \ln\left(\frac{\pi}{1-\pi}\right)$
+
+$b(\theta) = n\ln(1+e^\theta)$
+
+$a(\phi) = 1$ 
+
+$c(y, \phi) = \ln\binom{n}{y}$
+
+
+Con lo anterior, ahora sabemos que en la distribución *Binomial*, el parámetro canónico está dado por $\theta_i = \ln\left(\frac{\pi_i}{1-\pi_i}\right)$.
+
+En el contexto de un modelo de regresión, el predictor lineal $\eta_i$ está dado por
+
+$$\eta_i = logit(\pi_i) = \ln\left(\frac{\pi_i}{1-\pi_i}\right)$$
+donde $\eta_i$ es el predictor lineal:
+$$\eta_i = \beta_0 + \beta_1X_{i1} + \beta_2X_{i2} + \cdots + \beta_pX_{ip} = x_i^T \beta$$
+
+-   La relación inversa, que expresa la probabilidad $p_i$ en función del predictor lineal, es la **función logística**:
+    $$\pi_i = \frac{e^{\eta_i}}{1+e^{\eta_i}}$$
+    Y por lo tanto, la media $\mu_i$ se relaciona con $\eta_i$ a través de:
+    $$\mu_i = n_i \pi_i = n_i \frac{e^{\eta_i}}{1+e^{\eta_i}}$$
+
+-   La función de log-verosimilitud (ignorando términos constantes como $\ln\binom{n_i}{y_i}$) es:
+
+$$
+    \begin{align*}
+    \mathcal{l}(\beta) &= \sum_{i=1}^n \left[y_i\ln(\pi_i) + (n_i - y_i)\ln(1-\pi_i)\right]\\
+    &= \sum_{i=1}^n \left[y_i \eta_i - n_i \ln(1+e^{\eta_i})\right] \\
+    &= \sum_{i=1}^n \left[y_i (x_i^T \beta) - n_i \ln(1+\exp(x_i^T \beta))\right]
+    \end{align*}
+$$
 
 $$\eta_i = logit(p_i) = \ln\left(\frac{p_i}{1-p_i}\right)$$
 donde $\eta_i$ es el predictor lineal:
@@ -819,6 +912,24 @@ $$w_{ii} = \frac{\left(\frac{\partial \mu_i}{\partial \eta_i}\right)^2}{Var(y_i)
         e.  Calcular $\widetilde{y}^{(k)}_i = \eta^{(k)}_i + (y_i - \mu^{(k)}_i) / w^{(k)}_{ii}$. Formar $\widetilde{y}^{(k)}$.
         f.  Actualizar $\beta^{(k+1)} = \left(X^tW^{(k)}X\right)^{-1}X^tW^{(k)}\widetilde{y}^{(k)}$.
     3.  Repetir el paso (2) hasta la convergencia.
+
+# Residuales
+
+- **Residuales crudos (o de respuesta):** 
+$$y-\hat{\mu}$$
+-**Residuales de Pearson:** 
+$$r_{P}=\frac{y-n\hat{\pi}}{\sqrt{n\hat{\pi}(1-\hat{\pi})}}$$
+
+
+-**Residuales de devianza:** 
+$$r_{D}=sign(y-\mu)\sqrt{d_{i}},$$
+Para el caso de la Poisson:
+$$r_{D}=sign(y-\mu)\sqrt{2(ylog(\frac{y}{\mu})-y+\mu})$$
+
+-**Residuales de Anscombe:** 
+$$A(.)=\int\frac{d\mu}{\mu^{1/3}}=\frac{3}{2}\mu^{2/3}=\frac{3}{2}(n\pi)^{2/3}$$
+Para la distribución Binomial:
+$$r_{A}=\frac{A(y)-A(\mu)}{\sqrt{V(A(y))}}\approx\frac{A(y)-A(\mu)}{\sqrt{(A'(\mu))^{2}V(\mu)}}\Longrightarrow\frac{\frac{3}{2}((\frac{y}{n})^{2/3}-\pi^{2/3})}{(\frac{\pi(1-\pi)}{n})^{1/6}}$$
 
 ### Datos simulados
 
