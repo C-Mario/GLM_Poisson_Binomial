@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -66,10 +66,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="Modelos_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="Modelos_files/libs/quarto-html/anchor.min.js"></script>
 <link href="Modelos_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="Modelos_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="Modelos_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="Modelos_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="Modelos_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="Modelos_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="Modelos_files/libs/bootstrap/bootstrap-1bc8a17f135ab3d594c857e9f48e611b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -1633,7 +1633,30 @@ X2xbin          -0.03385631  0.00845250</code></pre>
 79.20147632  0.02551354 -0.02288018  0.06790235 -7.21260865 -1.32268428 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>modelo <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">formula =</span> POL <span class="sc">~</span> TURB<span class="sc">+</span>COL<span class="sc">+</span>ALCA<span class="sc">+</span>PH<span class="sc">+</span>TEM, <span class="at">family =</span> <span class="st">'binomial'</span>)</span>
-<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>modelo<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = POL ~ TURB + COL + ALCA + PH + TEM, family = "binomial")
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept) 79.20148   75.50590   1.049    0.294
+TURB         0.02551    0.01668   1.529    0.126
+COL         -0.02288    0.02741  -0.835    0.404
+ALCA         0.06790    0.12774   0.532    0.595
+PH          -7.21261    5.64550  -1.278    0.201
+TEM         -1.32268    1.54335  -0.857    0.391
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 35.165  on 27  degrees of freedom
+Residual deviance: 10.487  on 22  degrees of freedom
+AIC: 22.487
+
+Number of Fisher Scoring iterations: 8</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>modelo<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept)        TURB         COL        ALCA          PH         TEM 
 79.20147609  0.02551354 -0.02288018  0.06790235 -7.21260863 -1.32268427 </code></pre>
@@ -1651,49 +1674,49 @@ X2xbin          -0.03385631  0.00845250</code></pre>
 </ul>
 <p>La matriz de varianzas y covariazas de <span class="math inline">\(\boldsymbol\beta\)</span>, es prácticamente la misma, con diferencias numéricas muy pequeñas.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">all.equal</span>(regresión_logistica_agua<span class="sc">$</span>covarianza, <span class="fu">vcov</span>(modelo))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">all.equal</span>(regresión_logistica_agua<span class="sc">$</span>covarianza, <span class="fu">vcov</span>(modelo))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Mean relative difference: 8.019092e-05"</code></pre>
 </div>
 </div>
 <p>Veamos cómo se comportan los residuales</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>df_residuals.agua <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">predichos =</span> regresión_logistica_agua<span class="sc">$</span>predichos,</span>
-<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual =</span> regresión_logistica_agua<span class="sc">$</span>residual,</span>
-<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual_pearson =</span> regresión_logistica_agua<span class="sc">$</span>residual_pearson,</span>
-<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual_anscombe =</span> regresión_logistica_agua<span class="sc">$</span>residual_anscombe,</span>
-<span id="cb90-6"><a href="#cb90-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual_deviance =</span> regresión_logistica_agua<span class="sc">$</span>residual_deviance</span>
-<span id="cb90-7"><a href="#cb90-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>df_residuals.agua <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">predichos =</span> regresión_logistica_agua<span class="sc">$</span>predichos,</span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual =</span> regresión_logistica_agua<span class="sc">$</span>residual,</span>
+<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual_pearson =</span> regresión_logistica_agua<span class="sc">$</span>residual_pearson,</span>
+<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual_anscombe =</span> regresión_logistica_agua<span class="sc">$</span>residual_anscombe,</span>
+<span id="cb92-6"><a href="#cb92-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual_deviance =</span> regresión_logistica_agua<span class="sc">$</span>residual_deviance</span>
+<span id="cb92-7"><a href="#cb92-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico de los tres tipos de residuales</span></span>
-<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">logit</span>(predichos), <span class="at">y =</span> residual)) <span class="sc">+</span></span>
-<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'blue'</span>) <span class="sc">+</span></span>
-<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual Crudo'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual Crudo'</span>) <span class="sc">+</span></span>
-<span id="cb91-6"><a href="#cb91-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb91-7"><a href="#cb91-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">12</span>)</span>
-<span id="cb91-8"><a href="#cb91-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb91-9"><a href="#cb91-9" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">logit</span>(predichos), <span class="at">y =</span> residual_pearson)) <span class="sc">+</span></span>
-<span id="cb91-10"><a href="#cb91-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'red'</span>) <span class="sc">+</span></span>
-<span id="cb91-11"><a href="#cb91-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Pearson'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual de Pearson'</span>) <span class="sc">+</span></span>
-<span id="cb91-12"><a href="#cb91-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="fl">1.1</span>) <span class="sc">+</span></span>
-<span id="cb91-13"><a href="#cb91-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">12</span>)</span>
-<span id="cb91-14"><a href="#cb91-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb91-15"><a href="#cb91-15" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">logit</span>(predichos), <span class="at">y =</span> residual_anscombe)) <span class="sc">+</span></span>
-<span id="cb91-16"><a href="#cb91-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'green'</span>) <span class="sc">+</span></span>
-<span id="cb91-17"><a href="#cb91-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Anscombe'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual de Anscombe'</span>) <span class="sc">+</span></span>
-<span id="cb91-18"><a href="#cb91-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="sc">-</span><span class="fl">3.1</span>, <span class="fl">1.3</span>) <span class="sc">+</span></span>
-<span id="cb91-19"><a href="#cb91-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">12</span>)</span>
-<span id="cb91-20"><a href="#cb91-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb91-21"><a href="#cb91-21" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">logit</span>(predichos), <span class="at">y =</span> residual_deviance)) <span class="sc">+</span></span>
-<span id="cb91-22"><a href="#cb91-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'orange'</span>) <span class="sc">+</span></span>
-<span id="cb91-23"><a href="#cb91-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Devianza'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual de Devianza'</span>) <span class="sc">+</span></span>
-<span id="cb91-24"><a href="#cb91-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="sc">-</span><span class="fl">1.3</span>, <span class="fl">1.15</span>) <span class="sc">+</span></span>
-<span id="cb91-25"><a href="#cb91-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico de los tres tipos de residuales</span></span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">logit</span>(predichos), <span class="at">y =</span> residual)) <span class="sc">+</span></span>
+<span id="cb93-4"><a href="#cb93-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'blue'</span>) <span class="sc">+</span></span>
+<span id="cb93-5"><a href="#cb93-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual Crudo'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual Crudo'</span>) <span class="sc">+</span></span>
+<span id="cb93-6"><a href="#cb93-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb93-7"><a href="#cb93-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">12</span>)</span>
+<span id="cb93-8"><a href="#cb93-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-9"><a href="#cb93-9" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">logit</span>(predichos), <span class="at">y =</span> residual_pearson)) <span class="sc">+</span></span>
+<span id="cb93-10"><a href="#cb93-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'red'</span>) <span class="sc">+</span></span>
+<span id="cb93-11"><a href="#cb93-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Pearson'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual de Pearson'</span>) <span class="sc">+</span></span>
+<span id="cb93-12"><a href="#cb93-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="fl">1.1</span>) <span class="sc">+</span></span>
+<span id="cb93-13"><a href="#cb93-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">12</span>)</span>
+<span id="cb93-14"><a href="#cb93-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-15"><a href="#cb93-15" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">logit</span>(predichos), <span class="at">y =</span> residual_anscombe)) <span class="sc">+</span></span>
+<span id="cb93-16"><a href="#cb93-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'green'</span>) <span class="sc">+</span></span>
+<span id="cb93-17"><a href="#cb93-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Anscombe'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual de Anscombe'</span>) <span class="sc">+</span></span>
+<span id="cb93-18"><a href="#cb93-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="sc">-</span><span class="fl">3.1</span>, <span class="fl">1.3</span>) <span class="sc">+</span></span>
+<span id="cb93-19"><a href="#cb93-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">12</span>)</span>
+<span id="cb93-20"><a href="#cb93-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-21"><a href="#cb93-21" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">logit</span>(predichos), <span class="at">y =</span> residual_deviance)) <span class="sc">+</span></span>
+<span id="cb93-22"><a href="#cb93-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'orange'</span>) <span class="sc">+</span></span>
+<span id="cb93-23"><a href="#cb93-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Devianza'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual de Devianza'</span>) <span class="sc">+</span></span>
+<span id="cb93-24"><a href="#cb93-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="sc">-</span><span class="fl">1.3</span>, <span class="fl">1.15</span>) <span class="sc">+</span></span>
+<span id="cb93-25"><a href="#cb93-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>p1; p2; p3; p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>p1; p2; p3; p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
@@ -1714,33 +1737,33 @@ X2xbin          -0.03385631  0.00845250</code></pre>
 </div>
 <p>Los residuales no parecen mostrar un patrón aleatorio. Los gráficos QQ-plot para evaluar la normalidad de los residuales se muestra a continaución</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="co"># qq-plots de los residuales</span></span>
-<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a>qq1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua, <span class="fu">aes</span>(<span class="at">sample =</span> residual)) <span class="sc">+</span></span>
-<span id="cb93-4"><a href="#cb93-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>(<span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
-<span id="cb93-5"><a href="#cb93-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq_line</span>(<span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
-<span id="cb93-6"><a href="#cb93-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"QQ Plot - Residual Crudo"</span>, <span class="at">x =</span> <span class="st">"Teóricos"</span>, <span class="at">y =</span> <span class="st">"Residuales"</span>) <span class="sc">+</span></span>
-<span id="cb93-7"><a href="#cb93-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="dv">12</span>)</span>
-<span id="cb93-8"><a href="#cb93-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb93-9"><a href="#cb93-9" aria-hidden="true" tabindex="-1"></a>qq2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua, <span class="fu">aes</span>(<span class="at">sample =</span> residual_pearson)) <span class="sc">+</span></span>
-<span id="cb93-10"><a href="#cb93-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>(<span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb93-11"><a href="#cb93-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq_line</span>(<span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb93-12"><a href="#cb93-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"QQ Plot - Residual de Pearson"</span>, <span class="at">x =</span> <span class="st">"Teóricos"</span>, <span class="at">y =</span> <span class="st">"Residuales"</span>) <span class="sc">+</span></span>
-<span id="cb93-13"><a href="#cb93-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="dv">12</span>)</span>
-<span id="cb93-14"><a href="#cb93-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb93-15"><a href="#cb93-15" aria-hidden="true" tabindex="-1"></a>qq3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua, <span class="fu">aes</span>(<span class="at">sample =</span> residual_anscombe)) <span class="sc">+</span></span>
-<span id="cb93-16"><a href="#cb93-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>(<span class="at">color =</span> <span class="st">"green"</span>) <span class="sc">+</span></span>
-<span id="cb93-17"><a href="#cb93-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq_line</span>(<span class="at">color =</span> <span class="st">"green"</span>) <span class="sc">+</span></span>
-<span id="cb93-18"><a href="#cb93-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"QQ Plot - Residual de Anscombe"</span>, <span class="at">x =</span> <span class="st">"Teóricos"</span>, <span class="at">y =</span> <span class="st">"Residuales"</span>) <span class="sc">+</span></span>
-<span id="cb93-19"><a href="#cb93-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="dv">12</span>)</span>
-<span id="cb93-20"><a href="#cb93-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb93-21"><a href="#cb93-21" aria-hidden="true" tabindex="-1"></a>qq4 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua, <span class="fu">aes</span>(<span class="at">sample =</span> residual_deviance)) <span class="sc">+</span></span>
-<span id="cb93-22"><a href="#cb93-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>(<span class="at">color =</span> <span class="st">"orange"</span>) <span class="sc">+</span></span>
-<span id="cb93-23"><a href="#cb93-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq_line</span>(<span class="at">color =</span> <span class="st">"orange"</span>) <span class="sc">+</span></span>
-<span id="cb93-24"><a href="#cb93-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"QQ Plot - Residual de Devianza"</span>, <span class="at">x =</span> <span class="st">"Teóricos"</span>, <span class="at">y =</span> <span class="st">"Residuales"</span>) <span class="sc">+</span></span>
-<span id="cb93-25"><a href="#cb93-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="co"># qq-plots de los residuales</span></span>
+<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-3"><a href="#cb95-3" aria-hidden="true" tabindex="-1"></a>qq1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua, <span class="fu">aes</span>(<span class="at">sample =</span> residual)) <span class="sc">+</span></span>
+<span id="cb95-4"><a href="#cb95-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>(<span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb95-5"><a href="#cb95-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq_line</span>(<span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb95-6"><a href="#cb95-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"QQ Plot - Residual Crudo"</span>, <span class="at">x =</span> <span class="st">"Teóricos"</span>, <span class="at">y =</span> <span class="st">"Residuales"</span>) <span class="sc">+</span></span>
+<span id="cb95-7"><a href="#cb95-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="dv">12</span>)</span>
+<span id="cb95-8"><a href="#cb95-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-9"><a href="#cb95-9" aria-hidden="true" tabindex="-1"></a>qq2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua, <span class="fu">aes</span>(<span class="at">sample =</span> residual_pearson)) <span class="sc">+</span></span>
+<span id="cb95-10"><a href="#cb95-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>(<span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb95-11"><a href="#cb95-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq_line</span>(<span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb95-12"><a href="#cb95-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"QQ Plot - Residual de Pearson"</span>, <span class="at">x =</span> <span class="st">"Teóricos"</span>, <span class="at">y =</span> <span class="st">"Residuales"</span>) <span class="sc">+</span></span>
+<span id="cb95-13"><a href="#cb95-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="dv">12</span>)</span>
+<span id="cb95-14"><a href="#cb95-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-15"><a href="#cb95-15" aria-hidden="true" tabindex="-1"></a>qq3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua, <span class="fu">aes</span>(<span class="at">sample =</span> residual_anscombe)) <span class="sc">+</span></span>
+<span id="cb95-16"><a href="#cb95-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>(<span class="at">color =</span> <span class="st">"green"</span>) <span class="sc">+</span></span>
+<span id="cb95-17"><a href="#cb95-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq_line</span>(<span class="at">color =</span> <span class="st">"green"</span>) <span class="sc">+</span></span>
+<span id="cb95-18"><a href="#cb95-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"QQ Plot - Residual de Anscombe"</span>, <span class="at">x =</span> <span class="st">"Teóricos"</span>, <span class="at">y =</span> <span class="st">"Residuales"</span>) <span class="sc">+</span></span>
+<span id="cb95-19"><a href="#cb95-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="dv">12</span>)</span>
+<span id="cb95-20"><a href="#cb95-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-21"><a href="#cb95-21" aria-hidden="true" tabindex="-1"></a>qq4 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua, <span class="fu">aes</span>(<span class="at">sample =</span> residual_deviance)) <span class="sc">+</span></span>
+<span id="cb95-22"><a href="#cb95-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>(<span class="at">color =</span> <span class="st">"orange"</span>) <span class="sc">+</span></span>
+<span id="cb95-23"><a href="#cb95-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq_line</span>(<span class="at">color =</span> <span class="st">"orange"</span>) <span class="sc">+</span></span>
+<span id="cb95-24"><a href="#cb95-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"QQ Plot - Residual de Devianza"</span>, <span class="at">x =</span> <span class="st">"Teóricos"</span>, <span class="at">y =</span> <span class="st">"Residuales"</span>) <span class="sc">+</span></span>
+<span id="cb95-25"><a href="#cb95-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>qq1; qq2; qq3; qq4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>qq1; qq2; qq3; qq4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
@@ -1762,15 +1785,15 @@ X2xbin          -0.03385631  0.00845250</code></pre>
 <p>No se evidencia normalidad en los residuales, aunque también puede ser debido a que tenemos muy pocos datos.</p>
 <p>Dado que en el modelo ajustado ninguna de las covariables resultó ser significativa en la explicación de la variable respuesta, se ajustará un modelo considerando únicamente la turbiedad como la covariable.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>modelo2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">formula =</span> POL <span class="sc">~</span> TURB, <span class="at">family =</span> <span class="st">'binomial'</span>)</span>
-<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a>modelo2<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>modelo2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">formula =</span> POL <span class="sc">~</span> TURB, <span class="at">family =</span> <span class="st">'binomial'</span>)</span>
+<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a>modelo2<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept)        TURB 
 -6.55284724  0.01381566 </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -1794,36 +1817,36 @@ Number of Fisher Scoring iterations: 7</code></pre>
 </div>
 <p>Exploremos los residuales de este modelo</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a>df_residuals.agua2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">TURB =</span> TURB,</span>
-<span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">predichos =</span> <span class="fu">fitted</span>(modelo2),</span>
-<span id="cb99-4"><a href="#cb99-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual =</span> <span class="fu">residuals</span>(modelo2, <span class="at">type =</span> <span class="st">"response"</span>),</span>
-<span id="cb99-5"><a href="#cb99-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual_pearson =</span> <span class="fu">residuals</span>(modelo2, <span class="at">type =</span> <span class="st">"pearson"</span>),</span>
-<span id="cb99-6"><a href="#cb99-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual_deviance =</span> <span class="fu">residuals</span>(modelo2, <span class="at">type =</span> <span class="st">"deviance"</span>)</span>
-<span id="cb99-7"><a href="#cb99-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>df_residuals.agua2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">TURB =</span> TURB,</span>
+<span id="cb101-3"><a href="#cb101-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">predichos =</span> <span class="fu">fitted</span>(modelo2),</span>
+<span id="cb101-4"><a href="#cb101-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual =</span> <span class="fu">residuals</span>(modelo2, <span class="at">type =</span> <span class="st">"response"</span>),</span>
+<span id="cb101-5"><a href="#cb101-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual_pearson =</span> <span class="fu">residuals</span>(modelo2, <span class="at">type =</span> <span class="st">"pearson"</span>),</span>
+<span id="cb101-6"><a href="#cb101-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual_deviance =</span> <span class="fu">residuals</span>(modelo2, <span class="at">type =</span> <span class="st">"deviance"</span>)</span>
+<span id="cb101-7"><a href="#cb101-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico de los tres tipos de residuales</span></span>
-<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua2, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">logit</span>(predichos), <span class="at">y =</span> residual)) <span class="sc">+</span></span>
-<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'blue'</span>) <span class="sc">+</span></span>
-<span id="cb100-5"><a href="#cb100-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual Crudo'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual Crudo'</span>) <span class="sc">+</span></span>
-<span id="cb100-6"><a href="#cb100-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ylim(-1, 1) + </span></span>
-<span id="cb100-7"><a href="#cb100-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span>
-<span id="cb100-8"><a href="#cb100-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb100-9"><a href="#cb100-9" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua2, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">logit</span>(predichos), <span class="at">y =</span> residual_pearson)) <span class="sc">+</span></span>
-<span id="cb100-10"><a href="#cb100-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'red'</span>) <span class="sc">+</span></span>
-<span id="cb100-11"><a href="#cb100-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Pearson'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual de Pearson'</span>) <span class="sc">+</span></span>
-<span id="cb100-12"><a href="#cb100-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ylim(-1, 1.1) +</span></span>
-<span id="cb100-13"><a href="#cb100-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span>
-<span id="cb100-14"><a href="#cb100-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb100-15"><a href="#cb100-15" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua2, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">logit</span>(predichos), <span class="at">y =</span> residual_deviance)) <span class="sc">+</span></span>
-<span id="cb100-16"><a href="#cb100-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'orange'</span>) <span class="sc">+</span></span>
-<span id="cb100-17"><a href="#cb100-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Devianza'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual de Devianza'</span>) <span class="sc">+</span></span>
-<span id="cb100-18"><a href="#cb100-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ylim(-1.3, 1.15) +</span></span>
-<span id="cb100-19"><a href="#cb100-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico de los tres tipos de residuales</span></span>
+<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb102-3"><a href="#cb102-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua2, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">logit</span>(predichos), <span class="at">y =</span> residual)) <span class="sc">+</span></span>
+<span id="cb102-4"><a href="#cb102-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'blue'</span>) <span class="sc">+</span></span>
+<span id="cb102-5"><a href="#cb102-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual Crudo'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual Crudo'</span>) <span class="sc">+</span></span>
+<span id="cb102-6"><a href="#cb102-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ylim(-1, 1) + </span></span>
+<span id="cb102-7"><a href="#cb102-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span>
+<span id="cb102-8"><a href="#cb102-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb102-9"><a href="#cb102-9" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua2, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">logit</span>(predichos), <span class="at">y =</span> residual_pearson)) <span class="sc">+</span></span>
+<span id="cb102-10"><a href="#cb102-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'red'</span>) <span class="sc">+</span></span>
+<span id="cb102-11"><a href="#cb102-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Pearson'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual de Pearson'</span>) <span class="sc">+</span></span>
+<span id="cb102-12"><a href="#cb102-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ylim(-1, 1.1) +</span></span>
+<span id="cb102-13"><a href="#cb102-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span>
+<span id="cb102-14"><a href="#cb102-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb102-15"><a href="#cb102-15" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua2, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">logit</span>(predichos), <span class="at">y =</span> residual_deviance)) <span class="sc">+</span></span>
+<span id="cb102-16"><a href="#cb102-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'orange'</span>) <span class="sc">+</span></span>
+<span id="cb102-17"><a href="#cb102-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Devianza'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual de Devianza'</span>) <span class="sc">+</span></span>
+<span id="cb102-18"><a href="#cb102-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ylim(-1.3, 1.15) +</span></span>
+<span id="cb102-19"><a href="#cb102-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>p1; p2; p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>p1; p2; p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell quarto-layout-panel" data-layout-ncol="3">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
@@ -1840,22 +1863,22 @@ Number of Fisher Scoring iterations: 7</code></pre>
 <p>Nuevamente parece haber patrones no explicados por el modelo.</p>
 <p>El gráfico de residuales vs la turbiedad se muestraa continuación</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>res_turb1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua2, <span class="fu">aes</span>(<span class="at">x =</span> TURB, <span class="at">y =</span> residual)) <span class="sc">+</span></span>
-<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
-<span id="cb102-3"><a href="#cb102-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual crudo'</span>, <span class="at">x =</span> <span class="st">'Turbiedad'</span>, <span class="at">y =</span> <span class="st">'Residual crudo'</span>) <span class="sc">+</span></span>
-<span id="cb102-4"><a href="#cb102-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span>
-<span id="cb102-5"><a href="#cb102-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb102-6"><a href="#cb102-6" aria-hidden="true" tabindex="-1"></a>res_turb2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua2, <span class="fu">aes</span>(<span class="at">x =</span> TURB, <span class="at">y =</span> residual_pearson)) <span class="sc">+</span></span>
-<span id="cb102-7"><a href="#cb102-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
-<span id="cb102-8"><a href="#cb102-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Pearson'</span>, <span class="at">x =</span> <span class="st">'Turbiedad'</span>, <span class="at">y =</span> <span class="st">'Residual de Pearson'</span>) <span class="sc">+</span></span>
-<span id="cb102-9"><a href="#cb102-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span>
-<span id="cb102-10"><a href="#cb102-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb102-11"><a href="#cb102-11" aria-hidden="true" tabindex="-1"></a>res_turb3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua2, <span class="fu">aes</span>(<span class="at">x =</span> TURB, <span class="at">y =</span> residual_deviance)) <span class="sc">+</span></span>
-<span id="cb102-12"><a href="#cb102-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
-<span id="cb102-13"><a href="#cb102-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Devianza'</span>, <span class="at">x =</span> <span class="st">'Turbiedad'</span>, <span class="at">y =</span> <span class="st">'Residual de Devianza'</span>) <span class="sc">+</span></span>
-<span id="cb102-14"><a href="#cb102-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>res_turb1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua2, <span class="fu">aes</span>(<span class="at">x =</span> TURB, <span class="at">y =</span> residual)) <span class="sc">+</span></span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb104-3"><a href="#cb104-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual crudo'</span>, <span class="at">x =</span> <span class="st">'Turbiedad'</span>, <span class="at">y =</span> <span class="st">'Residual crudo'</span>) <span class="sc">+</span></span>
+<span id="cb104-4"><a href="#cb104-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span>
+<span id="cb104-5"><a href="#cb104-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb104-6"><a href="#cb104-6" aria-hidden="true" tabindex="-1"></a>res_turb2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua2, <span class="fu">aes</span>(<span class="at">x =</span> TURB, <span class="at">y =</span> residual_pearson)) <span class="sc">+</span></span>
+<span id="cb104-7"><a href="#cb104-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb104-8"><a href="#cb104-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Pearson'</span>, <span class="at">x =</span> <span class="st">'Turbiedad'</span>, <span class="at">y =</span> <span class="st">'Residual de Pearson'</span>) <span class="sc">+</span></span>
+<span id="cb104-9"><a href="#cb104-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span>
+<span id="cb104-10"><a href="#cb104-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb104-11"><a href="#cb104-11" aria-hidden="true" tabindex="-1"></a>res_turb3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua2, <span class="fu">aes</span>(<span class="at">x =</span> TURB, <span class="at">y =</span> residual_deviance)) <span class="sc">+</span></span>
+<span id="cb104-12"><a href="#cb104-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb104-13"><a href="#cb104-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Devianza'</span>, <span class="at">x =</span> <span class="st">'Turbiedad'</span>, <span class="at">y =</span> <span class="st">'Residual de Devianza'</span>) <span class="sc">+</span></span>
+<span id="cb104-14"><a href="#cb104-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>res_turb1; res_turb2; res_turb3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>res_turb1; res_turb2; res_turb3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell quarto-layout-panel" data-layout-ncol="3">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
@@ -1870,6 +1893,258 @@ Number of Fisher Scoring iterations: 7</code></pre>
 </div>
 </div>
 <p>Los residuales presentan el mismo patrón, esto puede ser indicios de necesidad de transformación de la variable turbiedad.</p>
+</section>
+<section id="regresión-utilizando-los-links-probit-y-loglog." class="level3">
+<h3 class="anchored" data-anchor-id="regresión-utilizando-los-links-probit-y-loglog.">Regresión utilizando los links probit y loglog.</h3>
+</section>
+<section id="probit" class="level2">
+<h2 class="anchored" data-anchor-id="probit"><em>Probit</em></h2>
+<ul>
+<li><p>La <strong>Matriz de Información de Fisher</strong> es <span class="math inline">\(I(\beta) = X^tWX\)</span>, donde <span class="math inline">\(W\)</span> es una matriz diagonal. Para calcular los elementos <span class="math inline">\(w_{ii}\)</span> de <span class="math inline">\(W\)</span>, necesitamos la varianza <span class="math inline">\(Var(Y_i)\)</span> y la derivada <span class="math inline">\(d\mu_i / d\eta_i\)</span>: <span class="math display">\[Var(Y_i) = n_i p_i (1-p_i)\]</span> <span class="math display">\[\pi_{i}=\Phi(X\beta) \Longrightarrow \frac{\partial\pi_{i}}{\partial \eta_{i}}=\phi(X\beta)  \]</span> Donde <span class="math inline">\(\Phi\)</span> es la función de distribución acumulada de una normal y <span class="math inline">\(\phi\)</span> es la función de densidad. Entonces, los pesos son: <span class="math display">\[w_{ii} = \frac{\left(\frac{\partial \mu_i}{\partial \eta_i}\right)^2}{Var(y_i)} = \frac{(\phi(X\beta))^2}{n_i p_i (1-p_i)}\]</span></p></li>
+<li><p>Nuestro <span class="math inline">\(\widetilde{y}\)</span> para el algoritmo Fisher Scoring es: <span class="math display">\[\widetilde{y} = \eta_i + (y_i - \mu_i)\frac{\partial \eta_i}{\partial \mu_i}\]</span> Dado que <span class="math inline">\(\pi_{i} = \Phi(\eta_{i}) \Longrightarrow \frac{\partial\pi_{i}}{\partial\eta_{i}}=\phi(\eta_{i})\)</span>, tenemos: <span class="math display">\[\widetilde{y} = \eta_i + \frac{y_i - \mu_i}{\phi(\eta_{i})}\]</span></p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creación de la función</span></span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a>fisher_scoring_probit <span class="ot">&lt;-</span> <span class="cf">function</span>(y, X, beta_init, <span class="at">tol =</span> <span class="fl">1e-5</span>, <span class="at">max_iter =</span> <span class="dv">100</span>) {</span>
+<span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">&lt;-</span> beta_init</span>
+<span id="cb106-4"><a href="#cb106-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>max_iter) {</span>
+<span id="cb106-5"><a href="#cb106-5" aria-hidden="true" tabindex="-1"></a>    eta <span class="ot">&lt;-</span> X <span class="sc">%*%</span> beta</span>
+<span id="cb106-6"><a href="#cb106-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb106-7"><a href="#cb106-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Link probit</span></span>
+<span id="cb106-8"><a href="#cb106-8" aria-hidden="true" tabindex="-1"></a>    pi <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(eta)</span>
+<span id="cb106-9"><a href="#cb106-9" aria-hidden="true" tabindex="-1"></a>    pi <span class="ot">&lt;-</span> <span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="fu">pnorm</span>(eta), <span class="fl">1e-10</span>), <span class="dv">1</span> <span class="sc">-</span> <span class="fl">1e-10</span>)</span>
+<span id="cb106-10"><a href="#cb106-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb106-11"><a href="#cb106-11" aria-hidden="true" tabindex="-1"></a>    d_pi <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(eta)  <span class="co"># derivada de pnorm = densidad normal estándar</span></span>
+<span id="cb106-12"><a href="#cb106-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb106-13"><a href="#cb106-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Matriz de pesos (diagonal)</span></span>
+<span id="cb106-14"><a href="#cb106-14" aria-hidden="true" tabindex="-1"></a>    W <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="fu">as.vector</span>((d_pi<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> (pi <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi))))</span>
+<span id="cb106-15"><a href="#cb106-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb106-16"><a href="#cb106-16" aria-hidden="true" tabindex="-1"></a>    z <span class="ot">&lt;-</span> eta <span class="sc">+</span> (y <span class="sc">-</span> pi) <span class="sc">/</span> d_pi</span>
+<span id="cb106-17"><a href="#cb106-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb106-18"><a href="#cb106-18" aria-hidden="true" tabindex="-1"></a>    beta_new <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
+<span id="cb106-19"><a href="#cb106-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> W <span class="sc">%*%</span> X) <span class="sc">%*%</span> (<span class="fu">t</span>(X) <span class="sc">%*%</span> W <span class="sc">%*%</span> z)</span>
+<span id="cb106-20"><a href="#cb106-20" aria-hidden="true" tabindex="-1"></a>    }, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb106-21"><a href="#cb106-21" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">"Fallo al invertir la matriz. ¿X tiene multicolinealidad?"</span>)</span>
+<span id="cb106-22"><a href="#cb106-22" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb106-23"><a href="#cb106-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb106-24"><a href="#cb106-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># guardamos la matriz de varianzas y covarianzas de los betas</span></span>
+<span id="cb106-25"><a href="#cb106-25" aria-hidden="true" tabindex="-1"></a>    cov_beta <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> W <span class="sc">%*%</span> X)</span>
+<span id="cb106-26"><a href="#cb106-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb106-27"><a href="#cb106-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">max</span>(<span class="fu">abs</span>(beta_new <span class="sc">-</span> beta), <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">&lt;</span> tol) {</span>
+<span id="cb106-28"><a href="#cb106-28" aria-hidden="true" tabindex="-1"></a>      <span class="fu">message</span>(<span class="st">"Convergió en iteración "</span>, iter)</span>
+<span id="cb106-29"><a href="#cb106-29" aria-hidden="true" tabindex="-1"></a>       pi_hat <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(X <span class="sc">%*%</span> beta_new)</span>
+<span id="cb106-30"><a href="#cb106-30" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Resdiaul crudo</span></span>
+<span id="cb106-31"><a href="#cb106-31" aria-hidden="true" tabindex="-1"></a>      residual <span class="ot">&lt;-</span> y<span class="sc">-</span>pi_hat</span>
+<span id="cb106-32"><a href="#cb106-32" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Residual de pearson</span></span>
+<span id="cb106-33"><a href="#cb106-33" aria-hidden="true" tabindex="-1"></a>      residual_pearson <span class="ot">&lt;-</span> (y <span class="sc">-</span> pi_hat) <span class="sc">/</span> <span class="fu">sqrt</span>(pi_hat)</span>
+<span id="cb106-34"><a href="#cb106-34" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Residual de Anscombe</span></span>
+<span id="cb106-35"><a href="#cb106-35" aria-hidden="true" tabindex="-1"></a>      residual_anscombe <span class="ot">&lt;-</span> (<span class="dv">3</span><span class="sc">/</span><span class="dv">2</span>) <span class="sc">*</span></span>
+<span id="cb106-36"><a href="#cb106-36" aria-hidden="true" tabindex="-1"></a>        (y<span class="sc">^</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">3</span>) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> y)<span class="sc">^</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">3</span>) <span class="sc">-</span> pi_hat<span class="sc">^</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">3</span>) <span class="sc">*</span> </span>
+<span id="cb106-37"><a href="#cb106-37" aria-hidden="true" tabindex="-1"></a>           (<span class="dv">1</span> <span class="sc">-</span> pi_hat)<span class="sc">^</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">3</span>)) <span class="sc">/</span> (pi_hat <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi_hat))<span class="sc">^</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">6</span>)</span>
+<span id="cb106-38"><a href="#cb106-38" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Residual de devianza</span></span>
+<span id="cb106-39"><a href="#cb106-39" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Handle y=0 and y=1 cases for deviance</span></span>
+<span id="cb106-40"><a href="#cb106-40" aria-hidden="true" tabindex="-1"></a>      dev <span class="ot">&lt;-</span> dev <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(y <span class="sc">==</span> <span class="dv">0</span>, <span class="dv">2</span> <span class="sc">*</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> pi_hat)),</span>
+<span id="cb106-41"><a href="#cb106-41" aria-hidden="true" tabindex="-1"></a>             <span class="fu">ifelse</span>(y <span class="sc">==</span> <span class="dv">1</span>, <span class="dv">2</span> <span class="sc">*</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">/</span> pi_hat),</span>
+<span id="cb106-42"><a href="#cb106-42" aria-hidden="true" tabindex="-1"></a>             <span class="dv">2</span> <span class="sc">*</span> (y <span class="sc">*</span> <span class="fu">log</span>(y <span class="sc">/</span> pi_hat) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> y) <span class="sc">*</span> <span class="fu">log</span>((<span class="dv">1</span> <span class="sc">-</span> y) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> pi_hat)))))</span>
+<span id="cb106-43"><a href="#cb106-43" aria-hidden="true" tabindex="-1"></a>      residual_deviance <span class="ot">&lt;-</span> <span class="fu">sign</span>(y <span class="sc">-</span> pi_hat) <span class="sc">*</span> <span class="fu">sqrt</span>(dev)</span>
+<span id="cb106-44"><a href="#cb106-44" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">beta =</span> <span class="fu">as.vector</span>(beta_new), <span class="at">predichos =</span> pi_hat,</span>
+<span id="cb106-45"><a href="#cb106-45" aria-hidden="true" tabindex="-1"></a>                  <span class="at">covarianza =</span> cov_beta,</span>
+<span id="cb106-46"><a href="#cb106-46" aria-hidden="true" tabindex="-1"></a>                  <span class="at">residual =</span> residual,</span>
+<span id="cb106-47"><a href="#cb106-47" aria-hidden="true" tabindex="-1"></a>                  <span class="at">residual_pearson =</span> residual_pearson,</span>
+<span id="cb106-48"><a href="#cb106-48" aria-hidden="true" tabindex="-1"></a>                  <span class="at">residual_anscombe =</span> residual_anscombe,</span>
+<span id="cb106-49"><a href="#cb106-49" aria-hidden="true" tabindex="-1"></a>                  <span class="at">residual_deviance =</span> residual_deviance))</span>
+<span id="cb106-50"><a href="#cb106-50" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb106-51"><a href="#cb106-51" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb106-52"><a href="#cb106-52" aria-hidden="true" tabindex="-1"></a>    beta <span class="ot">&lt;-</span> beta_new</span>
+<span id="cb106-53"><a href="#cb106-53" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb106-54"><a href="#cb106-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"No convergió"</span>)</span>
+<span id="cb106-55"><a href="#cb106-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">as.vector</span>(beta))</span>
+<span id="cb106-56"><a href="#cb106-56" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a>fisher_probit <span class="ot">&lt;-</span> <span class="fu">fisher_scoring_probit</span>(<span class="at">y =</span> POL,<span class="at">X =</span> Xbin2,<span class="at">beta_init =</span> <span class="fu">c</span>(<span class="fu">mean</span>(POL)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">mean</span>(POL)), <span class="fu">rep</span>(<span class="dv">0</span>,<span class="fu">ncol</span>(Xbin2)<span class="sc">-</span><span class="dv">1</span>)),<span class="at">max_iter =</span> <span class="dv">500</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Convergió en iteración 12</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a>fisher_probit<span class="sc">$</span>beta</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 42.54669627  0.01362070 -0.01096179  0.03304230 -3.95454606 -0.68694371</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a>modelo_probit <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">formula =</span> POL <span class="sc">~</span> TURB<span class="sc">+</span>COL<span class="sc">+</span>ALCA<span class="sc">+</span>PH<span class="sc">+</span>TEM, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"probit"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_probit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = POL ~ TURB + COL + ALCA + PH + TEM, family = binomial(link = "probit"))
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept) 42.546588  39.715660   1.071    0.284
+TURB         0.013621   0.008539   1.595    0.111
+COL         -0.010962   0.015186  -0.722    0.470
+ALCA         0.033042   0.073922   0.447    0.655
+PH          -3.954538   2.977355  -1.328    0.184
+TEM         -0.686941   0.824097  -0.834    0.405
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 35.165  on 27  degrees of freedom
+Residual deviance: 10.261  on 22  degrees of freedom
+AIC: 22.261
+
+Number of Fisher Scoring iterations: 10</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="fu">all.equal</span>(fisher_probit<span class="sc">$</span>covarianza, <span class="fu">vcov</span>(modelo_probit))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Mean relative difference: 9.030363e-05"</code></pre>
+</div>
+</div>
+<p>Se puede ver que las estimaciones son iguales, y aunque todas se muestran como significativas se decidió hacer otro modelo con las variables TURB y PH.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a>modelo_probit2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">formula =</span> POL <span class="sc">~</span> TURB<span class="sc">+</span>PH, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"probit"</span>))</span>
+<span id="cb117-2"><a href="#cb117-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_probit2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = POL ~ TURB + PH, family = binomial(link = "probit"))
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)   
+(Intercept) 15.938214  12.085609   1.319  0.18724   
+TURB         0.009495   0.003362   2.824  0.00474 **
+PH          -2.606755   1.606249  -1.623  0.10461   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 35.165  on 27  degrees of freedom
+Residual deviance: 11.753  on 25  degrees of freedom
+AIC: 17.753
+
+Number of Fisher Scoring iterations: 9</code></pre>
+</div>
+</div>
+<ul>
+<li><strong>(Intercepto)</strong> = +15.94: Cuando el pH y la turbidez valen 0, la probabilidad de que se use el polímero es muy alta, ya que <span class="math inline">\(\phi(15.94)\)</span> es casi 1.</li>
+<li><strong>TURB (Turbiedad)</strong> = +0.009: A mayor turbiedad del agua, aumenta ligeramente la probabilidad de usar el polímero. En este modelo aparece TURB como no significativa, es decir que su p-valor el cual fue 0.004 es menor al nivel de significancia el cual es 0.05, pero el modelo tiene un mejor puntaje en el criterio AIC a comparación con el anterior.</li>
+<li><strong>PH</strong> = -2.61: a mayor PH del agua, disminuye ligeramente la probabilidad de usar el polímero.</li>
+</ul>
+<p>Exploremos los residuales de este último modelo:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a>df_residuals.agua3 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">TURB =</span> TURB,</span>
+<span id="cb119-3"><a href="#cb119-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">predichos =</span> <span class="fu">fitted</span>(modelo_probit2),</span>
+<span id="cb119-4"><a href="#cb119-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual =</span> <span class="fu">residuals</span>(modelo_probit2, <span class="at">type =</span> <span class="st">"response"</span>),</span>
+<span id="cb119-5"><a href="#cb119-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual_pearson =</span> <span class="fu">residuals</span>(modelo_probit2, <span class="at">type =</span> <span class="st">"pearson"</span>),</span>
+<span id="cb119-6"><a href="#cb119-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual_deviance =</span> <span class="fu">residuals</span>(modelo_probit2, <span class="at">type =</span> <span class="st">"deviance"</span>)</span>
+<span id="cb119-7"><a href="#cb119-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico de los tres tipos de residuales</span></span>
+<span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-3"><a href="#cb120-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua3, <span class="fu">aes</span>(<span class="at">x =</span> predichos, <span class="at">y =</span> residual)) <span class="sc">+</span></span>
+<span id="cb120-4"><a href="#cb120-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'blue'</span>) <span class="sc">+</span></span>
+<span id="cb120-5"><a href="#cb120-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual Crudo'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual Crudo'</span>) <span class="sc">+</span></span>
+<span id="cb120-6"><a href="#cb120-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ylim(-1, 1) + </span></span>
+<span id="cb120-7"><a href="#cb120-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span>
+<span id="cb120-8"><a href="#cb120-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-9"><a href="#cb120-9" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua3, <span class="fu">aes</span>(<span class="at">x =</span> predichos, <span class="at">y =</span> residual_pearson)) <span class="sc">+</span></span>
+<span id="cb120-10"><a href="#cb120-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'red'</span>) <span class="sc">+</span></span>
+<span id="cb120-11"><a href="#cb120-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Pearson'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual de Pearson'</span>) <span class="sc">+</span></span>
+<span id="cb120-12"><a href="#cb120-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ylim(-1, 1.1) +</span></span>
+<span id="cb120-13"><a href="#cb120-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span>
+<span id="cb120-14"><a href="#cb120-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-15"><a href="#cb120-15" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua3, <span class="fu">aes</span>(<span class="at">x =</span> predichos, <span class="at">y =</span> residual_deviance)) <span class="sc">+</span></span>
+<span id="cb120-16"><a href="#cb120-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'orange'</span>) <span class="sc">+</span></span>
+<span id="cb120-17"><a href="#cb120-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Devianza'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual de Devianza'</span>) <span class="sc">+</span></span>
+<span id="cb120-18"><a href="#cb120-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ylim(-1.3, 1.15) +</span></span>
+<span id="cb120-19"><a href="#cb120-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a>p1; p2; p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell quarto-layout-panel" data-layout-ncol="3">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p><img src="Modelos_files/figure-html/unnamed-chunk-78-1.png" class="img-fluid"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p><img src="Modelos_files/figure-html/unnamed-chunk-78-2.png" class="img-fluid"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p><img src="Modelos_files/figure-html/unnamed-chunk-78-3.png" class="img-fluid"></p>
+</div>
+</div>
+</div>
+<p>El comportamiento de los residuales de devianza frente a los valores predichos sugiere que el modelo no se está ajustando adecuadamente a los datos. Para profundizar en este diagnóstico, se graficaron los residuales contra las variables explicativas del modelo.</p>
+<p>El gráfico de residuales vs la turbiedad se muestra continuación</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a>res_turb1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua3, <span class="fu">aes</span>(<span class="at">x =</span> TURB, <span class="at">y =</span> residual)) <span class="sc">+</span></span>
+<span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb122-3"><a href="#cb122-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual crudo'</span>, <span class="at">x =</span> <span class="st">'Turbiedad'</span>, <span class="at">y =</span> <span class="st">'Residual crudo'</span>) <span class="sc">+</span></span>
+<span id="cb122-4"><a href="#cb122-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span>
+<span id="cb122-5"><a href="#cb122-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb122-6"><a href="#cb122-6" aria-hidden="true" tabindex="-1"></a>res_turb2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua3, <span class="fu">aes</span>(<span class="at">x =</span> TURB, <span class="at">y =</span> residual_pearson)) <span class="sc">+</span></span>
+<span id="cb122-7"><a href="#cb122-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb122-8"><a href="#cb122-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Pearson'</span>, <span class="at">x =</span> <span class="st">'Turbiedad'</span>, <span class="at">y =</span> <span class="st">'Residual de Pearson'</span>) <span class="sc">+</span></span>
+<span id="cb122-9"><a href="#cb122-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span>
+<span id="cb122-10"><a href="#cb122-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb122-11"><a href="#cb122-11" aria-hidden="true" tabindex="-1"></a>res_turb3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua3, <span class="fu">aes</span>(<span class="at">x =</span> TURB, <span class="at">y =</span> residual_deviance)) <span class="sc">+</span></span>
+<span id="cb122-12"><a href="#cb122-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb122-13"><a href="#cb122-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Devianza'</span>, <span class="at">x =</span> <span class="st">'Turbiedad'</span>, <span class="at">y =</span> <span class="st">'Residual de Devianza'</span>) <span class="sc">+</span></span>
+<span id="cb122-14"><a href="#cb122-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a>res_turb1; res_turb2; res_turb3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell quarto-layout-panel" data-layout-ncol="3">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p><img src="Modelos_files/figure-html/unnamed-chunk-80-1.png" class="img-fluid"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p><img src="Modelos_files/figure-html/unnamed-chunk-80-2.png" class="img-fluid"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p><img src="Modelos_files/figure-html/unnamed-chunk-80-3.png" class="img-fluid"></p>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a>res_PH1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua3, <span class="fu">aes</span>(<span class="at">x =</span> PH, <span class="at">y =</span> residual)) <span class="sc">+</span></span>
+<span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb124-3"><a href="#cb124-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual crudo'</span>, <span class="at">x =</span> <span class="st">'PH'</span>, <span class="at">y =</span> <span class="st">'Residual crudo'</span>) <span class="sc">+</span></span>
+<span id="cb124-4"><a href="#cb124-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span>
+<span id="cb124-5"><a href="#cb124-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb124-6"><a href="#cb124-6" aria-hidden="true" tabindex="-1"></a>res_PH2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua3, <span class="fu">aes</span>(<span class="at">x =</span> PH, <span class="at">y =</span> residual_pearson)) <span class="sc">+</span></span>
+<span id="cb124-7"><a href="#cb124-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb124-8"><a href="#cb124-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Pearson'</span>, <span class="at">x =</span> <span class="st">'PH'</span>, <span class="at">y =</span> <span class="st">'Residual de Pearson'</span>) <span class="sc">+</span></span>
+<span id="cb124-9"><a href="#cb124-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span>
+<span id="cb124-10"><a href="#cb124-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb124-11"><a href="#cb124-11" aria-hidden="true" tabindex="-1"></a>res_PH3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua3, <span class="fu">aes</span>(<span class="at">x =</span> PH, <span class="at">y =</span> residual_deviance)) <span class="sc">+</span></span>
+<span id="cb124-12"><a href="#cb124-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb124-13"><a href="#cb124-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Devianza'</span>, <span class="at">x =</span> <span class="st">'PH'</span>, <span class="at">y =</span> <span class="st">'Residual de Devianza'</span>) <span class="sc">+</span></span>
+<span id="cb124-14"><a href="#cb124-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a>res_PH1; res_PH2; res_PH3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell quarto-layout-panel" data-layout-ncol="3">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p><img src="Modelos_files/figure-html/unnamed-chunk-82-1.png" class="img-fluid"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p><img src="Modelos_files/figure-html/unnamed-chunk-82-2.png" class="img-fluid"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p><img src="Modelos_files/figure-html/unnamed-chunk-82-3.png" class="img-fluid"></p>
+</div>
+</div>
+</div>
+<p>Parece ser que los residuales</p>
 </section>
 </section>
 
@@ -1957,8 +2232,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -2069,7 +2342,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
