@@ -1225,6 +1225,7 @@ Estimación de los parámetros con el algoritmo manual y la función `glm`
 regresión_logistica_agua$beta
 
 modelo <- glm(formula = POL ~ TURB+COL+ALCA+PH+TEM, family = 'binomial')
+summary(modelo)
 modelo$coefficients
 ```
 
@@ -1408,3 +1409,190 @@ res_turb1; res_turb2; res_turb3
 ```
 
 Los residuales presentan el mismo patrón, esto puede ser indicios de necesidad de transformación de la variable turbiedad.
+
+### Regresión utilizando los links probit y loglog.
+## *Probit*
+-   La **Matriz de Información de Fisher** es $I(\beta) = X^tWX$, donde $W$ es una matriz diagonal. Para calcular los elementos $w_{ii}$ de $W$, necesitamos la varianza $Var(Y_i)$ y la derivada $d\mu_i / d\eta_i$:
+$$Var(Y_i) = n_i p_i (1-p_i)$$
+$$\pi_{i}=\Phi(X\beta) \Longrightarrow \frac{\partial\pi_{i}}{\partial \eta_{i}}=\phi(X\beta)  $$
+Donde $\Phi$ es la función de distribución acumulada de una normal y $\phi$ es la función de densidad. Entonces, los pesos son:
+$$w_{ii} = \frac{\left(\frac{\partial \mu_i}{\partial \eta_i}\right)^2}{Var(y_i)} = \frac{(\phi(X\beta))^2}{n_i p_i (1-p_i)}$$
+
+-   Nuestro $\widetilde{y}$ para el algoritmo Fisher Scoring es:
+    $$\widetilde{y} = \eta_i + (y_i - \mu_i)\frac{\partial \eta_i}{\partial \mu_i}$$
+    Dado que $\pi_{i} = \Phi(\eta_{i}) \Longrightarrow \frac{\partial\eta_{i}}{\partial\pi_{i}}=\frac{1}{\phi(\eta_{i})}$, tenemos:
+    $$\widetilde{y} = \eta_i + \frac{y_i - \mu_i}{\phi(\eta_{i})}$$
+
+
+```{r}
+# Creación de la función
+fisher_scoring_probit <- function(y, X, beta_init, tol = 1e-5, max_iter = 100) {
+  beta <- beta_init
+  for (iter in 1:max_iter) {
+    eta <- X %*% beta
+    
+    # Link probit
+    pi <- pnorm(eta)
+    pi <- pmin(pmax(pnorm(eta), 1e-10), 1 - 1e-10)
+    
+    d_pi <- dnorm(eta)  # derivada de pnorm = densidad normal estándar
+    
+    # Matriz de pesos (diagonal)
+    W <- diag(as.vector((d_pi^2) / (pi * (1 - pi))))
+    
+    z <- eta + (y - pi) / d_pi
+    
+    beta_new <- tryCatch({
+      solve(t(X) %*% W %*% X) %*% (t(X) %*% W %*% z)
+    }, error = function(e) {
+      stop("Fallo al invertir la matriz. ¿X tiene multicolinealidad?")
+    })
+    
+    # guardamos la matriz de varianzas y covarianzas de los betas
+    cov_beta <- solve(t(X) %*% W %*% X)
+    
+    if (max(abs(beta_new - beta), na.rm = TRUE) < tol) {
+      message("Convergió en iteración ", iter)
+       pi_hat <- pnorm(X %*% beta_new)
+      # Resdiaul crudo
+      residual <- y-pi_hat
+      # Residual de pearson
+      residual_pearson <- (y - pi_hat) / sqrt(pi_hat)
+      # Residual de Anscombe
+      residual_anscombe <- (3/2) *
+        (y^(2/3) * (1 - y)^(2/3) - pi_hat^(2/3) * 
+           (1 - pi_hat)^(2/3)) / (pi_hat * (1 - pi_hat))^(1/6)
+      # Residual de devianza
+      # Handle y=0 and y=1 cases for deviance
+      dev <- dev <- ifelse(y == 0, 2 * log(1 / (1 - pi_hat)),
+             ifelse(y == 1, 2 * log(1 / pi_hat),
+             2 * (y * log(y / pi_hat) + (1 - y) * log((1 - y) / (1 - pi_hat)))))
+      residual_deviance <- sign(y - pi_hat) * sqrt(dev)
+      return(list(beta = as.vector(beta_new), predichos = pi_hat,
+                  covarianza = cov_beta,
+                  residual = residual,
+                  residual_pearson = residual_pearson,
+                  residual_anscombe = residual_anscombe,
+                  residual_deviance = residual_deviance))
+    }
+    
+    beta <- beta_new
+  }
+  warning("No convergió")
+  return(as.vector(beta))
+}
+```
+
+```{r}
+fisher_probit <- fisher_scoring_probit(y = POL,X = Xbin2,beta_init = c(mean(POL)/(1-mean(POL)), rep(0,ncol(Xbin2)-1)),max_iter = 500)
+fisher_probit$beta
+```
+```{r}
+modelo_probit <- glm(formula = POL ~ TURB+COL+ALCA+PH+TEM, family = binomial(link = "probit"))
+summary(modelo_probit)
+```
+```{r}
+all.equal(fisher_probit$covarianza, vcov(modelo_probit))
+```
+Se puede ver que las estimaciones son iguales, y aunque todas se muestran como significativas se decidió hacer otro modelo con las variables TURB y PH.
+
+
+```{r}
+modelo_probit2 <- glm(formula = POL ~ TURB+PH, family = binomial(link = "probit"))
+summary(modelo_probit2)
+```
+- **(Intercepto)** = +15.94: Cuando el pH y la turbidez valen 0, la probabilidad de que se use el polímero es muy alta, ya que $\phi(15.94)$ es casi 1.
+- **TURB (Turbiedad)** = +0.009: A mayor turbiedad del agua, aumenta ligeramente la probabilidad de usar el polímero. En este modelo aparece TURB como no significativa, es decir que su p-valor el cual fue 0.004 es menor al nivel de significancia el cual es 0.05, pero el modelo tiene un mejor puntaje en el criterio AIC a comparación con el anterior.
+- **PH** = -2.61:  a mayor PH del agua, disminuye ligeramente la probabilidad de usar el polímero.
+
+Exploremos los residuales de este último modelo:
+
+```{r}
+df_residuals.agua3 <- data.frame(
+    TURB = TURB,
+    predichos = fitted(modelo_probit2),
+    residual = residuals(modelo_probit2, type = "response"),
+    residual_pearson = residuals(modelo_probit2, type = "pearson"),
+    residual_deviance = residuals(modelo_probit2, type = "deviance")
+  )
+```
+```{r}
+# Gráfico de los tres tipos de residuales
+
+p1 <- ggplot(df_residuals.agua3, aes(x = predichos, y = residual)) +
+    geom_point(color = 'blue') +
+    labs(title = 'Residual Crudo', x = 'Valores Predichos', y = 'Residual Crudo') +
+    # ylim(-1, 1) + 
+    theme_minimal(13)
+
+p2 <- ggplot(df_residuals.agua3, aes(x = predichos, y = residual_pearson)) +
+    geom_point(color = 'red') +
+    labs(title = 'Residual de Pearson', x = 'Valores Predichos', y = 'Residual de Pearson') +
+    # ylim(-1, 1.1) +
+    theme_minimal(13)
+
+p3 <- ggplot(df_residuals.agua3, aes(x = predichos, y = residual_deviance)) +
+    geom_point(color = 'orange') +
+    labs(title = 'Residual de Devianza', x = 'Valores Predichos', y = 'Residual de Devianza') +
+    # ylim(-1.3, 1.15) +
+    theme_minimal(13)
+```
+
+```{r}
+#| layout-ncol: 3
+#| out-width: 100%
+
+p1; p2; p3
+```
+El comportamiento de los residuales de devianza frente a los valores predichos sugiere que el modelo no se está ajustando adecuadamente a los datos. Para profundizar en este diagnóstico, se graficaron los residuales contra las variables explicativas del modelo. 
+
+El gráfico de residuales vs la turbiedad se muestra continuación
+
+```{r}
+res_turb1 <- ggplot(df_residuals.agua3, aes(x = TURB, y = residual)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual crudo', x = 'Turbiedad', y = 'Residual crudo') +
+    theme_minimal(13)
+
+res_turb2 <- ggplot(df_residuals.agua3, aes(x = TURB, y = residual_pearson)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual de Pearson', x = 'Turbiedad', y = 'Residual de Pearson') +
+    theme_minimal(13)
+
+res_turb3 <- ggplot(df_residuals.agua3, aes(x = TURB, y = residual_deviance)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual de Devianza', x = 'Turbiedad', y = 'Residual de Devianza') +
+    theme_minimal(13)
+```
+
+```{r}
+#| out-width: 100%
+#| layout-ncol: 3
+
+res_turb1; res_turb2; res_turb3
+```
+Al analizar los residuales de devianza frente a la turbiedad, se observa que la mayoría de los puntos están cerca de cero, lo que indica un buen ajuste del modelo en general. Sin embargo, algunas observaciones con valores altos de turbiedad presentan residuales más grandes, lo que podría señalar un ajuste menos preciso en ese rango. A pesar de esto, no se observan patrones sistemáticos en los residuales, lo cual sugiere que la relación entre la turbiedad y la probabilidad de uso del polímero está siendo bien capturada por el modelo.
+```{r}
+res_PH1 <- ggplot(df_residuals.agua3, aes(x = PH, y = residual)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual crudo', x = 'PH', y = 'Residual crudo') +
+    theme_minimal(13)
+
+res_PH2 <- ggplot(df_residuals.agua3, aes(x = PH, y = residual_pearson)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual de Pearson', x = 'PH', y = 'Residual de Pearson') +
+    theme_minimal(13)
+
+res_PH3 <- ggplot(df_residuals.agua3, aes(x = PH, y = residual_deviance)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual de Devianza', x = 'PH', y = 'Residual de Devianza') +
+    theme_minimal(13)
+```
+
+```{r}
+#| out-width: 100%
+#| layout-ncol: 3
+
+res_PH1; res_PH2; res_PH3
+```
+Parece ser que los residuales tienen un comportamiento similar al de Turbiedad, se concentran alrededor de 0 y no presentar un patrón claro, lo que indica que el modelo esta captando bien estas variables.
