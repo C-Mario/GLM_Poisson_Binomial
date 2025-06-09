@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.42">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -66,10 +66,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="Modelos_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="Modelos_files/libs/quarto-html/anchor.min.js"></script>
 <link href="Modelos_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="Modelos_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="Modelos_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="Modelos_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="Modelos_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="Modelos_files/libs/bootstrap/bootstrap-1bc8a17f135ab3d594c857e9f48e611b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="Modelos_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -1901,7 +1901,7 @@ Number of Fisher Scoring iterations: 7</code></pre>
 <h2 class="anchored" data-anchor-id="probit"><em>Probit</em></h2>
 <ul>
 <li><p>La <strong>Matriz de Información de Fisher</strong> es <span class="math inline">\(I(\beta) = X^tWX\)</span>, donde <span class="math inline">\(W\)</span> es una matriz diagonal. Para calcular los elementos <span class="math inline">\(w_{ii}\)</span> de <span class="math inline">\(W\)</span>, necesitamos la varianza <span class="math inline">\(Var(Y_i)\)</span> y la derivada <span class="math inline">\(d\mu_i / d\eta_i\)</span>: <span class="math display">\[Var(Y_i) = n_i p_i (1-p_i)\]</span> <span class="math display">\[\pi_{i}=\Phi(X\beta) \Longrightarrow \frac{\partial\pi_{i}}{\partial \eta_{i}}=\phi(X\beta)  \]</span> Donde <span class="math inline">\(\Phi\)</span> es la función de distribución acumulada de una normal y <span class="math inline">\(\phi\)</span> es la función de densidad. Entonces, los pesos son: <span class="math display">\[w_{ii} = \frac{\left(\frac{\partial \mu_i}{\partial \eta_i}\right)^2}{Var(y_i)} = \frac{(\phi(X\beta))^2}{n_i p_i (1-p_i)}\]</span></p></li>
-<li><p>Nuestro <span class="math inline">\(\widetilde{y}\)</span> para el algoritmo Fisher Scoring es: <span class="math display">\[\widetilde{y} = \eta_i + (y_i - \mu_i)\frac{\partial \eta_i}{\partial \mu_i}\]</span> Dado que <span class="math inline">\(\pi_{i} = \Phi(\eta_{i}) \Longrightarrow \frac{\partial\pi_{i}}{\partial\eta_{i}}=\phi(\eta_{i})\)</span>, tenemos: <span class="math display">\[\widetilde{y} = \eta_i + \frac{y_i - \mu_i}{\phi(\eta_{i})}\]</span></p></li>
+<li><p>Nuestro <span class="math inline">\(\widetilde{y}\)</span> para el algoritmo Fisher Scoring es: <span class="math display">\[\widetilde{y} = \eta_i + (y_i - \mu_i)\frac{\partial \eta_i}{\partial \mu_i}\]</span> Dado que <span class="math inline">\(\pi_{i} = \Phi(\eta_{i}) \Longrightarrow \frac{\partial\eta_{i}}{\partial\pi_{i}}=\frac{1}{\phi(\eta_{i})}\)</span>, tenemos: <span class="math display">\[\widetilde{y} = \eta_i + \frac{y_i - \mu_i}{\phi(\eta_{i})}\]</span></p></li>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creación de la función</span></span>
@@ -2114,6 +2114,7 @@ Number of Fisher Scoring iterations: 9</code></pre>
 </div>
 </div>
 </div>
+<p>Al analizar los residuales de devianza frente a la turbiedad, se observa que la mayoría de los puntos están cerca de cero, lo que indica un buen ajuste del modelo en general. Sin embargo, algunas observaciones con valores altos de turbiedad presentan residuales más grandes, lo que podría señalar un ajuste menos preciso en ese rango. A pesar de esto, no se observan patrones sistemáticos en los residuales, lo cual sugiere que la relación entre la turbiedad y la probabilidad de uso del polímero está siendo bien capturada por el modelo.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a>res_PH1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua3, <span class="fu">aes</span>(<span class="at">x =</span> PH, <span class="at">y =</span> residual)) <span class="sc">+</span></span>
 <span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
@@ -2144,7 +2145,7 @@ Number of Fisher Scoring iterations: 9</code></pre>
 </div>
 </div>
 </div>
-<p>Parece ser que los residuales</p>
+<p>Parece ser que los residuales tienen un comportamiento similar al de Turbiedad, se concentran alrededor de 0 y no presentar un patrón claro, lo que indica que el modelo esta captando bien estas variables.</p>
 </section>
 </section>
 
@@ -2232,6 +2233,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -2342,6 +2345,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
+      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
