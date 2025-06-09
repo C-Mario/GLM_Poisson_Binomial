@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -66,10 +66,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="Modelos_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="Modelos_files/libs/quarto-html/anchor.min.js"></script>
 <link href="Modelos_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="Modelos_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="Modelos_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="Modelos_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="Modelos_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="Modelos_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="Modelos_files/libs/bootstrap/bootstrap-1bc8a17f135ab3d594c857e9f48e611b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -2006,7 +2006,7 @@ Number of Fisher Scoring iterations: 10</code></pre>
 <pre><code>[1] "Mean relative difference: 9.030363e-05"</code></pre>
 </div>
 </div>
-<p>Se puede ver que las estimaciones son iguales, y aunque todas se muestran como significativas se decidió hacer otro modelo con las variables TURB y PH.</p>
+<p>Se puede ver que las estimaciones son iguales, aunque se destaca que todos los coeficientes se muestran como no significativos, es decir que en el sistema de hipótesis de <span class="math inline">\(H_{0}: \beta_{i}=0\)</span> vs <span class="math inline">\(H_{a}:\beta_{i}\neq0\)</span> en todas las variables no se rechaza la hipótesis nula. A continuación se decidió hacer un modelo con las variables TURB y PH.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a>modelo_probit2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">formula =</span> POL <span class="sc">~</span> TURB<span class="sc">+</span>PH, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"probit"</span>))</span>
 <span id="cb117-2"><a href="#cb117-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_probit2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2034,8 +2034,8 @@ Number of Fisher Scoring iterations: 9</code></pre>
 </div>
 <ul>
 <li><strong>(Intercepto)</strong> = +15.94: Cuando el pH y la turbidez valen 0, la probabilidad de que se use el polímero es muy alta, ya que <span class="math inline">\(\phi(15.94)\)</span> es casi 1.</li>
-<li><strong>TURB (Turbiedad)</strong> = +0.009: A mayor turbiedad del agua, aumenta ligeramente la probabilidad de usar el polímero. En este modelo aparece TURB como no significativa, es decir que su p-valor el cual fue 0.004 es menor al nivel de significancia el cual es 0.05, pero el modelo tiene un mejor puntaje en el criterio AIC a comparación con el anterior.</li>
-<li><strong>PH</strong> = -2.61: a mayor PH del agua, disminuye ligeramente la probabilidad de usar el polímero.</li>
+<li><strong>TURB (Turbiedad)</strong> = +0.009: A mayor turbiedad del agua, aumenta ligeramente la probabilidad de usar el polímero. En este modelo aparece TURB como significativa, es decir que su p-valor el cual fue 0.004 es menor al nivel de significancia el cual es 0.05, pero el modelo tiene un mejor puntaje en el criterio AIC a comparación con el anterior.</li>
+<li><strong>PH</strong> = -2.61: a mayor PH del agua, disminuye ligeramente la probabilidad de usar el polímero, sin embargo esta variable resulta no ser significativa ya que su p-valor es mayor a 0.05 por lo que no se rechaza <span class="math inline">\(H_{0}:\beta_{i}=0\)</span>.</li>
 </ul>
 <p>Exploremos los residuales de este último modelo:</p>
 <div class="cell">
@@ -2114,7 +2114,7 @@ Number of Fisher Scoring iterations: 9</code></pre>
 </div>
 </div>
 </div>
-<p>Al analizar los residuales de devianza frente a la turbiedad, se observa que la mayoría de los puntos están cerca de cero, lo que indica un buen ajuste del modelo en general. Sin embargo, algunas observaciones con valores altos de turbiedad presentan residuales más grandes, lo que podría señalar un ajuste menos preciso en ese rango. A pesar de esto, no se observan patrones sistemáticos en los residuales, lo cual sugiere que la relación entre la turbiedad y la probabilidad de uso del polímero está siendo bien capturada por el modelo.</p>
+<p>Al analizar los residuales de devianza frente a la turbiedad, se observa que la mayoría de los puntos están cerca de cero, lo que indica un buen ajuste del modelo en general. Sin embargo, algunas observaciones con valores entre 250 y 750 se ven valores altos de los residuales,a pesar de esto, no se observan patrones sistemáticos en los residuales, lo cual sugiere que la relación entre la turbiedad y la probabilidad de uso del polímero está siendo bien capturada por el modelo. Tambien se puede concluir que a partir de un valor de turbiedad de 750 en adelante, es seguro que se debe aplicar el polímero.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a>res_PH1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua3, <span class="fu">aes</span>(<span class="at">x =</span> PH, <span class="at">y =</span> residual)) <span class="sc">+</span></span>
 <span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
@@ -2145,7 +2145,408 @@ Number of Fisher Scoring iterations: 9</code></pre>
 </div>
 </div>
 </div>
-<p>Parece ser que los residuales tienen un comportamiento similar al de Turbiedad, se concentran alrededor de 0 y no presentar un patrón claro, lo que indica que el modelo esta captando bien estas variables.</p>
+<p>Parece ser que los residuales tienen un comportamiento similar al de Turbiedad, se concentran alrededor de 0, pero presenta mucha más variabilidad conforme aumentan los valores, lo que puede indicar que no se esta captando bien la relación entre la variable respuesta “POL” y la variable predictora “PH”, lo que puede ser consistente con la prueba de significancia, la cual recordando dió que PH no era significativo.</p>
+</section>
+<section id="log-log" class="level2">
+<h2 class="anchored" data-anchor-id="log-log"><em>log-log</em></h2>
+<ul>
+<li><p>La <strong>Matriz de Información de Fisher</strong> es <span class="math inline">\(I(\beta) = X^tWX\)</span>, donde <span class="math inline">\(W\)</span> es una matriz diagonal. Para calcular los elementos <span class="math inline">\(w_{ii}\)</span> de <span class="math inline">\(W\)</span>, necesitamos la varianza <span class="math inline">\(Var(Y_i)\)</span> y la derivada <span class="math inline">\(d\mu_i / d\eta_i\)</span>: La varianza sigue siendo: <span class="math display">\[Var(Y_i) = n_i p_i (1-p_i)\]</span> Recordemos que el enlace log-log es de la forma: <span class="math inline">\(\eta_{i} = -log(-log(\pi_{i}))\)</span> Despejando <span class="math inline">\(\pi_{i}\)</span> obtenemos <span class="math display">\[\pi_i = e^{-e^{-\eta_{i}} \Longrightarrow \frac{\partial\pi_{i}}{\partial \eta_{i}} = e^{-\eta_{i}}e^{-e^{-\eta_{i}}}  \]</span> Entonces, los pesos son: <span class="math display">\[w_{ii} = \frac{\left(\frac{\partial \mu_i}{\partial \eta_i}\right)^2}{Var(y_i)} = \frac{(e^{-\eta_i} e^{-e^{-\eta_i}})^2}{n_i p_i (1-p_i)}\]</span></p></li>
+<li><p>Nuestro <span class="math inline">\(\widetilde{y}\)</span> para el algoritmo Fisher Scoring es: <span class="math display">\[\widetilde{y} = \eta_i + (y_i - \mu_i)\frac{\partial \eta_i}{\partial \mu_i}\]</span> Dado que <span class="math inline">\(\pi_{i} = e^{-e^{-\eta_{i}}} \Longrightarrow \frac{\partial\eta_{i}}{\partial\pi_{i}}=\frac{1}{e^{-\eta_{i}}e^{-e^{-\eta_{i}}}}\)</span>, tenemos: <span class="math display">\[\widetilde{y} = \eta_i + \frac{y_i - \mu_i}{e^{-\eta_{i}}e^{-e^{-\eta_{i}}}}\]</span></p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb126"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creación de la función link loglog</span></span>
+<span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a>fisher_scoring_loglog <span class="ot">&lt;-</span> <span class="cf">function</span>(y, X, beta_init, <span class="at">tol =</span> <span class="fl">1e-6</span>, <span class="at">max_iter =</span> <span class="dv">100</span>) {</span>
+<span id="cb126-3"><a href="#cb126-3" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">&lt;-</span> beta_init</span>
+<span id="cb126-4"><a href="#cb126-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>max_iter) {</span>
+<span id="cb126-5"><a href="#cb126-5" aria-hidden="true" tabindex="-1"></a>    eta <span class="ot">&lt;-</span> X <span class="sc">%*%</span> beta</span>
+<span id="cb126-6"><a href="#cb126-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb126-7"><a href="#cb126-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Link log-log: pi = exp(-exp(-eta))</span></span>
+<span id="cb126-8"><a href="#cb126-8" aria-hidden="true" tabindex="-1"></a>    pi <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fu">exp</span>(<span class="sc">-</span>eta))</span>
+<span id="cb126-9"><a href="#cb126-9" aria-hidden="true" tabindex="-1"></a>    pi <span class="ot">&lt;-</span> <span class="fu">pmin</span>(<span class="fu">pmax</span>(pi, <span class="fl">1e-10</span>), <span class="dv">1</span> <span class="sc">-</span> <span class="fl">1e-10</span>)</span>
+<span id="cb126-10"><a href="#cb126-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb126-11"><a href="#cb126-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Derivada de la inversa del link </span></span>
+<span id="cb126-12"><a href="#cb126-12" aria-hidden="true" tabindex="-1"></a>    d_pi <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span>eta) <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fu">exp</span>(<span class="sc">-</span>eta))</span>
+<span id="cb126-13"><a href="#cb126-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb126-14"><a href="#cb126-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Matriz de pesos (diagonal)</span></span>
+<span id="cb126-15"><a href="#cb126-15" aria-hidden="true" tabindex="-1"></a>    W <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="fu">as.vector</span>((d_pi<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> (pi <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi))))</span>
+<span id="cb126-16"><a href="#cb126-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb126-17"><a href="#cb126-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Variable de trabajo z</span></span>
+<span id="cb126-18"><a href="#cb126-18" aria-hidden="true" tabindex="-1"></a>    z <span class="ot">&lt;-</span> eta <span class="sc">+</span> (y <span class="sc">-</span> pi) <span class="sc">/</span> d_pi</span>
+<span id="cb126-19"><a href="#cb126-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb126-20"><a href="#cb126-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Actualización de beta</span></span>
+<span id="cb126-21"><a href="#cb126-21" aria-hidden="true" tabindex="-1"></a>    beta_new <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
+<span id="cb126-22"><a href="#cb126-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> W <span class="sc">%*%</span> X) <span class="sc">%*%</span> (<span class="fu">t</span>(X) <span class="sc">%*%</span> W <span class="sc">%*%</span> z)</span>
+<span id="cb126-23"><a href="#cb126-23" aria-hidden="true" tabindex="-1"></a>    }, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb126-24"><a href="#cb126-24" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">"Fallo al invertir la matriz. ¿X tiene multicolinealidad?"</span>)</span>
+<span id="cb126-25"><a href="#cb126-25" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb126-26"><a href="#cb126-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb126-27"><a href="#cb126-27" aria-hidden="true" tabindex="-1"></a>    cov_beta <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> W <span class="sc">%*%</span> X)</span>
+<span id="cb126-28"><a href="#cb126-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb126-29"><a href="#cb126-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">max</span>(<span class="fu">abs</span>(beta_new <span class="sc">-</span> beta), <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">&lt;</span> tol) {</span>
+<span id="cb126-30"><a href="#cb126-30" aria-hidden="true" tabindex="-1"></a>      <span class="fu">message</span>(<span class="st">"Convergió en iteración "</span>, iter)</span>
+<span id="cb126-31"><a href="#cb126-31" aria-hidden="true" tabindex="-1"></a>      pi_hat <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fu">exp</span>(X <span class="sc">%*%</span> beta_new))</span>
+<span id="cb126-32"><a href="#cb126-32" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb126-33"><a href="#cb126-33" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Residuales</span></span>
+<span id="cb126-34"><a href="#cb126-34" aria-hidden="true" tabindex="-1"></a>      residual <span class="ot">&lt;-</span> y <span class="sc">-</span> pi_hat</span>
+<span id="cb126-35"><a href="#cb126-35" aria-hidden="true" tabindex="-1"></a>      residual_pearson <span class="ot">&lt;-</span> (y <span class="sc">-</span> pi_hat) <span class="sc">/</span> <span class="fu">sqrt</span>(pi_hat <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi_hat))</span>
+<span id="cb126-36"><a href="#cb126-36" aria-hidden="true" tabindex="-1"></a>      dev <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(y <span class="sc">==</span> <span class="dv">0</span>, <span class="dv">2</span> <span class="sc">*</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> pi_hat)),</span>
+<span id="cb126-37"><a href="#cb126-37" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">ifelse</span>(y <span class="sc">==</span> <span class="dv">1</span>, <span class="dv">2</span> <span class="sc">*</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">/</span> pi_hat),</span>
+<span id="cb126-38"><a href="#cb126-38" aria-hidden="true" tabindex="-1"></a>                         <span class="dv">2</span> <span class="sc">*</span> (y <span class="sc">*</span> <span class="fu">log</span>(y <span class="sc">/</span> pi_hat) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> y) <span class="sc">*</span> <span class="fu">log</span>((<span class="dv">1</span> <span class="sc">-</span> y) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> pi_hat)))))</span>
+<span id="cb126-39"><a href="#cb126-39" aria-hidden="true" tabindex="-1"></a>      residual_deviance <span class="ot">&lt;-</span> <span class="fu">sign</span>(y <span class="sc">-</span> pi_hat) <span class="sc">*</span> <span class="fu">sqrt</span>(dev)</span>
+<span id="cb126-40"><a href="#cb126-40" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb126-41"><a href="#cb126-41" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">beta =</span> <span class="fu">as.vector</span>(beta_new), </span>
+<span id="cb126-42"><a href="#cb126-42" aria-hidden="true" tabindex="-1"></a>                  <span class="at">predichos =</span> pi_hat,</span>
+<span id="cb126-43"><a href="#cb126-43" aria-hidden="true" tabindex="-1"></a>                  <span class="at">covarianza =</span> cov_beta,</span>
+<span id="cb126-44"><a href="#cb126-44" aria-hidden="true" tabindex="-1"></a>                  <span class="at">residual =</span> residual,</span>
+<span id="cb126-45"><a href="#cb126-45" aria-hidden="true" tabindex="-1"></a>                  <span class="at">residual_pearson =</span> residual_pearson,</span>
+<span id="cb126-46"><a href="#cb126-46" aria-hidden="true" tabindex="-1"></a>                  <span class="at">residual_deviance =</span> residual_deviance))</span>
+<span id="cb126-47"><a href="#cb126-47" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb126-48"><a href="#cb126-48" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb126-49"><a href="#cb126-49" aria-hidden="true" tabindex="-1"></a>    beta <span class="ot">&lt;-</span> beta_new</span>
+<span id="cb126-50"><a href="#cb126-50" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb126-51"><a href="#cb126-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"No convergió"</span>)</span>
+<span id="cb126-52"><a href="#cb126-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">as.vector</span>(beta))</span>
+<span id="cb126-53"><a href="#cb126-53" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Como este nuevo enlace es el negativo del enlace cloglog, los coeficientes <span class="math inline">\(\beta\)</span> estimados por nuestra función deben ser los negativos de los coeficientes estimados por glm usando family = binomial(link = “cloglog”).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Usando la función creada </span></span>
+<span id="cb127-2"><a href="#cb127-2" aria-hidden="true" tabindex="-1"></a>fisher_loglog <span class="ot">&lt;-</span> <span class="fu">fisher_scoring_loglog</span>(<span class="at">y =</span> POL, <span class="at">X =</span> Xbin2, <span class="at">beta_init =</span> <span class="fu">c</span>(<span class="fu">mean</span>(POL)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">mean</span>(POL)), <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(Xbin2) <span class="sc">-</span> <span class="dv">1</span>)), <span class="at">max_iter =</span> <span class="dv">500</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Convergió en iteración 21</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb129"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Coeficientes de nuestra función</span></span>
+<span id="cb129-2"><a href="#cb129-2" aria-hidden="true" tabindex="-1"></a>fisher_loglog<span class="sc">$</span>beta</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 67.86190974  0.01770318 -0.01803807  0.05296859 -6.25176616 -1.01752398</code></pre>
+</div>
+</div>
+<p>Veamos los p-valores del modelo completo:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb131"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extraer errores estándar (raíz cuadrada de la diagonal de la matriz de covarianza)</span></span>
+<span id="cb131-2"><a href="#cb131-2" aria-hidden="true" tabindex="-1"></a>errores_estandar <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(fisher_loglog<span class="sc">$</span>covarianza))</span>
+<span id="cb131-3"><a href="#cb131-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb131-4"><a href="#cb131-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular estadísticos z (beta / error estándar)</span></span>
+<span id="cb131-5"><a href="#cb131-5" aria-hidden="true" tabindex="-1"></a>z_stats <span class="ot">&lt;-</span> fisher_loglog<span class="sc">$</span>beta <span class="sc">/</span> errores_estandar</span>
+<span id="cb131-6"><a href="#cb131-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb131-7"><a href="#cb131-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular p-valores (prueba bilateral, distribución normal estándar)</span></span>
+<span id="cb131-8"><a href="#cb131-8" aria-hidden="true" tabindex="-1"></a>p_values <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(z_stats), <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb131-9"><a href="#cb131-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb131-10"><a href="#cb131-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear un data.frame con los resultados</span></span>
+<span id="cb131-11"><a href="#cb131-11" aria-hidden="true" tabindex="-1"></a>resultados <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb131-12"><a href="#cb131-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">Coeficiente =</span> fisher_loglog<span class="sc">$</span>beta,</span>
+<span id="cb131-13"><a href="#cb131-13" aria-hidden="true" tabindex="-1"></a>  Error_Estándar <span class="ot">=</span> errores_estandar,</span>
+<span id="cb131-14"><a href="#cb131-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">z_valor =</span> z_stats,</span>
+<span id="cb131-15"><a href="#cb131-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">p_valor =</span> p_values</span>
+<span id="cb131-16"><a href="#cb131-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb131-17"><a href="#cb131-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb131-18"><a href="#cb131-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar resultados</span></span>
+<span id="cb131-19"><a href="#cb131-19" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(resultados)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Coeficiente Error_Estándar    z_valor   p_valor
+(Intercept) 67.86190974    60.60328889  1.1197727 0.2628106
+TURB         0.01770318     0.01431700  1.2365146 0.2162673
+COL         -0.01803807     0.02409035 -0.7487675 0.4539973
+ALCA         0.05296859     0.11440662  0.4629853 0.6433749
+PH          -6.25176616     4.90064106 -1.2757037 0.2020603
+TEM         -1.01752398     1.15266380 -0.8827587 0.3773667</code></pre>
+</div>
+</div>
+<p>Ahora hagamos la comparación con la función glm de R: Repordemos que los links cloglog y loglog están matemáticamente relacionados por una inversión de la probabilidad y un cambio de signo:</p>
+<p>Si definimos el enlace como: [ () = (-(1 - )) = ]</p>
+<p>Entonces el enlace para la probabilidad complementaria es: [ (1 - ) = -(-(1 - )) = - ] Por lo que para comparar nuestros resultados anteriores hacemos:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb133"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Usando la función glm de R con el link "cloglog"</span></span>
+<span id="cb133-2"><a href="#cb133-2" aria-hidden="true" tabindex="-1"></a>POL_invertido <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> POL</span>
+<span id="cb133-3"><a href="#cb133-3" aria-hidden="true" tabindex="-1"></a>modelo_cloglog <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">formula =</span> POL_invertido <span class="sc">~</span> TURB<span class="sc">+</span>COL<span class="sc">+</span>ALCA<span class="sc">+</span>PH<span class="sc">+</span>TEM, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"cloglog"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb135"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Negativo de los coeficientes de glm</span></span>
+<span id="cb135-2"><a href="#cb135-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_cloglog)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = POL_invertido ~ TURB + COL + ALCA + PH + TEM, family = binomial(link = "cloglog"))
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept) -67.85667   60.59389  -1.120    0.263
+TURB         -0.01770    0.01431  -1.237    0.216
+COL           0.01804    0.02409   0.749    0.454
+ALCA         -0.05296    0.11440  -0.463    0.643
+PH            6.25131    4.89993   1.276    0.202
+TEM           1.01745    1.15248   0.883    0.377
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 35.1647  on 27  degrees of freedom
+Residual deviance:  9.6642  on 22  degrees of freedom
+AIC: 21.664
+
+Number of Fisher Scoring iterations: 12</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb137"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span><span class="fu">coef</span>(modelo_cloglog)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)        TURB         COL        ALCA          PH         TEM 
+67.85667323  0.01770242 -0.01803682  0.05296449 -6.25130994 -1.01744576 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb139"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="fu">all.equal</span>(fisher_loglog<span class="sc">$</span>covarianza, <span class="fu">vcov</span>(modelo_cloglog))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Mean relative difference: 0.000310818"</code></pre>
+</div>
+</div>
+<p>Se puede ver que las estimaciones son iguales, aunque se vuelve a destacar que todos los coeficientes se muestran como no significativos. A continuación se decidió hacer un modelo con las variables TURB y PH.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb141"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Usamos el modelo cloglog de glm para obtener los resultados</span></span>
+<span id="cb141-2"><a href="#cb141-2" aria-hidden="true" tabindex="-1"></a>modelo_cloglog2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">formula =</span> POL_invertido <span class="sc">~</span> TURB<span class="sc">+</span>PH, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"cloglog"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb143"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb143-1"><a href="#cb143-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_cloglog2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = POL_invertido ~ TURB + PH, family = binomial(link = "cloglog"))
+
+Coefficients:
+              Estimate Std. Error z value Pr(&gt;|z|)   
+(Intercept) -20.913344  16.480727  -1.269  0.20446   
+TURB         -0.009931   0.003783  -2.625  0.00867 **
+PH            3.194780   2.203311   1.450  0.14706   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 35.165  on 27  degrees of freedom
+Residual deviance: 11.589  on 25  degrees of freedom
+AIC: 17.589
+
+Number of Fisher Scoring iterations: 9</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb145"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtenemos nuestros coeficientes finales negando los de glm</span></span>
+<span id="cb145-2"><a href="#cb145-2" aria-hidden="true" tabindex="-1"></a>beta_corregidos <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">coef</span>(modelo_cloglog2)</span>
+<span id="cb145-3"><a href="#cb145-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(beta_corregidos)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> (Intercept)         TURB           PH 
+20.913343911  0.009930621 -3.194779805 </code></pre>
+</div>
+</div>
+<ul>
+<li><strong>(Intercepto)</strong> = 20.91: Cuando el pH y la turbidez valen 0, la probabilidad de que se use el polímero es muy alta, ya que <span class="math inline">\(e^{-e^{-20.91}}\)</span> es casi 1.</li>
+<li><strong>TURB (Turbiedad)</strong> = 0.0099: A mayor turbiedad del agua, aumenta ligeramente la probabilidad de usar el polímero. En este modelo aparece TURB como significativa, es decir que su p-valor el cual fue 0.008 es menor al nivel de significancia el cual es 0.05, pero el modelo tiene un mejor puntaje en el criterio AIC a comparación con el anterior.</li>
+<li><strong>PH</strong> = -3.19: a mayor PH del agua, disminuye ligeramente la probabilidad de usar el polímero, sin embargo esta variable resulta no ser significativa ya que su p-valor es mayor a 0.05 por lo que no se rechaza <span class="math inline">\(H_{0}:\beta_{i}=0\)</span>.</li>
+</ul>
+<p>Veamos el modelo sin PH:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb147"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb147-1"><a href="#cb147-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Usamos el modelo cloglog de glm para obtener los resultados</span></span>
+<span id="cb147-2"><a href="#cb147-2" aria-hidden="true" tabindex="-1"></a>modelo_cloglog2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">formula =</span> POL_invertido <span class="sc">~</span> TURB, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"cloglog"</span>))</span>
+<span id="cb147-3"><a href="#cb147-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_cloglog2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = POL_invertido ~ TURB, family = binomial(link = "cloglog"))
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)  
+(Intercept)  3.711645   1.735253   2.139   0.0324 *
+TURB        -0.008865   0.004095  -2.165   0.0304 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 35.165  on 27  degrees of freedom
+Residual deviance: 14.551  on 26  degrees of freedom
+AIC: 18.551
+
+Number of Fisher Scoring iterations: 9</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb149"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb149-1"><a href="#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtenemos nuestros coeficientes finales negando los de glm</span></span>
+<span id="cb149-2"><a href="#cb149-2" aria-hidden="true" tabindex="-1"></a>beta_corregidos <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">coef</span>(modelo_cloglog2)</span>
+<span id="cb149-3"><a href="#cb149-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(beta_corregidos)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> (Intercept)         TURB 
+-3.711645286  0.008865271 </code></pre>
+</div>
+</div>
+<p>En este caso, el AIC es más elevado que en el modelo anterior, por lo que se sugiere consultar con expertos para determinar cuál modelo resulta más adecuado o útil según el contexto.</p>
+<p>Exploremos los residuales de este último modelo:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb151"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a>df_residuals.agua_loglog <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb151-2"><a href="#cb151-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">TURB =</span> TURB,</span>
+<span id="cb151-3"><a href="#cb151-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">PH =</span> PH,</span>
+<span id="cb151-4"><a href="#cb151-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">predichos =</span> <span class="fu">fitted</span>(modelo_cloglog2),</span>
+<span id="cb151-5"><a href="#cb151-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual =</span> <span class="fu">residuals</span>(modelo_cloglog2, <span class="at">type =</span> <span class="st">"response"</span>),</span>
+<span id="cb151-6"><a href="#cb151-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual_pearson =</span> <span class="fu">residuals</span>(modelo_cloglog2, <span class="at">type =</span> <span class="st">"pearson"</span>),</span>
+<span id="cb151-7"><a href="#cb151-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual_deviance =</span> <span class="fu">residuals</span>(modelo_cloglog2, <span class="at">type =</span> <span class="st">"deviance"</span>)</span>
+<span id="cb151-8"><a href="#cb151-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb151-9"><a href="#cb151-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb151-10"><a href="#cb151-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico de los tres tipos de residuales vs. valores predichos</span></span>
+<span id="cb151-11"><a href="#cb151-11" aria-hidden="true" tabindex="-1"></a>p1_loglog <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua_loglog, <span class="fu">aes</span>(<span class="at">x =</span> predichos, <span class="at">y =</span> residual)) <span class="sc">+</span></span>
+<span id="cb151-12"><a href="#cb151-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'blue'</span>) <span class="sc">+</span></span>
+<span id="cb151-13"><a href="#cb151-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual Crudo'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual Crudo'</span>) <span class="sc">+</span></span>
+<span id="cb151-14"><a href="#cb151-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span>
+<span id="cb151-15"><a href="#cb151-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb151-16"><a href="#cb151-16" aria-hidden="true" tabindex="-1"></a>p2_loglog <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua_loglog, <span class="fu">aes</span>(<span class="at">x =</span> predichos, <span class="at">y =</span> residual_pearson)) <span class="sc">+</span></span>
+<span id="cb151-17"><a href="#cb151-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'red'</span>) <span class="sc">+</span></span>
+<span id="cb151-18"><a href="#cb151-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Pearson'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual de Pearson'</span>) <span class="sc">+</span></span>
+<span id="cb151-19"><a href="#cb151-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span>
+<span id="cb151-20"><a href="#cb151-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb151-21"><a href="#cb151-21" aria-hidden="true" tabindex="-1"></a>p3_loglog <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua_loglog, <span class="fu">aes</span>(<span class="at">x =</span> predichos, <span class="at">y =</span> residual_deviance)) <span class="sc">+</span></span>
+<span id="cb151-22"><a href="#cb151-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'orange'</span>) <span class="sc">+</span></span>
+<span id="cb151-23"><a href="#cb151-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Devianza'</span>, <span class="at">x =</span> <span class="st">'Valores Predichos'</span>, <span class="at">y =</span> <span class="st">'Residual de Devianza'</span>) <span class="sc">+</span></span>
+<span id="cb151-24"><a href="#cb151-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="sourceCode cell-code" id="cb152"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb152-1"><a href="#cb152-1" aria-hidden="true" tabindex="-1"></a>p1_loglog; p2_loglog; p3_loglog</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell quarto-layout-panel" data-layout-ncol="3">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p><img src="Modelos_files/figure-html/unnamed-chunk-91-1.png" class="img-fluid"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p><img src="Modelos_files/figure-html/unnamed-chunk-91-2.png" class="img-fluid"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p><img src="Modelos_files/figure-html/unnamed-chunk-91-3.png" class="img-fluid"></p>
+</div>
+</div>
+</div>
+<p>Los gráficos de residuales contra los valores predichos muestran un patrón similar al del modelo probit, con dos curvas que se corresponden a las dos posibles respuestas (0 o 1).A continuación, se grafican los residuales contra las variables explicativas.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb153"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb153-1"><a href="#cb153-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráficos de residuales vs Turbiedad</span></span>
+<span id="cb153-2"><a href="#cb153-2" aria-hidden="true" tabindex="-1"></a>res_turb1_loglog <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua_loglog, <span class="fu">aes</span>(<span class="at">x =</span> TURB, <span class="at">y =</span> residual_deviance)) <span class="sc">+</span></span>
+<span id="cb153-3"><a href="#cb153-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb153-4"><a href="#cb153-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Devianza vs. Turbiedad'</span>, <span class="at">x =</span> <span class="st">'Turbiedad'</span>, <span class="at">y =</span> <span class="st">'Residual de Devianza'</span>) <span class="sc">+</span></span>
+<span id="cb153-5"><a href="#cb153-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span>
+<span id="cb153-6"><a href="#cb153-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb153-7"><a href="#cb153-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráficos de residuales vs PH</span></span>
+<span id="cb153-8"><a href="#cb153-8" aria-hidden="true" tabindex="-1"></a>res_PH1_loglog <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_residuals.agua_loglog, <span class="fu">aes</span>(<span class="at">x =</span> PH, <span class="at">y =</span> residual_deviance)) <span class="sc">+</span></span>
+<span id="cb153-9"><a href="#cb153-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb153-10"><a href="#cb153-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Residual de Devianza vs. PH'</span>, <span class="at">x =</span> <span class="st">'PH'</span>, <span class="at">y =</span> <span class="st">'Residual de Devianza'</span>) <span class="sc">+</span></span>
+<span id="cb153-11"><a href="#cb153-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="dv">13</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="sourceCode cell-code" id="cb154"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb154-1"><a href="#cb154-1" aria-hidden="true" tabindex="-1"></a>res_turb1_loglog; res_PH1_loglog</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="Modelos_files/figure-html/unnamed-chunk-93-1.png" class="img-fluid"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="Modelos_files/figure-html/unnamed-chunk-93-2.png" class="img-fluid"></p>
+</div>
+</div>
+</div>
+<p>Al igual que en el análisis del modelo probit, los residuales de devianza para el modelo loglog se distribuyen alrededor de cero sin mostrar patrones sistemáticos claros cuando se grafican contra la turbiedad, y para pH se ve incluso más variabilidad, lo que nuevamente sugiere que el modelo no está capturando adecuadamente la relación entre esta variable predictora y la respuesta, dentro de lo que permite el enlace log-log. La dispersión es relativamente constante, aunque se observan algunos puntos con residuales más grandes, lo cual es esperable en datos reales.</p>
+<p>Para poder comparar entre sí estos tres modelos, es decir, el modelo “logit”, el “probit” y el “loglog” usamos la suma de cuadrados de todos para comparar y se obtuvieron los siguientes resultados:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb155"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb155-1"><a href="#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_probit2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = POL ~ TURB + PH, family = binomial(link = "probit"))
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)   
+(Intercept) 15.938214  12.085609   1.319  0.18724   
+TURB         0.009495   0.003362   2.824  0.00474 **
+PH          -2.606755   1.606249  -1.623  0.10461   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 35.165  on 27  degrees of freedom
+Residual deviance: 11.753  on 25  degrees of freedom
+AIC: 17.753
+
+Number of Fisher Scoring iterations: 9</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb157"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb157-1"><a href="#cb157-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(modelo_probit2<span class="sc">$</span>residuals<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 21.80074</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb159"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb159-1"><a href="#cb159-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_cloglog2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = POL_invertido ~ TURB, family = binomial(link = "cloglog"))
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)  
+(Intercept)  3.711645   1.735253   2.139   0.0324 *
+TURB        -0.008865   0.004095  -2.165   0.0304 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 35.165  on 27  degrees of freedom
+Residual deviance: 14.551  on 26  degrees of freedom
+AIC: 18.551
+
+Number of Fisher Scoring iterations: 9</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb161"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb161-1"><a href="#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(modelo_cloglog2<span class="sc">$</span>residuals<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 35.02714</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb163"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb163-1"><a href="#cb163-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = POL ~ TURB, family = "binomial")
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)  
+(Intercept) -6.552847   2.664456  -2.459   0.0139 *
+TURB         0.013816   0.005922   2.333   0.0196 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 35.165  on 27  degrees of freedom
+Residual deviance: 15.394  on 26  degrees of freedom
+AIC: 19.394
+
+Number of Fisher Scoring iterations: 7</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb165"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb165-1"><a href="#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(modelo2<span class="sc">$</span>residuals<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 80.36377</code></pre>
+</div>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Modelo</th>
+<th style="text-align: center;">Criterio AIC</th>
+<th style="text-align: center;"><span class="math inline">\(\sum \hat{e}^{2}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Probit</td>
+<td style="text-align: center;">17.753</td>
+<td style="text-align: center;">21.80074</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">loglog</td>
+<td style="text-align: center;">18.551</td>
+<td style="text-align: center;">35.02714</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">logit</td>
+<td style="text-align: center;">19.394</td>
+<td style="text-align: center;">80.36377</td>
+</tr>
+</tbody>
+</table>
+<p>Se puede ver que el mejor modelo es el que tiene el link “probit”, ya que este posee un mejor criterio de predictividad y una menor suma de los residuales al cuadrado. Se destaca que el modelo “logit” tiene mayor suma de cuadrados esto se puede deber al rango de la función “logit”.</p>
 </section>
 </section>
 
@@ -2233,8 +2634,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -2345,7 +2744,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

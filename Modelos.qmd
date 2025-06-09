@@ -1571,7 +1571,7 @@ res_turb3 <- ggplot(df_residuals.agua3, aes(x = TURB, y = residual_deviance)) +
 
 res_turb1; res_turb2; res_turb3
 ```
-Al analizar los residuales de devianza frente a la turbiedad, se observa que la mayoría de los puntos están cerca de cero, lo que indica un buen ajuste del modelo en general. Sin embargo, algunas observaciones con valores altos de turbiedad presentan residuales más grandes, lo que podría señalar un ajuste menos preciso en ese rango. A pesar de esto, no se observan patrones sistemáticos en los residuales, lo cual sugiere que la relación entre la turbiedad y la probabilidad de uso del polímero está siendo bien capturada por el modelo.
+Al analizar los residuales de devianza frente a la turbiedad, se observa que la mayoría de los puntos están cerca de cero, lo que indica un buen ajuste del modelo en general. Sin embargo, algunas observaciones con valores entre 250 y 750 se ven valores altos de los residuales,a pesar de esto, no se observan patrones sistemáticos en los residuales, lo cual sugiere que la relación entre la turbiedad y la probabilidad de uso del polímero está siendo bien capturada por el modelo. Tambien se puede concluir que a partir de un valor de turbiedad de 750 en adelante, es seguro que se debe aplicar el polímero.
 ```{r}
 res_PH1 <- ggplot(df_residuals.agua3, aes(x = PH, y = residual)) +
     geom_point(color = 'black', alpha = 0.6) +
@@ -1595,7 +1595,7 @@ res_PH3 <- ggplot(df_residuals.agua3, aes(x = PH, y = residual_deviance)) +
 
 res_PH1; res_PH2; res_PH3
 ```
-Parece ser que los residuales tienen un comportamiento similar al de Turbiedad, se concentran alrededor de 0 y no presentar un patrón claro, lo que indica que el modelo esta captando bien estas variables.
+Parece ser que los residuales tienen un comportamiento similar al de Turbiedad, se concentran alrededor de 0, pero presenta mucha más variabilidad conforme aumentan los valores, lo que puede indicar que no se esta captando bien la relación entre la variable respuesta "POL" y la variable predictora "PH", lo que puede ser consistente con la prueba de significancia, la cual recordando dió que PH no era significativo.
 
 ## *log-log*
 -   La **Matriz de Información de Fisher** es $I(\beta) = X^tWX$, donde $W$ es una matriz diagonal. Para calcular los elementos $w_{ii}$ de $W$, necesitamos la varianza $Var(Y_i)$ y la derivada $d\mu_i / d\eta_i$:
@@ -1801,4 +1801,21 @@ res_PH1_loglog <- ggplot(df_residuals.agua_loglog, aes(x = PH, y = residual_devi
 res_turb1_loglog; res_PH1_loglog
 ```
 
-Al igual que en el análisis del modelo probit, los residuales de devianza para el modelo loglog se distribuyen alrededor de cero sin mostrar patrones sistemáticos claros cuando se grafican contra la turbiedad y el pH. Esto sugiere que el modelo está capturando adecuadamente la relación entre las variables predictoras y la respuesta, dentro de lo que permite el enlace log-log. La dispersión es relativamente constante, aunque se observan algunos puntos con residuales más grandes, lo cual es esperable en datos reales. En general, el diagnóstico de residuales no revela problemas evidentes con el modelo. 
+Al igual que en el análisis del modelo probit, los residuales de devianza para el modelo loglog se distribuyen alrededor de cero sin mostrar patrones sistemáticos claros cuando se grafican contra la turbiedad, y para pH se ve incluso más variabilidad, lo que nuevamente sugiere que el modelo no está capturando adecuadamente la relación entre esta variable predictora y la respuesta, dentro de lo que permite el enlace log-log. La dispersión es relativamente constante, aunque se observan algunos puntos con residuales más grandes, lo cual es esperable en datos reales. 
+
+Para poder comparar entre sí estos tres modelos, es decir, el modelo "logit", el "probit" y el "loglog" usamos la suma de cuadrados de todos para comparar y se obtuvieron los siguientes resultados:
+```{r}
+summary(modelo_probit2)
+sum(modelo_probit2$residuals^2)
+summary(modelo_cloglog2)
+sum(modelo_cloglog2$residuals^2)
+summary(modelo2)
+sum(modelo2$residuals^2)
+```
+| Modelo     | Criterio AIC | $\sum \hat{e}^{2}$              |
+|:-------------|:----------------------:|:----------------:|
+|Probit | 17.753 |21.80074|
+|loglog | 18.551 |35.02714|
+|logit | 19.394 |80.36377|
+
+Se puede ver que el mejor modelo es el que tiene el link "probit", ya que este posee un mejor criterio de predictividad y una menor suma de los residuales al cuadrado. Se destaca que el modelo "logit" tiene mayor suma de cuadrados esto se puede deber al rango de la función "logit".
