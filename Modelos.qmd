@@ -1494,7 +1494,7 @@ summary(modelo_probit)
 ```{r}
 all.equal(fisher_probit$covarianza, vcov(modelo_probit))
 ```
-Se puede ver que las estimaciones son iguales, y aunque todas se muestran como significativas se decidió hacer otro modelo con las variables TURB y PH.
+Se puede ver que las estimaciones son iguales, aunque se destaca que todos los coeficientes se muestran como no significativos, es decir que en el sistema de hipótesis de $H_{0}: \beta_{i}=0$ vs $H_{a}:\beta_{i}\neq0$ en todas las variables no se rechaza la hipótessi nula. A continuación se decidió hacer un modelo con las variables TURB y PH.
 
 
 ```{r}
@@ -1502,8 +1502,8 @@ modelo_probit2 <- glm(formula = POL ~ TURB+PH, family = binomial(link = "probit"
 summary(modelo_probit2)
 ```
 - **(Intercepto)** = +15.94: Cuando el pH y la turbidez valen 0, la probabilidad de que se use el polímero es muy alta, ya que $\phi(15.94)$ es casi 1.
-- **TURB (Turbiedad)** = +0.009: A mayor turbiedad del agua, aumenta ligeramente la probabilidad de usar el polímero. En este modelo aparece TURB como no significativa, es decir que su p-valor el cual fue 0.004 es menor al nivel de significancia el cual es 0.05, pero el modelo tiene un mejor puntaje en el criterio AIC a comparación con el anterior.
-- **PH** = -2.61:  a mayor PH del agua, disminuye ligeramente la probabilidad de usar el polímero.
+- **TURB (Turbiedad)** = +0.009: A mayor turbiedad del agua, aumenta ligeramente la probabilidad de usar el polímero. En este modelo aparece TURB como significativa, es decir que su p-valor el cual fue 0.004 es menor al nivel de significancia el cual es 0.05, pero el modelo tiene un mejor puntaje en el criterio AIC a comparación con el anterior.
+- **PH** = -2.61:  a mayor PH del agua, disminuye ligeramente la probabilidad de usar el polímero, sin embargo esta variable resulta no ser significativa ya que su p-valor es mayor a 0.05 por lo que no se rechaza $H_{0}:\beta_{i}=0$.
 
 Exploremos los residuales de este último modelo:
 
