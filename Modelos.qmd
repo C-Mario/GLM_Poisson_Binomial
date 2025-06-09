@@ -1494,7 +1494,7 @@ summary(modelo_probit)
 ```{r}
 all.equal(fisher_probit$covarianza, vcov(modelo_probit))
 ```
-Se puede ver que las estimaciones son iguales, aunque se destaca que todos los coeficientes se muestran como no significativos, es decir que en el sistema de hipótesis de $H_{0}: \beta_{i}=0$ vs $H_{a}:\beta_{i}\neq0$ en todas las variables no se rechaza la hipótessi nula. A continuación se decidió hacer un modelo con las variables TURB y PH.
+Se puede ver que las estimaciones son iguales, aunque se destaca que todos los coeficientes se muestran como no significativos, es decir que en el sistema de hipótesis de $H_{0}: \beta_{i}=0$ vs $H_{a}:\beta_{i}\neq0$ en todas las variables no se rechaza la hipótesis nula. A continuación se decidió hacer un modelo con las variables TURB y PH.
 
 
 ```{r}
@@ -1596,3 +1596,209 @@ res_PH3 <- ggplot(df_residuals.agua3, aes(x = PH, y = residual_deviance)) +
 res_PH1; res_PH2; res_PH3
 ```
 Parece ser que los residuales tienen un comportamiento similar al de Turbiedad, se concentran alrededor de 0 y no presentar un patrón claro, lo que indica que el modelo esta captando bien estas variables.
+
+## *log-log*
+-   La **Matriz de Información de Fisher** es $I(\beta) = X^tWX$, donde $W$ es una matriz diagonal. Para calcular los elementos $w_{ii}$ de $W$, necesitamos la varianza $Var(Y_i)$ y la derivada $d\mu_i / d\eta_i$:
+La varianza sigue siendo:
+$$Var(Y_i) = n_i p_i (1-p_i)$$
+Recordemos que el enlace log-log es de la forma: $\eta_{i} = -log(-log(\pi_{i}))$
+Despejando $\pi_{i}$ obtenemos
+$$\pi_i = e^{-e^{-\eta_{i}} \Longrightarrow \frac{\partial\pi_{i}}{\partial \eta_{i}} = e^{-\eta_{i}}e^{-e^{-\eta_{i}}}  $$
+Entonces, los pesos son:
+$$w_{ii} = \frac{\left(\frac{\partial \mu_i}{\partial \eta_i}\right)^2}{Var(y_i)} = \frac{(e^{-\eta_i} e^{-e^{-\eta_i}})^2}{n_i p_i (1-p_i)}$$
+
+-   Nuestro $\widetilde{y}$ para el algoritmo Fisher Scoring es:
+    $$\widetilde{y} = \eta_i + (y_i - \mu_i)\frac{\partial \eta_i}{\partial \mu_i}$$
+    Dado que $\pi_{i} = e^{-e^{-\eta_{i}}} \Longrightarrow \frac{\partial\eta_{i}}{\partial\pi_{i}}=\frac{1}{e^{-\eta_{i}}e^{-e^{-\eta_{i}}}}$, tenemos:
+    $$\widetilde{y} = \eta_i + \frac{y_i - \mu_i}{e^{-\eta_{i}}e^{-e^{-\eta_{i}}}}$$
+```{r}
+# Creación de la función link loglog
+fisher_scoring_loglog <- function(y, X, beta_init, tol = 1e-6, max_iter = 100) {
+  beta <- beta_init
+  for (iter in 1:max_iter) {
+    eta <- X %*% beta
+    
+    # Link log-log: pi = exp(-exp(-eta))
+    pi <- exp(-exp(-eta))
+    pi <- pmin(pmax(pi, 1e-10), 1 - 1e-10)
+    
+    # Derivada de la inversa del link 
+    d_pi <- exp(-eta) * exp(-exp(-eta))
+    
+    # Matriz de pesos (diagonal)
+    W <- diag(as.vector((d_pi^2) / (pi * (1 - pi))))
+    
+    # Variable de trabajo z
+    z <- eta + (y - pi) / d_pi
+    
+    # Actualización de beta
+    beta_new <- tryCatch({
+      solve(t(X) %*% W %*% X) %*% (t(X) %*% W %*% z)
+    }, error = function(e) {
+      stop("Fallo al invertir la matriz. ¿X tiene multicolinealidad?")
+    })
+    
+    cov_beta <- solve(t(X) %*% W %*% X)
+    
+    if (max(abs(beta_new - beta), na.rm = TRUE) < tol) {
+      message("Convergió en iteración ", iter)
+      pi_hat <- exp(-exp(X %*% beta_new))
+      
+      # Residuales
+      residual <- y - pi_hat
+      residual_pearson <- (y - pi_hat) / sqrt(pi_hat * (1 - pi_hat))
+      dev <- ifelse(y == 0, 2 * log(1 / (1 - pi_hat)),
+                  ifelse(y == 1, 2 * log(1 / pi_hat),
+                         2 * (y * log(y / pi_hat) + (1 - y) * log((1 - y) / (1 - pi_hat)))))
+      residual_deviance <- sign(y - pi_hat) * sqrt(dev)
+      
+      return(list(beta = as.vector(beta_new), 
+                  predichos = pi_hat,
+                  covarianza = cov_beta,
+                  residual = residual,
+                  residual_pearson = residual_pearson,
+                  residual_deviance = residual_deviance))
+    }
+    
+    beta <- beta_new
+  }
+  warning("No convergió")
+  return(as.vector(beta))
+}
+```
+Como este nuevo enlace es el negativo del enlace cloglog, los coeficientes $\beta$ estimados por nuestra función deben ser los negativos de los coeficientes estimados por glm usando family = binomial(link = "cloglog").
+```{r}
+# Usando la función creada 
+fisher_loglog <- fisher_scoring_loglog(y = POL, X = Xbin2, beta_init = c(mean(POL)/(1-mean(POL)), rep(0, ncol(Xbin2) - 1)), max_iter = 500)
+# Coeficientes de nuestra función
+fisher_loglog$beta
+```
+Veamos los p-valores del modelo completo:
+```{r}
+# Extraer errores estándar (raíz cuadrada de la diagonal de la matriz de covarianza)
+errores_estandar <- sqrt(diag(fisher_loglog$covarianza))
+
+# Calcular estadísticos z (beta / error estándar)
+z_stats <- fisher_loglog$beta / errores_estandar
+
+# Calcular p-valores (prueba bilateral, distribución normal estándar)
+p_values <- 2 * pnorm(abs(z_stats), lower.tail = FALSE)
+
+# Crear un data.frame con los resultados
+resultados <- data.frame(
+  Coeficiente = fisher_loglog$beta,
+  Error_Estándar = errores_estandar,
+  z_valor = z_stats,
+  p_valor = p_values
+)
+
+# Mostrar resultados
+print(resultados)
+```
+Ahora hagamos la comparación con la función glm de R:
+Repordemos que los links cloglog y loglog  están matemáticamente relacionados por una inversión de la probabilidad y un cambio de signo:
+
+Si definimos el enlace \text{cloglog} como:
+\[
+\text{cloglog}(\pi) = \log(-\log(1 - \pi)) = \eta
+\]
+
+Entonces el enlace \text{loglog} para la probabilidad complementaria es:
+\[
+\text{loglog}(1 - \pi) = -\log(-\log(1 - \pi)) = -\eta
+\]
+Por lo que para comparar nuestros resultados anteriores hacemos:
+```{r}
+# Usando la función glm de R con el link "cloglog"
+POL_invertido <- 1 - POL
+modelo_cloglog <- glm(formula = POL_invertido ~ TURB+COL+ALCA+PH+TEM, family = binomial(link = "cloglog"))
+# Negativo de los coeficientes de glm
+summary(modelo_cloglog)
+-coef(modelo_cloglog)
+```
+```{r}
+all.equal(fisher_loglog$covarianza, vcov(modelo_cloglog))
+```
+Se puede ver que las estimaciones son iguales, aunque se vuelve a destacar que todos los coeficientes se muestran como no significativos. A continuación se decidió hacer un modelo con las variables TURB y PH.
+
+```{r}
+# Usamos el modelo cloglog de glm para obtener los resultados
+modelo_cloglog2 <- glm(formula = POL_invertido ~ TURB+PH, family = binomial(link = "cloglog"))
+summary(modelo_cloglog2)
+
+# Obtenemos nuestros coeficientes finales negando los de glm
+beta_corregidos <- -coef(modelo_cloglog2)
+print(beta_corregidos)
+```
+- **(Intercepto)** = 20.91: Cuando el pH y la turbidez valen 0, la probabilidad de que se use el polímero es muy alta, ya que $e^{-e^{-20.91}}$ es casi 1.
+- **TURB (Turbiedad)** = 0.0099: A mayor turbiedad del agua, aumenta ligeramente la probabilidad de usar el polímero. En este modelo aparece TURB como significativa, es decir que su p-valor el cual fue 0.008 es menor al nivel de significancia el cual es 0.05, pero el modelo tiene un mejor puntaje en el criterio AIC a comparación con el anterior.
+- **PH** = -3.19:  a mayor PH del agua, disminuye ligeramente la probabilidad de usar el polímero, sin embargo esta variable resulta no ser significativa ya que su p-valor es mayor a 0.05 por lo que no se rechaza $H_{0}:\beta_{i}=0$.
+
+Veamos el modelo sin PH:
+
+```{r}
+# Usamos el modelo cloglog de glm para obtener los resultados
+modelo_cloglog2 <- glm(formula = POL_invertido ~ TURB, family = binomial(link = "cloglog"))
+summary(modelo_cloglog2)
+
+# Obtenemos nuestros coeficientes finales negando los de glm
+beta_corregidos <- -coef(modelo_cloglog2)
+print(beta_corregidos)
+```
+En este caso, el AIC es más elevado que en el modelo anterior, por lo que se sugiere consultar con expertos para determinar cuál modelo resulta más adecuado o útil según el contexto.
+
+Exploremos los residuales de este último modelo:
+
+```{r}
+df_residuals.agua_loglog <- data.frame(
+    TURB = TURB,
+    PH = PH,
+    predichos = fitted(modelo_cloglog2),
+    residual = residuals(modelo_cloglog2, type = "response"),
+    residual_pearson = residuals(modelo_cloglog2, type = "pearson"),
+    residual_deviance = residuals(modelo_cloglog2, type = "deviance")
+)
+
+# Gráfico de los tres tipos de residuales vs. valores predichos
+p1_loglog <- ggplot(df_residuals.agua_loglog, aes(x = predichos, y = residual)) +
+    geom_point(color = 'blue') +
+    labs(title = 'Residual Crudo', x = 'Valores Predichos', y = 'Residual Crudo') +
+    theme_minimal(13)
+
+p2_loglog <- ggplot(df_residuals.agua_loglog, aes(x = predichos, y = residual_pearson)) +
+    geom_point(color = 'red') +
+    labs(title = 'Residual de Pearson', x = 'Valores Predichos', y = 'Residual de Pearson') +
+    theme_minimal(13)
+
+p3_loglog <- ggplot(df_residuals.agua_loglog, aes(x = predichos, y = residual_deviance)) +
+    geom_point(color = 'orange') +
+    labs(title = 'Residual de Devianza', x = 'Valores Predichos', y = 'Residual de Devianza') +
+    theme_minimal(13)
+```
+```{r}
+#| layout-ncol: 3
+#| out-width: 100%
+p1_loglog; p2_loglog; p3_loglog
+```
+Los gráficos de residuales contra los valores predichos muestran un patrón similar al del modelo probit, con dos curvas que se corresponden a las dos posibles respuestas (0 o 1).A continuación, se grafican los residuales contra las variables explicativas.
+
+```{r}
+# Gráficos de residuales vs Turbiedad
+res_turb1_loglog <- ggplot(df_residuals.agua_loglog, aes(x = TURB, y = residual_deviance)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual de Devianza vs. Turbiedad', x = 'Turbiedad', y = 'Residual de Devianza') +
+    theme_minimal(13)
+
+# Gráficos de residuales vs PH
+res_PH1_loglog <- ggplot(df_residuals.agua_loglog, aes(x = PH, y = residual_deviance)) +
+    geom_point(color = 'black', alpha = 0.6) +
+    labs(title = 'Residual de Devianza vs. PH', x = 'PH', y = 'Residual de Devianza') +
+    theme_minimal(13)
+```
+```{r}
+#| layout-ncol: 2
+#| out-width: 100%
+res_turb1_loglog; res_PH1_loglog
+```
+
+Al igual que en el análisis del modelo probit, los residuales de devianza para el modelo loglog se distribuyen alrededor de cero sin mostrar patrones sistemáticos claros cuando se grafican contra la turbiedad y el pH. Esto sugiere que el modelo está capturando adecuadamente la relación entre las variables predictoras y la respuesta, dentro de lo que permite el enlace log-log. La dispersión es relativamente constante, aunque se observan algunos puntos con residuales más grandes, lo cual es esperable en datos reales. En general, el diagnóstico de residuales no revela problemas evidentes con el modelo. 
